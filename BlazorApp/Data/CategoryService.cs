@@ -7,30 +7,86 @@ namespace BlazorApp.Data
 {
     public class CategoryService
     {
-        public List<string> GetWeightGroups()
+        public List<WeightGroup> GetWeightGroups()
         {
-            return new List<string>()
+            return new List<WeightGroup>()
             {
-                "муж/30-40",
-                "жен/30-40",
-                "муж/40-50",
-                "жен/40-50",
-                "муж/50-60",
-                "жен/50-60",
-                "муж/60-70"
+                new WeightGroup()
+                {
+                    Name="МУЖ 30-40кг",
+                    Sex = "МУЖ",
+                    WeightFrom=30,
+                    WeightTo=40
+                },
+                new WeightGroup()
+                {
+                    Name="МУЖ 40-50кг",
+                    Sex = "МУЖ",
+                    WeightFrom=40,
+                    WeightTo=50
+                },new WeightGroup()
+                {
+                    Name="МУЖ 50-60кг",
+                    Sex = "МУЖ",
+                    WeightFrom = 50,
+                    WeightTo = 60
+                },new WeightGroup()
+                {
+                    Name="ЖЕН 30-40кг",
+                    Sex = "ЖЕН",
+                    WeightFrom = 30,
+                    WeightTo=40
+                },new WeightGroup()
+                {
+                    Name="ЖЕН 40-50кг",
+                    Sex = "ЖЕН",
+                    WeightFrom=40,
+                    WeightTo=50
+                },new WeightGroup()
+                {
+                    Name="ЖЕН 50-60кг",
+                    Sex = "ЖЕН",
+                    WeightFrom=50,
+                    WeightTo=60
+                },
+
             };
         }
 
-        public List<string> GetAgeGroups()
+        public List<AgeGroup> GetAgeGroups()
         {
-            return new List<string>()
+            return new List<AgeGroup>()
             {
-                "4-5 лет/4-5",
-                "5-6 лет/5-6",
-                "6-7 лет/6-7",
-                "7-8 лет/7-8",
-                "8-9 лет/8-9",
-                "9-10 лет/9-10"
+                new AgeGroup()
+                {
+                    Age="4-5 лет",
+                    AgeFrom=4,
+                    AgeTo=5
+                },
+                new AgeGroup()
+                {
+                    Age="5-6 лет",
+                    AgeFrom=5,
+                    AgeTo=6
+                },
+                new AgeGroup()
+                {
+                    Age="6-7 лет",
+                    AgeFrom=6,
+                    AgeTo=7
+                },
+                new AgeGroup()
+                {
+                    Age="7-8 лет",
+                    AgeFrom=7,
+                    AgeTo=8
+                },
+                new AgeGroup()
+                {
+                    Age="8-9 лет",
+                    AgeFrom=8,
+                    AgeTo=9
+                }
             };
         }
 
@@ -62,8 +118,8 @@ namespace BlazorApp.Data
                 {
         new Category()
         {
-            Id=1,
-            Name="4-5 лет Девочки -16Кг (8 KYU)",
+            Id = 1,
+            Name = "4-5 лет Девочки -16Кг (8 KYU)",
             Type = "Кумите",
             Age = "4-5 лет",
             AgeFrom=10,

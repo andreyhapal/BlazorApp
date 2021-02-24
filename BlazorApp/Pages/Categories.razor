@@ -18,7 +18,7 @@
                             Весовая группа
                         </td>
                         <td rowspan="2">
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" @onclick="SetAdd">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
                                 Добавить
                             </button>
                         </td>
@@ -62,6 +62,13 @@
                 </tbody>
             </table>
         </RadzenTabsItem>
+        <RadzenTabsItem Text="Возрастные группы">
+
+        </RadzenTabsItem>
+        <RadzenTabsItem Text="Весовые группы">
+
+        </RadzenTabsItem>
+
     </Tabs>
 </RadzenTabs>
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -76,11 +83,11 @@
             <div class="modal-body" style="display:flex; justify-content:space-between;margin:30px">
                 <div>
                     <h4>Возрастная группа</h4>
-                    <RadzenListBox TValue="string" Data="ageGroups" Change="@(args=>OnChange(args,0))"></RadzenListBox>
+                    <RadzenListBox TValue="AgeGroup" TextProperty="Age"  Data=@ageGroups Change="@(args=>OnChange(args,0))"></RadzenListBox>
                 </div>
                 <div>
                     <h4>Весовая группа</h4>
-                    <RadzenListBox TValue="string" Data="weightGroups" Change="@(args=>OnChange(args,1))"></RadzenListBox>
+                    <RadzenListBox TValue="WeightGroup" TextProperty="Name" Data=@weightGroups Change="@(args=>OnChange(args,1))"></RadzenListBox>
                 </div>
                 <div>
                     <h4>Тип</h4>
@@ -95,7 +102,7 @@
             <h4 style="margin-left:30px">Новая категория: @NewCategory[0] @NewCategory[1] @NewCategory[2] @NewCategory[3]</h4>
             <div class="modal-footer" style="margin-right:30px; padding-right:0px;">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-primary" @onclick="SaveChanges" data-dismiss="modal">Save changes</button>
             </div>
         </div>
     </div>
@@ -112,8 +119,8 @@
     Category Category = new Category();
 
     List<Category> categories = new List<Category>();
-    List<string> weightGroups = new List<string>();
-    List<string> ageGroups = new List<string>();
+    List<WeightGroup> weightGroups = new List<WeightGroup>();
+    List<AgeGroup> ageGroups = new List<AgeGroup>();
     List<string> types = new List<string>();
     List<string> grades = new List<string>();
 
@@ -121,10 +128,7 @@
 
 
 
-    private void SetAdd()
-    {
 
-    }
     protected override void OnInitialized()
     {
         categories = categoryService.GetCategories();
@@ -138,24 +142,59 @@
     {
         categories.Remove(category);
     }
-    async Task AddCategory()
-    {
 
+    private void SaveChanges()
+    {
+        Category.Id = categories.Last().Id + 1;
+        Category.Name = string.Join(" ", NewCategory);
+        categories.Add(Category);
+        StateHasChanged();
     }
 
     private void OnChange(object args, int number)
     {
-        var str = args is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)args) : args.ToString();
-        Console.WriteLine("");
-        if (number == 0)
-            NewCategory[number] = str.Split("/")[0];
-        else NewCategory[number] = str;
-    }
+        switch (args)
+        {
+            case AgeGroup ageGroup:
+                {
+                    NewCategory[0] = ageGroup.Age;
+                    Category.Age = ageGroup.Age;
+                    Category.AgeFrom = ageGroup.AgeFrom;
+                    Category.AgeTo = ageGroup.AgeTo;
+                    break;
+                }
+            case WeightGroup weightGroup:
+                {
+                    NewCategory[1] = weightGroup.Name;
+                    Category.WeightFrom = weightGroup.WeightFrom;
+                    Category.WeightTo = weightGroup.WeightTo;
+                    Category.Sex = weightGroup.Sex;
+                    break;
+                }
+            case string s:
+                {
+                    if (number == 2)
+                    {
+                        NewCategory[2] = s;
+                        Category.Type = s;
+                    }
+                    break;
+                }
+            case IQueryable list:
+                {
+                    var list1 = list.Cast<string>().ToList();
+                    string str = string.Join(", ", list1);
+                    NewCategory[3] = str;
 
-    private void ToggleModal()
-    {
-        open = !open;
-        StateHasChanged();
+                    break;
+                }
+            default:
+                {
+
+                    break;
+                }
+        }
+
     }
 
 }
