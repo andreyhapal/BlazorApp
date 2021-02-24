@@ -71,49 +71,53 @@
 
     </Tabs>
 </RadzenTabs>
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg modal-class" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="exampleModalLabel">Создать категорию</h3>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" style="display:flex; justify-content:space-between;margin:30px">
-                <div>
-                    <h4>Возрастная группа</h4>
-                    <RadzenListBox TValue="AgeGroup" TextProperty="Age"  Data=@ageGroups Change="@(args=>OnChange(args,0))"></RadzenListBox>
+<RadzenTemplateForm TItem="Category" Data=@Category>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-class" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:cornflowerblue">
+                    <h3 class="modal-title" style="color:white" id="exampleModalLabel">Создать категорию</h3>
+
                 </div>
-                <div>
-                    <h4>Весовая группа</h4>
-                    <RadzenListBox TValue="WeightGroup" TextProperty="Name" Data=@weightGroups Change="@(args=>OnChange(args,1))"></RadzenListBox>
+
+                <div class="modal-body" style="display:flex; justify-content:space-between;margin:30px">
+
+                    <div>
+                        <h4>Возрастная группа</h4>
+                        <RadzenListBox class="list-box" TValue="AgeGroup" TextProperty="Age" Data=@ageGroups Change="@(args=>OnChange(args,0))"></RadzenListBox>
+                    </div>
+                    <div>
+                        <h4>Весовая группа</h4>
+                        <RadzenListBox class="list-box" TValue="WeightGroup" TextProperty="Name" Data=@weightGroups Change="@(args=>OnChange(args,1))"></RadzenListBox>
+                    </div>
+                    <div>
+                        <h4>Тип</h4>
+                        <RadzenListBox class="list-box" @bind-Value=@Category.Type TValue="string" Data="types" Change="@(args=>OnChange(args,2))"></RadzenListBox>
+                    </div>
+                    <div>
+                        <h4>Пояс</h4>
+                        <RadzenListBox class="list-box" TValue="object" Data="grades" Change="@(args=>OnChange(args,3))" Multiple="true"></RadzenListBox>
+                    </div>
                 </div>
-                <div>
-                    <h4>Тип</h4>
-                    <RadzenListBox TValue="string" Data="types" Change="@(args=>OnChange(args,2))"></RadzenListBox>
+
+                <h4 style="color:red;visibility:@vision">Заполните все поля!</h4>
+                <hr class="m-1" />
+                <h4 style="margin-left:30px">Новая категория: @NewCategory[0] @NewCategory[1] @NewCategory[2] @NewCategory[3]</h4>
+                <div class="modal-footer" style="margin-right:30px; padding-right:0px;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" @onclick="SaveChanges" data-dismiss="modal">Save changes</button>
                 </div>
-                <div>
-                    <h4>Пояс</h4>
-                    <RadzenListBox TValue="object" Data="grades" Change="@(args=>OnChange(args,3))" Multiple="true"></RadzenListBox>
-                </div>
-            </div>
-            <hr class="m-2" />
-            <h4 style="margin-left:30px">Новая категория: @NewCategory[0] @NewCategory[1] @NewCategory[2] @NewCategory[3]</h4>
-            <div class="modal-footer" style="margin-right:30px; padding-right:0px;">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" @onclick="SaveChanges" data-dismiss="modal">Save changes</button>
             </div>
         </div>
     </div>
-</div>
+</RadzenTemplateForm>
 
 
 @code {
     bool open = false;
     string modalClass => open ? "modal fade show" : "modal fade";
     string displayMode => open ? "block" : "none";
-
+    string vision = "hidden";
     [CascadingParameter] public IModalService Modal { get; set; }
 
     Category Category = new Category();

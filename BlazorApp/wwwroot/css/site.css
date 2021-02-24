@@ -205,5 +205,8 @@ app {
             max-width: 1000px; /* New width for default modal */
         }
     }
+    .list-box{
+        height:300px;
+    }
 
 }
