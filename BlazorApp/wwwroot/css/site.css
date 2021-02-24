@@ -180,5 +180,30 @@ app {
         /* Never collapse the sidebar for wide screens */
         display: block;
     }
-   
+    .category-table {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        border: 1px solid #ddd;
+        border-color: black;
+        border-collapse: collapse;
+        width:100%;
+    }
+    th,tr,td {
+        border: 1px solid #ddd;
+        min-width: 100px;
+        padding: 10px;
+        text-align:center;
+    }
+    .main-header{
+        margin-bottom:15px;
+    }
+    .modal-class{
+        width:1500px;
+       margin:auto;
+    }
+    @media screen and (min-width: 676px) {
+        .modal-dialog {
+            max-width: 1000px; /* New width for default modal */
+        }
+    }
+
 }

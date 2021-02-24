@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Radzen.Blazor;
+using BlazorApp.Data;
 
 namespace BlazorApp
 {
@@ -30,6 +31,7 @@ namespace BlazorApp
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddBlazoredModal();
+            services.AddSingleton<CategoryService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
