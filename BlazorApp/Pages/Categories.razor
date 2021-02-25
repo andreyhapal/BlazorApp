@@ -10,13 +10,11 @@
             <table class="category-table">
                 <tbody>
                     <tr class="table-cell">
-                        <td rowspan="2">Id</td>
-                        <td rowspan="2">Категория</td>
-                        <td rowspan="2">Тип</td>
-                        <td colspan="3">Возрастная группа</td>
-                        <td colspan="3">
-                            Весовая группа
-                        </td>
+                        <th rowspan="2">Id</th>
+                        <th rowspan="2">Категория</th>
+                        <th rowspan="2">Тип</th>
+                        <th colspan="3">Возрастная группа</th>
+                        <th colspan="3">Весовая группа</th>
                         <td rowspan="2">
                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
                                 Добавить
@@ -24,23 +22,12 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Возраст</td>
-                        <td>
-                            От
-                        </td>
-                        <td>
-                            До
-                        </td>
-                        <td>
-                            Пол
-                        </td>
-                        <td>
-                            От
-                        </td>
-                        <td>
-                            До
-                        </td>
-
+                        <th>Возраст</th>
+                        <th>От</th>
+                        <th>До</th>
+                        <th>Пол</th>
+                        <th>От</th>
+                        <th>До</th>
                     </tr>
                     @foreach (var category in categories)
                     {
@@ -63,57 +50,157 @@
             </table>
         </RadzenTabsItem>
         <RadzenTabsItem Text="Возрастные группы">
-
+            <table class="category-table">
+                <tbody>
+                    <tr>
+                        <th>Возраст</th>
+                        <th>От</th>
+                        <th>До</th>
+                        <td>
+                            <button class="btn btn-primary" data-toggle="modal" data-target="#ageGroupModal">Добавить</button>
+                        </td>
+                    </tr>
+                    @foreach (var ageGroup in ageGroups)
+                    {
+                        <tr>
+                            <td>@ageGroup.Age</td>
+                            <td>@ageGroup.AgeFrom</td>
+                            <td>@ageGroup.AgeTo</td>
+                            <td>
+                                <button class="btn btn-info">Редактировать</button>
+                                <button class="btn btn-danger" @onclick="()=>DeleteAgeGroup(ageGroup)">Удалить</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </RadzenTabsItem>
         <RadzenTabsItem Text="Весовые группы">
-
+            <table class="category-table">
+                <tbody>
+                    <tr>
+                        <th>Пол</th>
+                        <th>От</th>
+                        <th>До</th>
+                        <td>
+                            <button class="btn btn-primary">Добавить</button>
+                        </td>
+                    </tr>
+                    @foreach (var weightGroup in weightGroups)
+                    {
+                        <tr>
+                            <td>@weightGroup.Sex</td>
+                            <td>@weightGroup.WeightFrom</td>
+                            <td>@weightGroup.WeightTo</td>
+                            <td>
+                                <button class="btn btn-info">Редактировать</button>
+                                <button class="btn btn-danger" @onclick="()=>DeleteWeightGroup(weightGroup)">Удалить</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </RadzenTabsItem>
 
     </Tabs>
 </RadzenTabs>
-<RadzenTemplateForm TItem="Category" Data=@Category>
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg modal-class" role="document">
+
+<!--AgeGroup Dialog-->
+<RadzenTemplateForm TItem="AgeGroup" Data="@AgeGroup" Submit="SaveAgeGroup" InvalidSubmit="OnInvalidSubmit">
+    <div class="modal fade" id="ageGroupModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-class" style="width:30%;" role="document">
+
             <div class="modal-content">
                 <div class="modal-header" style="background-color:cornflowerblue">
-                    <h3 class="modal-title" style="color:white" id="exampleModalLabel">Создать категорию</h3>
-
+                    <h3 class=" modal-title" style="color:white">Создать возрастную группу</h3>
                 </div>
-
-                <div class="modal-body" style="display:flex; justify-content:space-between;margin:30px">
-
-                    <div>
-                        <h4>Возрастная группа</h4>
-                        <RadzenListBox class="list-box" TValue="AgeGroup" TextProperty="Age" Data=@ageGroups Change="@(args=>OnChange(args,0))"></RadzenListBox>
-                    </div>
-                    <div>
-                        <h4>Весовая группа</h4>
-                        <RadzenListBox class="list-box" TValue="WeightGroup" TextProperty="Name" Data=@weightGroups Change="@(args=>OnChange(args,1))"></RadzenListBox>
-                    </div>
-                    <div>
-                        <h4>Тип</h4>
-                        <RadzenListBox class="list-box" @bind-Value=@Category.Type TValue="string" Data="types" Change="@(args=>OnChange(args,2))"></RadzenListBox>
-                    </div>
-                    <div>
-                        <h4>Пояс</h4>
-                        <RadzenListBox class="list-box" TValue="object" Data="grades" Change="@(args=>OnChange(args,3))" Multiple="true"></RadzenListBox>
+                <div class="modal-body" style="justify-content:space-between;">
+                    <div class="container" style="justify-content:space-around;">
+                        <div class="row">
+                            <div class="col">
+                                <RadzenTextBox Name="Name" Style="width:100%;margin:0px;padding:15px;" @bind-Value="AgeGroup.Age" Placeholder="Наименование"></RadzenTextBox>
+                                <RadzenRequiredValidator Component="Name" Text="Обязательное поле!"></RadzenRequiredValidator>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col" style="display:flex;justify-content:space-between;padding:15px;">
+                                <RadzenLabel Text="Открытая граница"></RadzenLabel>
+                                <RadzenSwitch @bind-Value="@LeftBorderOpenAge"></RadzenSwitch>
+                            </div>
+                            <div class="col" style="display:flex;justify-content:space-between;padding:15px;">
+                                <RadzenLabel Text="Открытая граница"></RadzenLabel>
+                                <RadzenSwitch @bind-Value="@RightBorderOpenAge"></RadzenSwitch>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <RadzenNumeric @bind-Value="@leftAge" TValue="int" Disabled="@LeftBorderOpenAge" Style="width:100%;" Placeholder="Возраст ОТ"></RadzenNumeric>
+                            </div> 
+                            <div class="col">
+                                <RadzenNumeric @bind-Value="@rightAge" TValue="int" Disabled="@RightBorderOpenAge" Style="width:100%;" Placeholder="Возраст ДО"></RadzenNumeric>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <h4 style="color:red;visibility:@vision">Заполните все поля!</h4>
-                <hr class="m-1" />
-                <h4 style="margin-left:30px">Новая категория: @NewCategory[0] @NewCategory[1] @NewCategory[2] @NewCategory[3]</h4>
-                <div class="modal-footer" style="margin-right:30px; padding-right:0px;">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" @onclick="SaveChanges" data-dismiss="modal">Save changes</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    <RadzenButton ButtonType="ButtonType.Submit" Text="Сохранить"></RadzenButton>
                 </div>
             </div>
+
         </div>
     </div>
 </RadzenTemplateForm>
+<!---->
 
+<!--WeightGroup Dialog-->
+<!---->
+
+<!-- Category Dialog-->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-class" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:cornflowerblue">
+                <h3 class="modal-title" style="color:white" id="exampleModalLabel">Создать категорию</h3>
+            </div>
+
+            <div class="modal-body" style="display:flex; justify-content:space-between;margin:30px">
+
+                <div>
+                    <h4>Возрастная группа</h4>
+                    <RadzenListBox class="list-box" TValue="AgeGroup" TextProperty="Age" Data=@ageGroups Change="@(args=>OnChange(args,0))"></RadzenListBox>
+                </div>
+                <div>
+                    <h4>Весовая группа</h4>
+                    <RadzenListBox class="list-box" TValue="WeightGroup" TextProperty="Name" Data=@weightGroups Change="@(args=>OnChange(args,1))"></RadzenListBox>
+                </div>
+                <div>
+                    <h4>Тип</h4>
+                    <RadzenListBox class="list-box" TValue="string" Data="types" Change="@(args=>OnChange(args,2))"></RadzenListBox>
+                </div>
+                <div>
+                    <h4>Пояс</h4>
+                    <RadzenListBox class="list-box" TValue="object" Data="grades" Change="@(args=>OnChange(args,3))" Multiple="true"></RadzenListBox>
+                </div>
+            </div>
+
+            <h4 style="color:red;visibility:@vision">Заполните все поля!</h4>
+            <hr class="m-1" />
+            <h4 style="margin-left:30px">Новая категория: @NewCategory[0] @NewCategory[1] @NewCategory[2] @NewCategory[3]</h4>
+            <div class="modal-footer" style="margin-right:30px; padding-right:0px;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-primary" @onclick="SaveChanges" data-dismiss="modal">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!---->
 
 @code {
+    bool LeftBorderOpenAge = false;
+    bool RightBorderOpenAge = false;
+    int leftAge, rightAge;
+
     bool open = false;
     string modalClass => open ? "modal fade show" : "modal fade";
     string displayMode => open ? "block" : "none";
@@ -130,8 +217,22 @@
 
     List<string> NewCategory = new List<string>() { "", "", "", "" };
 
+    AgeGroup AgeGroup = new AgeGroup();
 
+    void SaveAgeGroup()
+    {
+        ageGroups.Add(AgeGroup);
+    }
 
+    void DeleteAgeGroup(AgeGroup ageGroup)
+    {
+        ageGroups.Remove(ageGroup);
+    }
+
+    void DeleteWeightGroup(WeightGroup weightGroup)
+    {
+        weightGroups.Remove(weightGroup);
+    }
 
     protected override void OnInitialized()
     {
@@ -201,4 +302,8 @@
 
     }
 
+    void OnInvalidSubmit()
+    {
+
+    }
 }

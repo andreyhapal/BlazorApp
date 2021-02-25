@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +8,19 @@ namespace BlazorApp.Data
 {
     public class CategoryService
     {
+        IConfiguration configuration;
+
+        public CategoryService(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+            //InitDb();
+        }
+
+        private void InitDb()
+        {
+            string connString = configuration.GetValue<string>("ConnectionString");
+        }
+
         public List<WeightGroup> GetWeightGroups()
         {
             return new List<WeightGroup>()

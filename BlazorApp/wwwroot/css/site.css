@@ -187,26 +187,31 @@ app {
         border-collapse: collapse;
         width:100%;
     }
-    th,tr,td {
+    tr,td {
         border: 1px solid #ddd;
         min-width: 100px;
         padding: 10px;
         text-align:center;
     }
+    th{
+        color:white;
+        background-color:cornflowerblue;
+        border:1px solid white;
+    }
     .main-header{
         margin-bottom:15px;
     }
-    .modal-class{
-        width:1500px;
-       margin:auto;
-    }
+    
     @media screen and (min-width: 676px) {
         .modal-dialog {
             max-width: 1000px; /* New width for default modal */
+            margin:auto;
         }
     }
     .list-box{
         height:300px;
     }
+    .age-table{
 
+    }
 }
