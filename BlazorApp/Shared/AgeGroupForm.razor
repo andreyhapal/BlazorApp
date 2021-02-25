@@ -1,0 +1,51 @@
+﻿@using BlazorApp.Data
+<RadzenTemplateForm TItem="AgeGroup" Data="AgeGroup" Submit="SaveChanges">
+    <div class="container" style="justify-content:space-around;">
+        <div class="row">
+            <div class="col">
+                <RadzenTextBox Name="Name" Style="width:100%;margin:0px;padding:15px;" @bind-Value="AgeGroup.Age" Placeholder="Наименование"></RadzenTextBox>
+                <RadzenRequiredValidator Component="Name" Text="Обязательное поле!"></RadzenRequiredValidator>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col" style="display:flex;justify-content:space-between;padding:15px;">
+                <RadzenLabel Text="Открытая граница"></RadzenLabel>
+                <RadzenSwitch @bind-Value="@LeftBorderOpenAge"></RadzenSwitch>
+            </div>
+            <div class="col" style="display:flex;justify-content:space-between;padding:15px;">
+                <RadzenLabel Text="Открытая граница"></RadzenLabel>
+                <RadzenSwitch @bind-Value="@RightBorderOpenAge"></RadzenSwitch>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <RadzenNumeric @bind-Value="@AgeGroup.AgeFrom" TValue="int" Disabled="@LeftBorderOpenAge" Style="width:100%;" Placeholder="Возраст ОТ"></RadzenNumeric>
+            </div>
+            <div class="col">
+                <RadzenNumeric @bind-Value="@AgeGroup.AgeTo" TValue="int" Disabled="@RightBorderOpenAge" Style="width:100%;" Placeholder="Возраст ДО"></RadzenNumeric>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col" style="display:flex;justify-content:space-between;padding:15px;"></div>
+            <div class="col" style="display:flex;justify-content:space-around;padding:15px;">
+                <button type="submit" @onclick="SubmitForm" class="btn btn-primary">Submit</button>
+                <button @onclick="Cancel" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+</RadzenTemplateForm>
+@code {
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    [Parameter] public AgeGroup AgeGroup { get; set; }
+
+    bool LeftBorderOpenAge, RightBorderOpenAge;
+
+    void SaveChanges()
+    {
+
+    }
+
+    async Task SubmitForm() => await BlazoredModal.CloseAsync(ModalResult.Ok(AgeGroup));
+    async Task Cancel() => await BlazoredModal.CancelAsync();
+}

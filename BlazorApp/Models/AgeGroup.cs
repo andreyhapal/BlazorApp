@@ -10,5 +10,6 @@ namespace BlazorApp.Data
         public string Age { get; set; }
         public int AgeFrom { get; set; }
         public int AgeTo { get; set; }
+       
     }
 }

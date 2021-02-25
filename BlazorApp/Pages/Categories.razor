@@ -57,7 +57,7 @@
                         <th>От</th>
                         <th>До</th>
                         <td>
-                            <button class="btn btn-primary" data-toggle="modal" data-target="#ageGroupModal">Добавить</button>
+                            <button class="btn btn-primary" @onclick="CreateAgeGroup">Добавить</button>
                         </td>
                     </tr>
                     @foreach (var ageGroup in ageGroups)
@@ -67,7 +67,7 @@
                             <td>@ageGroup.AgeFrom</td>
                             <td>@ageGroup.AgeTo</td>
                             <td>
-                                <button class="btn btn-info">Редактировать</button>
+                                <button class="btn btn-info" @onclick="()=>EditAgeGroup(ageGroup)">Редактировать</button>
                                 <button class="btn btn-danger" @onclick="()=>DeleteAgeGroup(ageGroup)">Удалить</button>
                             </td>
                         </tr>
@@ -83,7 +83,7 @@
                         <th>От</th>
                         <th>До</th>
                         <td>
-                            <button class="btn btn-primary">Добавить</button>
+                            <button class="btn btn-primary" @onclick="CreateWeightGroup">Добавить</button>
                         </td>
                     </tr>
                     @foreach (var weightGroup in weightGroups)
@@ -105,56 +105,6 @@
     </Tabs>
 </RadzenTabs>
 
-<!--AgeGroup Dialog-->
-<RadzenTemplateForm TItem="AgeGroup" Data="@AgeGroup" Submit="SaveAgeGroup" InvalidSubmit="OnInvalidSubmit">
-    <div class="modal fade" id="ageGroupModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered modal-class" style="width:30%;" role="document">
-
-            <div class="modal-content">
-                <div class="modal-header" style="background-color:cornflowerblue">
-                    <h3 class=" modal-title" style="color:white">Создать возрастную группу</h3>
-                </div>
-                <div class="modal-body" style="justify-content:space-between;">
-                    <div class="container" style="justify-content:space-around;">
-                        <div class="row">
-                            <div class="col">
-                                <RadzenTextBox Name="Name" Style="width:100%;margin:0px;padding:15px;" @bind-Value="AgeGroup.Age" Placeholder="Наименование"></RadzenTextBox>
-                                <RadzenRequiredValidator Component="Name" Text="Обязательное поле!"></RadzenRequiredValidator>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col" style="display:flex;justify-content:space-between;padding:15px;">
-                                <RadzenLabel Text="Открытая граница"></RadzenLabel>
-                                <RadzenSwitch @bind-Value="@LeftBorderOpenAge"></RadzenSwitch>
-                            </div>
-                            <div class="col" style="display:flex;justify-content:space-between;padding:15px;">
-                                <RadzenLabel Text="Открытая граница"></RadzenLabel>
-                                <RadzenSwitch @bind-Value="@RightBorderOpenAge"></RadzenSwitch>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <RadzenNumeric @bind-Value="@leftAge" TValue="int" Disabled="@LeftBorderOpenAge" Style="width:100%;" Placeholder="Возраст ОТ"></RadzenNumeric>
-                            </div> 
-                            <div class="col">
-                                <RadzenNumeric @bind-Value="@rightAge" TValue="int" Disabled="@RightBorderOpenAge" Style="width:100%;" Placeholder="Возраст ДО"></RadzenNumeric>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                    <RadzenButton ButtonType="ButtonType.Submit" Text="Сохранить"></RadzenButton>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</RadzenTemplateForm>
-<!---->
-
-<!--WeightGroup Dialog-->
-<!---->
 
 <!-- Category Dialog-->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -183,8 +133,6 @@
                     <RadzenListBox class="list-box" TValue="object" Data="grades" Change="@(args=>OnChange(args,3))" Multiple="true"></RadzenListBox>
                 </div>
             </div>
-
-            <h4 style="color:red;visibility:@vision">Заполните все поля!</h4>
             <hr class="m-1" />
             <h4 style="margin-left:30px">Новая категория: @NewCategory[0] @NewCategory[1] @NewCategory[2] @NewCategory[3]</h4>
             <div class="modal-footer" style="margin-right:30px; padding-right:0px;">
@@ -197,15 +145,19 @@
 <!---->
 
 @code {
+    [CascadingParameter] public IModalService Modal { get; set; }
+
     bool LeftBorderOpenAge = false;
     bool RightBorderOpenAge = false;
-    int leftAge, rightAge;
 
-    bool open = false;
-    string modalClass => open ? "modal fade show" : "modal fade";
-    string displayMode => open ? "block" : "none";
-    string vision = "hidden";
-    [CascadingParameter] public IModalService Modal { get; set; }
+    List<string> ToggleList = new List<string>()
+{
+        "modal fade",
+        "modal fade",
+        "modal fade",
+        "modal fade",
+
+    };
 
     Category Category = new Category();
 
@@ -218,20 +170,24 @@
     List<string> NewCategory = new List<string>() { "", "", "", "" };
 
     AgeGroup AgeGroup = new AgeGroup();
+    WeightGroup WeightGroup = new WeightGroup();
 
     void SaveAgeGroup()
     {
         ageGroups.Add(AgeGroup);
+        StateHasChanged();
     }
 
     void DeleteAgeGroup(AgeGroup ageGroup)
     {
         ageGroups.Remove(ageGroup);
+        StateHasChanged();
     }
 
     void DeleteWeightGroup(WeightGroup weightGroup)
     {
         weightGroups.Remove(weightGroup);
+        StateHasChanged();
     }
 
     protected override void OnInitialized()
@@ -295,15 +251,48 @@
                 }
             default:
                 {
-
                     break;
                 }
         }
 
     }
 
-    void OnInvalidSubmit()
+
+    async Task CreateAgeGroup()
     {
+        var form = Modal.Show<AddAgeGroup>("Создать возрастную группу");
+        var result = await form.Result;
+        AgeGroup = (AgeGroup)result.Data;
+        ageGroups.Add(AgeGroup);
+        StateHasChanged();
+    }
+
+    async Task CreateWeightGroup()
+    {
+        var form = Modal.Show<AddWeightGroup>("Создать весовую группу");
+        var result = await form.Result;
+        WeightGroup = (WeightGroup)result.Data;
+        weightGroups.Add(WeightGroup);
+        StateHasChanged();
+    }
+
+    async Task EditAgeGroup(AgeGroup ageGroup)
+    {
+        ModalParameters parameters = new ModalParameters();
+        parameters.Add(nameof(AgeGroup), ageGroup);
+        var result = await Modal.Show<AgeGroupForm>("Редактировать возрастную группу", parameters).Result;
+        if (!result.Cancelled)
+        {
+            ageGroups.Remove(ageGroup);
+            ageGroups.Add((AgeGroup)result.Data);
+            StateHasChanged();
+        }
 
     }
+
+    void ToggleWindow(int index)
+    {
+        ToggleList[index] = ToggleList[index] != "modal fade" ? "modal fade" : "modal fade show";
+    }
+
 }
