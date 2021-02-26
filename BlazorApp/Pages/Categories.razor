@@ -2,155 +2,156 @@
 
 @using BlazorApp.Data
 @inject BlazorApp.Data.CategoryService categoryService
-
-<h1 class="main-header">Категории</h1>
-<RadzenTabs>
-    <Tabs>
-        <RadzenTabsItem Text="Категории">
-            <table class="category-table">
-                <tbody>
-                    <tr class="table-cell">
-                        <th rowspan="2">Id</th>
-                        <th rowspan="2">Категория</th>
-                        <th rowspan="2">Тип</th>
-                        <th colspan="3">Возрастная группа</th>
-                        <th colspan="3">Весовая группа</th>
-                        <td rowspan="2">
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                                Добавить
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Возраст</th>
-                        <th>От</th>
-                        <th>До</th>
-                        <th>Пол</th>
-                        <th>От</th>
-                        <th>До</th>
-                    </tr>
-                    @foreach (var category in categories)
-                    {
-                        <tr>
-                            <td>@category.Id</td>
-                            <td>@category.Name</td>
-                            <td>@category.Type</td>
-                            <td>@category.Age</td>
-                            <td>@category.AgeFrom</td>
-                            <td>@category.AgeTo</td>
-                            <td>@category.Sex</td>
-                            <td>@category.WeightFrom</td>
-                            <td>@category.WeightTo</td>
-                            <td>
-                                <button class="btn btn-danger" @onclick="()=>DeleteCategory(category)">Удалить</button>
+    <div class="main-header-div">
+        <h1 class="main-header">Категории</h1>
+    </div>
+    <RadzenTabs>
+        <Tabs>
+            <RadzenTabsItem Text="Категории">
+                <table class="category-table">
+                    <tbody>
+                        <tr class="table-cell">
+                            <th rowspan="2">Id</th>
+                            <th rowspan="2">Категория</th>
+                            <th rowspan="2">Тип</th>
+                            <th colspan="3">Возрастная группа</th>
+                            <th colspan="3">Весовая группа</th>
+                            <td rowspan="2">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                                    Добавить
+                                </button>
                             </td>
                         </tr>
-                    }
-                </tbody>
-            </table>
-        </RadzenTabsItem>
-        <RadzenTabsItem Text="Возрастные группы">
-            <table class="category-table">
-                <tbody>
-                    <tr>
-                        <th>Возраст</th>
-                        <th>От</th>
-                        <th>До</th>
-                        <td>
-                            <button class="btn btn-primary" @onclick="CreateAgeGroup">Добавить</button>
-                        </td>
-                    </tr>
-                    @foreach (var ageGroup in ageGroups)
-                    {
                         <tr>
-                            <td>@ageGroup.Age</td>
-                            <td>@ageGroup.AgeFrom</td>
-                            <td>@ageGroup.AgeTo</td>
+                            <th>Возраст</th>
+                            <th>От</th>
+                            <th>До</th>
+                            <th>Пол</th>
+                            <th>От</th>
+                            <th>До</th>
+                        </tr>
+                        @foreach (var category in categories)
+                        {
+                            <tr>
+                                <td>@category.Id</td>
+                                <td>@category.Name</td>
+                                <td>@category.Type</td>
+                                <td>@category.Age</td>
+                                <td>@category.AgeFrom</td>
+                                <td>@category.AgeTo</td>
+                                <td>@category.Sex</td>
+                                <td>@category.WeightFrom</td>
+                                <td>@category.WeightTo</td>
+                                <td>
+                                    <button class="btn btn-danger" @onclick="()=>DeleteCategory(category)">Удалить</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Возрастные группы">
+                <table class="category-table">
+                    <tbody>
+                        <tr>
+                            <th>Возраст</th>
+                            <th>От</th>
+                            <th>До</th>
                             <td>
-                                <button class="btn btn-info" @onclick="()=>EditAgeGroup(ageGroup)">Редактировать</button>
-                                <button class="btn btn-danger" @onclick="()=>DeleteAgeGroup(ageGroup)">Удалить</button>
+                                <button class="btn btn-primary" @onclick="CreateAgeGroup">Добавить</button>
                             </td>
                         </tr>
-                    }
-                </tbody>
-            </table>
-        </RadzenTabsItem>
-        <RadzenTabsItem Text="Весовые группы">
-            <table class="category-table">
-                <tbody>
-                    <tr>
-                        <th>Пол</th>
-                        <th>От</th>
-                        <th>До</th>
-                        <td>
-                            <button class="btn btn-primary" @onclick="CreateWeightGroup">Добавить</button>
-                        </td>
-                    </tr>
-                    @foreach (var weightGroup in weightGroups)
-                    {
+                        @foreach (var ageGroup in ageGroups)
+                        {
+                            <tr>
+                                <td>@ageGroup.Age</td>
+                                <td>@ageGroup.AgeFrom</td>
+                                <td>@ageGroup.AgeTo</td>
+                                <td>
+                                    <button class="btn btn-info" @onclick="()=>EditAgeGroup(ageGroup)">Редактировать</button>
+                                    <button class="btn btn-danger" @onclick="()=>DeleteAgeGroup(ageGroup)">Удалить</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Весовые группы">
+                <table class="category-table">
+                    <tbody>
                         <tr>
-                            <td>@weightGroup.Sex</td>
-                            <td>@weightGroup.WeightFrom</td>
-                            <td>@weightGroup.WeightTo</td>
+                            <th>Пол</th>
+                            <th>От</th>
+                            <th>До</th>
                             <td>
-                                <button class="btn btn-info">Редактировать</button>
-                                <button class="btn btn-danger" @onclick="()=>DeleteWeightGroup(weightGroup)">Удалить</button>
+                                <button class="btn btn-primary" @onclick="CreateWeightGroup">Добавить</button>
                             </td>
                         </tr>
-                    }
-                </tbody>
-            </table>
-        </RadzenTabsItem>
+                        @foreach (var weightGroup in weightGroups)
+                        {
+                            <tr>
+                                <td>@weightGroup.Sex</td>
+                                <td>@weightGroup.WeightFrom</td>
+                                <td>@weightGroup.WeightTo</td>
+                                <td>
+                                    <button class="btn btn-info" @onclick="()=>EditWeightGroup(weightGroup)">Редактировать</button>
+                                    <button class="btn btn-danger" @onclick="()=>DeleteWeightGroup(weightGroup)">Удалить</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </RadzenTabsItem>
 
-    </Tabs>
-</RadzenTabs>
+        </Tabs>
+    </RadzenTabs>
 
 
-<!-- Category Dialog-->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg modal-class" role="document">
-        <div class="modal-content">
-            <div class="modal-header" style="background-color:cornflowerblue">
-                <h3 class="modal-title" style="color:white" id="exampleModalLabel">Создать категорию</h3>
-            </div>
-
-            <div class="modal-body" style="display:flex; justify-content:space-between;margin:30px">
-
-                <div>
-                    <h4>Возрастная группа</h4>
-                    <RadzenListBox class="list-box" TValue="AgeGroup" TextProperty="Age" Data=@ageGroups Change="@(args=>OnChange(args,0))"></RadzenListBox>
+    <!-- Category Dialog-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-class" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:cornflowerblue">
+                    <h3 class="modal-title" style="color:white" id="exampleModalLabel">Создать категорию</h3>
                 </div>
-                <div>
-                    <h4>Весовая группа</h4>
-                    <RadzenListBox class="list-box" TValue="WeightGroup" TextProperty="Name" Data=@weightGroups Change="@(args=>OnChange(args,1))"></RadzenListBox>
+
+                <div class="modal-body" style="display:flex; justify-content:space-between;margin:30px">
+
+                    <div>
+                        <h4>Возрастная группа</h4>
+                        <RadzenListBox class="list-box" TValue="AgeGroup" TextProperty="Age" Data=@ageGroups Change="@(args=>OnChange(args,0))"></RadzenListBox>
+                    </div>
+                    <div>
+                        <h4>Весовая группа</h4>
+                        <RadzenListBox class="list-box" TValue="WeightGroup" TextProperty="Name" Data=@weightGroups Change="@(args=>OnChange(args,1))"></RadzenListBox>
+                    </div>
+                    <div>
+                        <h4>Тип</h4>
+                        <RadzenListBox class="list-box" TValue="string" Data="types" Change="@(args=>OnChange(args,2))"></RadzenListBox>
+                    </div>
+                    <div>
+                        <h4>Пояс</h4>
+                        <RadzenListBox class="list-box" TValue="object" Data="grades" Change="@(args=>OnChange(args,3))" Multiple="true"></RadzenListBox>
+                    </div>
                 </div>
-                <div>
-                    <h4>Тип</h4>
-                    <RadzenListBox class="list-box" TValue="string" Data="types" Change="@(args=>OnChange(args,2))"></RadzenListBox>
+                <hr class="m-1" />
+                <h4 style="margin-left:30px">Новая категория: @NewCategory[0] @NewCategory[1] @NewCategory[2] @NewCategory[3]</h4>
+                <div class="modal-footer" style="margin-right:30px; padding-right:0px;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary" @onclick="SaveChanges" data-dismiss="modal">Сохранить</button>
                 </div>
-                <div>
-                    <h4>Пояс</h4>
-                    <RadzenListBox class="list-box" TValue="object" Data="grades" Change="@(args=>OnChange(args,3))" Multiple="true"></RadzenListBox>
-                </div>
-            </div>
-            <hr class="m-1" />
-            <h4 style="margin-left:30px">Новая категория: @NewCategory[0] @NewCategory[1] @NewCategory[2] @NewCategory[3]</h4>
-            <div class="modal-footer" style="margin-right:30px; padding-right:0px;">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                <button type="button" class="btn btn-primary" @onclick="SaveChanges" data-dismiss="modal">Сохранить</button>
             </div>
         </div>
     </div>
-</div>
-<!---->
+    <!---->
 
-@code {
-    [CascadingParameter] public IModalService Modal { get; set; }
+    @code {
+        [CascadingParameter] public IModalService Modal { get; set; }
 
-    bool LeftBorderOpenAge = false;
-    bool RightBorderOpenAge = false;
+        bool LeftBorderOpenAge = false;
+        bool RightBorderOpenAge = false;
 
-    List<string> ToggleList = new List<string>()
+        List<string> ToggleList = new List<string>()
 {
         "modal fade",
         "modal fade",
@@ -159,140 +160,161 @@
 
     };
 
-    Category Category = new Category();
+        Category Category = new Category();
 
-    List<Category> categories = new List<Category>();
-    List<WeightGroup> weightGroups = new List<WeightGroup>();
-    List<AgeGroup> ageGroups = new List<AgeGroup>();
-    List<string> types = new List<string>();
-    List<string> grades = new List<string>();
+        List<Category> categories = new List<Category>();
+        List<WeightGroup> weightGroups = new List<WeightGroup>();
+        List<AgeGroup> ageGroups = new List<AgeGroup>();
+        List<string> types = new List<string>();
+        List<string> grades = new List<string>();
 
-    List<string> NewCategory = new List<string>() { "", "", "", "" };
+        List<string> NewCategory = new List<string>() { "", "", "", "" };
 
-    AgeGroup AgeGroup = new AgeGroup();
-    WeightGroup WeightGroup = new WeightGroup();
+        AgeGroup AgeGroup = new AgeGroup();
+        WeightGroup WeightGroup = new WeightGroup();
 
-    void SaveAgeGroup()
-    {
-        ageGroups.Add(AgeGroup);
-        StateHasChanged();
-    }
-
-    void DeleteAgeGroup(AgeGroup ageGroup)
-    {
-        ageGroups.Remove(ageGroup);
-        StateHasChanged();
-    }
-
-    void DeleteWeightGroup(WeightGroup weightGroup)
-    {
-        weightGroups.Remove(weightGroup);
-        StateHasChanged();
-    }
-
-    protected override void OnInitialized()
-    {
-        categories = categoryService.GetCategories();
-        weightGroups = categoryService.GetWeightGroups();
-        ageGroups = categoryService.GetAgeGroups();
-        types = categoryService.GetTypes();
-        grades = categoryService.GetGrades();
-    }
-
-    private void DeleteCategory(Category category)
-    {
-        categories.Remove(category);
-    }
-
-    private void SaveChanges()
-    {
-        Category.Id = categories.Last().Id + 1;
-        Category.Name = string.Join(" ", NewCategory);
-        categories.Add(Category);
-        StateHasChanged();
-    }
-
-    private void OnChange(object args, int number)
-    {
-        switch (args)
+        void SaveAgeGroup()
         {
-            case AgeGroup ageGroup:
-                {
-                    NewCategory[0] = ageGroup.Age;
-                    Category.Age = ageGroup.Age;
-                    Category.AgeFrom = ageGroup.AgeFrom;
-                    Category.AgeTo = ageGroup.AgeTo;
-                    break;
-                }
-            case WeightGroup weightGroup:
-                {
-                    NewCategory[1] = weightGroup.Name;
-                    Category.WeightFrom = weightGroup.WeightFrom;
-                    Category.WeightTo = weightGroup.WeightTo;
-                    Category.Sex = weightGroup.Sex;
-                    break;
-                }
-            case string s:
-                {
-                    if (number == 2)
-                    {
-                        NewCategory[2] = s;
-                        Category.Type = s;
-                    }
-                    break;
-                }
-            case IQueryable list:
-                {
-                    var list1 = list.Cast<string>().ToList();
-                    string str = string.Join(", ", list1);
-                    NewCategory[3] = str;
-
-                    break;
-                }
-            default:
-                {
-                    break;
-                }
-        }
-
-    }
-
-
-    async Task CreateAgeGroup()
-    {
-        var form = Modal.Show<AddAgeGroup>("Создать возрастную группу");
-        var result = await form.Result;
-        AgeGroup = (AgeGroup)result.Data;
-        ageGroups.Add(AgeGroup);
-        StateHasChanged();
-    }
-
-    async Task CreateWeightGroup()
-    {
-        var form = Modal.Show<AddWeightGroup>("Создать весовую группу");
-        var result = await form.Result;
-        WeightGroup = (WeightGroup)result.Data;
-        weightGroups.Add(WeightGroup);
-        StateHasChanged();
-    }
-
-    async Task EditAgeGroup(AgeGroup ageGroup)
-    {
-        ModalParameters parameters = new ModalParameters();
-        parameters.Add(nameof(AgeGroup), ageGroup);
-        var result = await Modal.Show<AgeGroupForm>("Редактировать возрастную группу", parameters).Result;
-        if (!result.Cancelled)
-        {
-            ageGroups.Remove(ageGroup);
-            ageGroups.Add((AgeGroup)result.Data);
+            ageGroups.Add(AgeGroup);
             StateHasChanged();
         }
 
-    }
+        void DeleteAgeGroup(AgeGroup ageGroup)
+        {
+            ageGroups.Remove(ageGroup);
+            StateHasChanged();
+        }
 
-    void ToggleWindow(int index)
-    {
-        ToggleList[index] = ToggleList[index] != "modal fade" ? "modal fade" : "modal fade show";
-    }
+        void DeleteWeightGroup(WeightGroup weightGroup)
+        {
+            weightGroups.Remove(weightGroup);
+            StateHasChanged();
+        }
 
-}
+        protected override void OnInitialized()
+        {
+            categories = categoryService.GetCategories();
+            weightGroups = categoryService.GetWeightGroups();
+            ageGroups = categoryService.GetAgeGroups();
+            types = categoryService.GetTypes();
+            grades = categoryService.GetGrades();
+        }
+
+        private void DeleteCategory(Category category)
+        {
+            categories.Remove(category);
+        }
+
+        private void SaveChanges()
+        {
+            Category.Id = categories.Last().Id + 1;
+            Category.Name = string.Join(" ", NewCategory);
+            categories.Add(Category);
+            StateHasChanged();
+        }
+
+        private void OnChange(object args, int number)
+        {
+            switch (args)
+            {
+                case AgeGroup ageGroup:
+                    {
+                        NewCategory[0] = ageGroup.Age;
+                        Category.Age = ageGroup.Age;
+                        Category.AgeFrom = ageGroup.AgeFrom;
+                        Category.AgeTo = ageGroup.AgeTo;
+                        break;
+                    }
+                case WeightGroup weightGroup:
+                    {
+                        NewCategory[1] = weightGroup.Name;
+                        Category.WeightFrom = weightGroup.WeightFrom;
+                        Category.WeightTo = weightGroup.WeightTo;
+                        Category.Sex = weightGroup.Sex;
+                        break;
+                    }
+                case string s:
+                    {
+                        if (number == 2)
+                        {
+                            NewCategory[2] = s;
+                            Category.Type = s;
+                        }
+                        break;
+                    }
+                case IQueryable list:
+                    {
+                        var list1 = list.Cast<string>().ToList();
+                        string str = string.Join(", ", list1);
+                        NewCategory[3] = str;
+
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
+            }
+
+        }
+
+
+        async Task CreateAgeGroup()
+        {
+            var form = Modal.Show<AddAgeGroup>("Создать возрастную группу");
+            var result = await form.Result;
+            if (result.Data != null)
+            {
+                AgeGroup = (AgeGroup)result.Data;
+                ageGroups.Add(AgeGroup);
+                StateHasChanged();
+            }
+        }
+
+        async Task CreateWeightGroup()
+        {
+            var form = Modal.Show<AddWeightGroup>("Создать весовую группу");
+            var result = await form.Result;
+            if (result.Data != null)
+            {
+                WeightGroup = (WeightGroup)result.Data;
+                if (WeightGroup.Sex == null) WeightGroup.Sex = "МУЖ";
+                weightGroups.Add(WeightGroup);
+                StateHasChanged();
+            }
+        }
+
+        async Task EditAgeGroup(AgeGroup ageGroup)
+        {
+            ModalParameters parameters = new ModalParameters();
+            parameters.Add(nameof(AgeGroup), ageGroup);
+            var result = await Modal.Show<AgeGroupForm>("Редактировать возрастную группу", parameters).Result;
+            if (!result.Cancelled)
+            {
+                ageGroups.Remove(ageGroup);
+                ageGroups.Add((AgeGroup)result.Data);
+                StateHasChanged();
+            }
+
+        }
+
+        async Task EditWeightGroup(WeightGroup weightGroup)
+        {
+            ModalParameters parameters = new ModalParameters();
+            parameters.Add(nameof(WeightGroup), weightGroup);
+            var result = await Modal.Show<EditWeightGroup>("Редактировать весовую группу", parameters).Result;
+            if (!result.Cancelled)
+            {
+                weightGroups.Remove(weightGroup);
+                weightGroups.Add((WeightGroup)result.Data);
+                StateHasChanged();
+            }
+
+        }
+
+        void ToggleWindow(int index)
+        {
+            ToggleList[index] = ToggleList[index] != "modal fade" ? "modal fade" : "modal fade show";
+        }
+
+    }

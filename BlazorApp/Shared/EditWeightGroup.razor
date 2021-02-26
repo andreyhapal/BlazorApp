@@ -1,13 +1,13 @@
 ﻿@using BlazorApp.Data
-<RadzenTemplateForm TItem="WeightGroup" Data="WeightGroup" Submit="SubmitForm" InvalidSubmit="Invalid">
+<RadzenTemplateForm TItem="WeightGroup" Data="WeightGroup" Submit="SaveChanges">
     <div class="container" style="justify-content:space-around;">
         <div class="row">
             <div class="col">
                 <RadzenRadioButtonList @bind-Value="value" TValue="int" Name="List" Change="@((args)=>OnChange(args))" Style="padding:0px 150px 0px 150px;">
                     <Items>
-                        <RadzenRadioButtonListItem Text="МУЖ" Value="1"/>
+                        <RadzenRadioButtonListItem Text="МУЖ" Value="1" />
 
-                        <RadzenRadioButtonListItem Text="ЖЕН" Value="2"/>
+                        <RadzenRadioButtonListItem Text="ЖЕН" Value="2" />
 
                     </Items>
                 </RadzenRadioButtonList>
@@ -35,7 +35,7 @@
         <div class="row">
             <div class="col" style="display:flex;justify-content:space-between;padding:15px;"></div>
             <div class="col" style="display:flex;justify-content:space-around;padding:15px;">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" @onclick="SubmitForm" class="btn btn-primary">Submit</button>
                 <button @onclick="Cancel" class="btn btn-secondary">Cancel</button>
             </div>
         </div>
@@ -43,14 +43,16 @@
 </RadzenTemplateForm>
 @code {
     int value = 1;
-    WeightGroup WeightGroup = new WeightGroup();
+
+    [Parameter]
+    public WeightGroup WeightGroup { get; set; }
 
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
     bool LeftBorderOpenAge, RightBorderOpenAge;
 
 
-    void Invalid()
+    void SaveChanges()
     {
 
     }

@@ -1,5 +1,5 @@
 ﻿@using BlazorApp.Data
-<RadzenTemplateForm TItem="AgeGroup" Data="AgeGroup" Submit="SaveChanges">
+<RadzenTemplateForm TItem="AgeGroup" Data="AgeGroup" Submit="SubmitForm" InvalidSubmit="InvalidSubmit">
     <div class="container" style="justify-content:space-around;">
         <div class="row">
             <div class="col">
@@ -28,7 +28,7 @@
         <div class="row">
             <div class="col" style="display:flex;justify-content:space-between;padding:15px;"></div>
             <div class="col" style="display:flex;justify-content:space-around;padding:15px;">
-                <button type="submit" @onclick="SubmitForm" class="btn btn-primary">Submit</button>
+                <button type="submit"  class="btn btn-primary">Submit</button>
                 <button @onclick="Cancel" class="btn btn-secondary">Cancel</button>
             </div>
         </div>
@@ -41,11 +41,11 @@
 
     AgeGroup AgeGroup = new AgeGroup();
 
-    void SaveChanges()
+   
+    void InvalidSubmit()
     {
 
     }
-
     async Task SubmitForm() => await BlazoredModal.CloseAsync(ModalResult.Ok(AgeGroup));
     async Task Cancel() => await BlazoredModal.CancelAsync();
 }
