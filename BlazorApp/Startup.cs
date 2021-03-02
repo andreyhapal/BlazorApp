@@ -33,6 +33,8 @@ namespace BlazorApp
             services.AddServerSideBlazor();
             services.AddSingleton<CategoryService>();
             services.AddSingleton<SportsmenService>();
+            services.AddSingleton<CompetitionService>();
+
             services.AddBlazoredModal();
 
             //services.AddSingleton<IConfiguration>(Configuration);

@@ -1,7 +1,129 @@
 ﻿@page "/competitions"
+@using Models
+@inject BlazorApp.Services.CompetitionService CompetitionService
+@inject NavigationManager NavigationManager
 <div class="main-header-div">
     <h1 class="main-header">Соревнования</h1>
 </div>
-@code {
 
+
+<RadzenButton Icon="add_circle_outline" style="margin: 10px" Text="Add" Click="@InsertRow" />
+<RadzenGrid @ref="competitionGrid" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Advanced" AllowPaging="true" PageSize="10"
+            AllowSorting="true" Data="competitions" TItem="Competition" AllowColumnResize="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValues
+            RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
+    <Columns>
+        <RadzenGridColumn TItem="Competition" Width="40px" Sortable="false" Filterable="false">
+            <HeaderTemplate>
+                <RadzenCheckBox TriState="false" TValue="bool" Value="@(competitions.Any(i => multipleValues != null && (multipleValues as IEnumerable<Competition>).Contains(i)))"
+                                Change="@(args => multipleValues = args ? competitions : null)" />
+            </HeaderTemplate>
+            <Template Context="data">
+                <RadzenCheckBox TriState="false" Value="@(multipleValues != null && (multipleValues as IEnumerable<Competition>).Contains(data))" />
+            </Template>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="Competition" Property="Id" Title="ID">
+
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="Competition" Property="DateFound" Title="Дата начала">
+            <EditTemplate Context="competition">
+                <RadzenNumeric @bind-Value="competition.DateFound" Style="width:100%" />
+            </EditTemplate>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="Competition" Property="Name" Title="Название">
+            <EditTemplate Context="competition">
+                <RadzenTextBox @bind-Value="competition.Name" />
+            </EditTemplate>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="Competition" Property="Country" Title="Страна">
+            <EditTemplate Context="competition">
+                <RadzenTextBox @bind-Value="competition.Country" />
+            </EditTemplate>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="Competition" Property="City" Title="Город">
+            <EditTemplate Context="competition">
+                <RadzenDatePicker @bind-Value="competition.City" />
+            </EditTemplate>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="Competition" Context="competition" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="200px">
+            <Template Context="competition">
+                <RadzenButton Icon="edit" Size="ButtonSize.Medium" Click="@(args => EditRow(competition))">
+                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Medium" Click="@(args => DeleteRow(competition))">
+                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="account_circle" Size="ButtonSize.Medium" Click="@RedirectToManage">
+
+                </RadzenButton>
+            </Template>
+            <EditTemplate Context="competition">
+                <RadzenButton Icon="save" Size="ButtonSize.Medium" Click="@((args) => SaveRow(competition))">
+                </RadzenButton>
+                <RadzenButton Icon="cancel" Size="ButtonSize.Medium" ButtonStyle="ButtonStyle.Secondary" Click="@((args) => CancelEdit(competition))">
+                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Medium" Click="@(args => DeleteRow(competition))">
+                </RadzenButton>
+            </EditTemplate>
+        
+            
+        </RadzenGridColumn>
+
+    </Columns>
+</RadzenGrid>
+
+
+@code {
+    object multipleValues;
+    RadzenGrid<Competition> competitionGrid;
+    List<Competition> competitions = new List<Competition>();
+
+    protected override void OnInitialized()
+    {
+        competitions = CompetitionService.GetCompetitions();
+    }
+    void EditRow(Competition competition)
+    {
+        competitionGrid.EditRow(competition);
+    }
+
+    void OnUpdateRow(Competition competition)
+    {
+        var comp = competitions.FirstOrDefault(x => x.Id == competition.Id);
+        comp.Name = competition.Name;
+        comp.DateFound = competition.DateFound;
+        comp.Country = competition.Country;
+        comp.City = competition.City;
+
+        competitionGrid.Reload();
+    }
+
+    void SaveRow(Competition competition)
+    {
+        competitionGrid.UpdateRow(competition);
+    }
+
+    void CancelEdit(Competition competition)
+    {
+        competitionGrid.CancelEditRow(competition);
+    }
+
+    void DeleteRow(Competition competition)
+    {
+        competitions.Remove(competition);
+        competitionGrid.Reload();
+    }
+
+    void InsertRow()
+    {
+        competitionGrid.InsertRow(new Competition());
+    }
+
+    void OnCreateRow(Competition competition)
+    {
+        competition.Id = competitions.Max(x => x.Id) + 1;
+        competitions.Add(competition);
+    }
+    void RedirectToManage()
+    {
+        NavigationManager.NavigateTo("manage");
+    }
 }
+

@@ -43,7 +43,7 @@
                                 <td>@category.WeightFrom</td>
                                 <td>@category.WeightTo</td>
                                 <td>
-                                    <button class="btn btn-danger" @onclick="()=>DeleteCategory(category)">Удалить</button>
+                                    <RadzenButton Icon="delete" Click="()=>DeleteCategory(category)"/>
                                 </td>
                             </tr>
                         }
@@ -58,7 +58,7 @@
                             <th>От</th>
                             <th>До</th>
                             <td>
-                                <button class="btn btn-primary" @onclick="CreateAgeGroup">Добавить</button>
+                                <RadzenButton Click="CreateAgeGroup" Icon="add" Style="background-color:cornflowerblue;"/>
                             </td>
                         </tr>
                         @foreach (var ageGroup in ageGroups)
@@ -68,8 +68,8 @@
                                 <td>@ageGroup.AgeFrom</td>
                                 <td>@ageGroup.AgeTo</td>
                                 <td>
-                                    <button class="btn btn-info" @onclick="()=>EditAgeGroup(ageGroup)">Редактировать</button>
-                                    <button class="btn btn-danger" @onclick="()=>DeleteAgeGroup(ageGroup)">Удалить</button>
+                                    <RadzenButton Icon="build" Click="()=>EditAgeGroup(ageGroup)"/>
+                                    <RadzenButton Icon="delete" Click="()=>DeleteAgeGroup(ageGroup)" Style="background-color:red;"/>
                                 </td>
                             </tr>
                         }

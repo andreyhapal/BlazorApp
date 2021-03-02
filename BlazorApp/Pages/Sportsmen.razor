@@ -69,7 +69,7 @@
                 <RadzenTextBox @bind-Value="sportsman.Trainer" />
             </EditTemplate>
         </RadzenGridColumn>
-        <RadzenGridColumn TItem="Sportsman" Context="sampleBlazorModelsSampleOrder" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="100px">
+        <RadzenGridColumn TItem="Sportsman" Context="sportsman" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="100px">
             <Template Context="sportsman">
                 <RadzenButton Icon="edit" Size="ButtonSize.Small" Click="@(args => EditRow(sportsman))">
                 </RadzenButton>
