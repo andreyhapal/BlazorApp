@@ -7,7 +7,7 @@
 <div class="main-header-div">
 <h1 class="main-header">Спортсмены</h1>
     </div>
-<RadzenButton Icon="add_circle_outline" style="margin: 10px" Text="Add" Click="@InsertRow" />
+<RadzenButton Icon="add_circle_outline" style="margin: 10px" Text="Добавить" Click="@InsertRow" />
 <RadzenGrid @ref="sportsmenGrid" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Advanced" AllowPaging="true" PageSize="10"
             AllowSorting="true" Data="@sportsmen" TItem="Sportsman" AllowColumnResize="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValues
             RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
