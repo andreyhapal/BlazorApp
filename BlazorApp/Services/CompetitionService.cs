@@ -8,6 +8,122 @@ namespace BlazorApp.Services
 {
     public class CompetitionService
     {
+        public List<Competitor> GetCompetitors()
+        {
+            return new List<Competitor>()
+            {
+                new Competitor()
+                {
+                    Id=1,
+                    FirstName="Сергей",
+                    LastName="Иванов",
+                    IKO=20012122,
+                    BirthDate=DateTime.Parse("07.07.2000"),
+                    Age=20,
+                    Sex="МУЖ",
+                    Grade="1 КЮ",
+                    Trainer="Вячеслав Петров",
+                    Weight=80,
+                    IsActive = false,
+                    Country = "Belarus",
+                    City = "Minsk",
+                    StartNumber = 0,
+                     Club = "KMS",
+
+                },
+                new Competitor()
+                {
+                    Id=2,
+                    FirstName="Сергей",
+                    LastName="Иванов",
+                    IKO=20012122,
+                    BirthDate=DateTime.Parse("07.07.2000"),
+                    Age=20,
+                    Sex="МУЖ",
+                    Grade="1 КЮ",
+                    Trainer="Вячеслав Петров",
+                    Weight=80,
+                    IsActive = false,
+                    Country = "Belarus",
+                    City = "Minsk",
+                    StartNumber = 0,
+                     Club = "KMS",
+                },
+                new Competitor()
+                {
+                    Id=3,
+                    FirstName="Сергей",
+                    LastName="Иванов",
+                    IKO=20012122,
+                    BirthDate=DateTime.Parse("07.07.2000"),
+                    Age=20,
+                    Sex="МУЖ",
+                    Grade="1 КЮ",
+                    Trainer="Вячеслав Петров",
+                    Weight=80,
+                    IsActive = false,
+                    Country = "Belarus",
+                    City = "Minsk",
+                    StartNumber = 0,
+                     Club = "KMS",
+                },
+                new Competitor()
+                {
+                    Id=4,
+                    FirstName="Сергей",
+                    LastName="Иванов",
+                    IKO=20012122,
+                    BirthDate=DateTime.Parse("07.07.2000"),
+                    Age=20,
+                    Sex="МУЖ",
+                    Grade="1 КЮ",
+                    Trainer="Вячеслав Петров",
+                    Weight=80,
+                    IsActive = false,
+                    Country = "Belarus",
+                    City = "Minsk",
+                    StartNumber = 0,
+                     Club = "KMS",
+                },
+                new Competitor()
+                {
+                    Id=5,
+                    FirstName="Сергей",
+                    LastName="Иванов",
+                    IKO=20012122,
+                    BirthDate=DateTime.Parse("07.07.2000"),
+                    Age=20,
+                    Sex="МУЖ",
+                    Grade="1 КЮ",
+                    Trainer="Вячеслав Петров",
+                    Weight=80,
+                    IsActive = false,
+                    Country = "Belarus",
+                    City = "Minsk",
+                    StartNumber = 0,
+                     Club = "KMS",
+                },
+                new Competitor()
+                {
+                    Id=6,
+                    FirstName="Сергей",
+                    LastName="Иванов",
+                    IKO=20012122,
+                    BirthDate=DateTime.Parse("07.07.2000"),
+                    Age=20,
+                    Sex="МУЖ",
+                    Grade="1 КЮ",
+                    Trainer="Вячеслав Петров",
+                    Weight=80,
+                    IsActive = false,
+                    Country = "Belarus",
+                    City = "Minsk",
+                    StartNumber = 0,
+                     Club = "KMS",
+                },
+            };
+        }
+
         public List<Competition> GetCompetitions()
         {
             return new List<Competition>()
@@ -16,7 +132,7 @@ namespace BlazorApp.Services
                 {
                     Id=1,
                     DateFound = DateTime.Parse("01.01.2020"),
-                    Name="",
+                    Name="Global Tournament 2021",
                     City="Minsk",
                     Country="Belarus",
                 },
@@ -24,7 +140,7 @@ namespace BlazorApp.Services
                 {
                     Id=2,
                     DateFound = DateTime.Parse("01.01.2020"),
-                    Name="",
+                    Name="WWS WWA 2021",
                     City="Minsk",
                     Country="Belarus",
                 },
@@ -32,7 +148,7 @@ namespace BlazorApp.Services
                 {
                     Id=3,
                     DateFound = DateTime.Parse("01.01.2020"),
-                    Name="",
+                    Name="Championship 2021",
                     City="Minsk",
                     Country="Belarus",
                 },
@@ -40,7 +156,7 @@ namespace BlazorApp.Services
                 {
                     Id=4,
                     DateFound = DateTime.Parse("01.01.2020"),
-                    Name="",
+                    Name="RUSCHAMP 2021",
                     City="Minsk",
                     Country="Belarus",
                 },
@@ -48,7 +164,7 @@ namespace BlazorApp.Services
                 {
                     Id=5,
                     DateFound = DateTime.Parse("01.01.2020"),
-                    Name="",
+                    Name="GLOBALIZATION 2021",
                     City="Minsk",
                     Country="Belarus",
                 },
@@ -56,7 +172,7 @@ namespace BlazorApp.Services
                 {
                     Id=6,
                     DateFound = DateTime.Parse("01.01.2020"),
-                    Name="",
+                    Name="USASHIP 2021",
                     City="Minsk",
                     Country="Belarus",
                 },
@@ -64,11 +180,11 @@ namespace BlazorApp.Services
                 {
                     Id=7,
                     DateFound = DateTime.Parse("01.01.2020"),
-                    Name="",
+                    Name="MMA 2021",
                     City="Minsk",
                     Country="Belarus",
                 }
             };
-        } 
+        }
     }
 }

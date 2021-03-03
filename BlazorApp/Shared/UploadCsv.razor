@@ -1,0 +1,38 @@
+﻿@using BlazorInputFile
+@using System.IO
+@using BlazorApp.Models
+@using FileHelpers
+@using System.Text.Encodings
+<div class="container" style="justify-content:center;">
+    <InputFile OnChange="HandleSelection" />
+    <h3>@status</h3>
+    <RadzenButton Text="Сохранить" Click="@SaveChanges"/>
+    <RadzenButton Text="Отмена" Click="@Cancel"/>
+</div>
+@code {
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    string FileContent, FileName;
+    string status;
+    List<Competitor> result = new List<Competitor>();
+    async Task HandleSelection(IFileListEntry[] files)
+    {
+        var file = files.FirstOrDefault();
+        if (file != null)
+        {
+            using (var reader = new StreamReader(file.Data, System.Text.Encoding.UTF8))
+            {
+                FileContent = await reader.ReadToEndAsync();
+                FileName = file.Name;
+
+                var engine = new FileHelperEngine<Competitor>();
+                result = engine.ReadString(FileContent).ToList();
+
+                status = result[0].FirstName + "," + result[0].LastName + "," + result[0].BirthDate.ToShortDateString();
+            }
+        }
+    }
+
+    async Task SaveChanges() => await BlazoredModal.CloseAsync(ModalResult.Ok(result));
+    async Task Cancel() => await BlazoredModal.CancelAsync();
+}

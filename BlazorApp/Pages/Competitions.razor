@@ -50,7 +50,7 @@
                 </RadzenButton>
                 <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Medium" Click="@(args => DeleteRow(competition))">
                 </RadzenButton>
-                <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="account_circle" Size="ButtonSize.Medium" Click="@RedirectToManage">
+                <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="account_circle" Size="ButtonSize.Medium" Click="@(()=>RedirectToManage(competition))">
 
                 </RadzenButton>
             </Template>
@@ -121,9 +121,9 @@
         competition.Id = competitions.Max(x => x.Id) + 1;
         competitions.Add(competition);
     }
-    void RedirectToManage()
+    void RedirectToManage(Competition competition)
     {
-        NavigationManager.NavigateTo("manage");
+        NavigationManager.NavigateTo("manage/"+competition.Id+"/"+competition.Name);
     }
 }
 
