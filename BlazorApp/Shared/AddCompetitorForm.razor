@@ -1,0 +1,102 @@
+﻿@using Models
+@inject BlazorApp.Data.CategoryService CategoryService
+@inject BlazorApp.Services.SportsmenService SportsmenService
+<RadzenTemplateForm TItem="Competitor" Data="Competitor" Submit="SubmitForm" InvalidSubmit="InvalidSubmit">
+    <div class="container" style="justify-content:space-around;">
+        <div class="row">
+            <!--Image-->
+            <div class="col">
+                <RadzenButton Text="Загрузить фото"></RadzenButton>
+            </div>
+            <!--List of sportsmen-->
+            <div class="col">
+                <RadzenListBox Data="@Sportsmen" TValue="Sportsman" Change=@(args => OnChange(args)) >
+                    <Template Context="sportsman">
+                        @sportsman.FirstName @sportsman.LastName @sportsman.BirthDate.ToShortDateString()
+                    </Template>
+                </RadzenListBox>
+            </div>
+            <!--Fields-->
+            <div class="col" style="justify-content:center">
+                <div class="row">
+                    <RadzenTextBox Placeholder="Имя" Style="margin:7px;width:200px" @bind-Value="Competitor.FirstName"></RadzenTextBox>
+                </div>
+                <div class="row">
+                    <RadzenTextBox Placeholder="Фамилия" @bind-Value="Competitor.LastName" Style="margin:7px;width:200px"></RadzenTextBox>
+                </div>
+                <div class="row" style="display:flex;vertical-align:central;justify-content:center;">
+                    <h4 style="margin-top:10px">М</h4>
+                    <RadzenSwitch @bind-Value="switcher" Style="margin:7px;" />
+                    <h4 style="margin-top:10px">Ж</h4>
+                </div>
+                
+                <div class="row">
+                    <RadzenNumeric TValue="int?" Style="margin:7px;width:200px" Placeholder="Стартовый номер"></RadzenNumeric>
+                </div>
+                <div class="row">
+                    <RadzenDatePicker Style="margin:7px;width:200px" Placeholder="Дата рождения" @bind-Value="Competitor.BirthDate"></RadzenDatePicker>
+                </div>
+                <div class="row">
+                    <RadzenDropDown Data=@Grades Style="margin:7px;width:200px" Placeholder="Пояс" TValue="string"></RadzenDropDown>
+                </div>
+                <div class="row">
+                    <RadzenTextBox Style="margin:7px;width:200px" Placeholder="Страна" @bind-Value="Competitor.Country"></RadzenTextBox>
+                </div>
+                <div class="row">
+                    <RadzenTextBox Style="margin:7px;width:200px" Placeholder="Город" @bind-Value="Competitor.City"></RadzenTextBox>
+                </div>
+                <div class="row">
+                    <RadzenTextBox Style="margin:7px;width:200px" Placeholder="Клуб" @bind-Value="Competitor.Club"></RadzenTextBox>
+                </div>
+                
+                <div class="row">
+                    <RadzenNumeric TValue="int?" Style="margin:7px;width:200px" Placeholder="Вес" ></RadzenNumeric>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col" style="display:flex;justify-content:space-between;padding:15px;"></div>
+            <div class="col" style="display:flex;justify-content:space-between;padding:15px;"></div>
+            <div class="col" style="display:flex;justify-content:space-between;padding:15px;">
+                <button type="submit" class="btn btn-primary primary">Сохранить</button>
+                <button @onclick="Cancel" class="btn btn-secondary">Отмена</button>
+            </div>
+        </div>
+    </div>
+</RadzenTemplateForm>
+@code {
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    bool switcher;
+
+    List<string> Grades = new List<string>();
+    List<Sportsman> Sportsmen = new List<Sportsman>();
+    Competitor Competitor = new Competitor();
+
+    protected override void OnInitialized()
+    {
+        Grades = CategoryService.GetGrades();
+        Sportsmen = SportsmenService.GetSportsmen();
+    }
+
+    void OnChange(Object value)
+    {
+        Sportsman s = value as Sportsman;
+        Competitor.FirstName = s.FirstName;
+        Competitor.LastName = s.LastName;
+        Competitor.Grade = s.Grade;
+        Competitor.IKO = s.IKO;
+        Competitor.Sex = s.Sex;
+        Competitor.Trainer = s.Trainer;
+        Competitor.Weight = s.Weight;
+        Competitor.Age = s.Age;
+        Competitor.BirthDate = s.BirthDate;
+    }
+
+    void InvalidSubmit()
+    {
+
+    }
+    async Task SubmitForm() => await BlazoredModal.CloseAsync();
+    async Task Cancel() => await BlazoredModal.CancelAsync();
+}

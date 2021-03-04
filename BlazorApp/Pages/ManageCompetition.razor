@@ -2,6 +2,7 @@
 @page "/manage/{Id}/{Name}"
 
 @using BlazorApp.Models
+@using BlazorApp.Data
 @inject BlazorApp.Services.CompetitionService CompetitionService
 @inject BlazorApp.Data.CategoryService CategoryService
  
@@ -11,12 +12,12 @@
 <RadzenTabs>
     <Tabs>
         <RadzenTabsItem Text="Участники">
-            <RadzenButton Icon="add_circle_outline" style="margin: 10px" Text="Добавить" Click="@InsertRow" ButtonStyle="ButtonStyle.Primary" />
-            <RadzenButton Icon="done" Style="margin:10px;" Text="Активировать" Click="@Activate" ButtonStyle="ButtonStyle.Primary"></RadzenButton>
-            <RadzenButton Icon="description" Style="margin:10px;" Text="Загрузить из CSV" Click="@LoadFromCSV" />
+            <RadzenButton Icon="add_circle_outline" Style="margin: 10px;background-color: #4287f5;" Text="Добавить" Click="@AddCompetitor"  class ="primary"/>
+            <RadzenButton Icon="done" Style="margin:10px;background-color: #4287f5;" Text="Активировать" Click="@Activate"/>
+            <RadzenButton Icon="description" Style="margin:10px;background-color: #4287f5;" Text="Загрузить из CSV" Click="@LoadFromCSV"/>
             <RadzenGrid @ref="competitorGrid" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="10"
                         AllowSorting="true" Data="competitors" TItem="Competitor" AllowColumnResize="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValues
-                        RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
+                        RowUpdate="@OnUpdateRow" >
                 <Columns>
                     <RadzenGridColumn TItem="Competitor" Width="40px" Sortable="false" Filterable="false">
                         <HeaderTemplate>
@@ -90,13 +91,13 @@
                     </RadzenGridColumn>
                     <RadzenGridColumn TItem="Competitor" Context="competitor" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="200px">
                         <Template Context="competitor">
-                            <RadzenButton Icon="edit" Size="ButtonSize.Medium" Click="@(args => EditRow(competitor))">
+                            <RadzenButton Icon="edit" Size="ButtonSize.Medium" Click="@(args => EditRow(competitor))" Style="background-color: #4287f5;">
                             </RadzenButton>
                             <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Medium" Click="@(args => DeleteRow(competitor))">
                             </RadzenButton>
                         </Template>
                         <EditTemplate Context="competitor">
-                            <RadzenButton Icon="save" Size="ButtonSize.Medium" Click="@((args) => SaveRow(competitor))">
+                            <RadzenButton Icon="save" Size="ButtonSize.Medium" Click="@((args) => SaveRow(competitor))" Style="background-color: #4287f5;">
                             </RadzenButton>
                             <RadzenButton Icon="cancel" Size="ButtonSize.Medium" ButtonStyle="ButtonStyle.Secondary" Click="@((args) => CancelEdit(competitor))">
                             </RadzenButton>
@@ -110,7 +111,23 @@
         </RadzenTabsItem>
 
         <RadzenTabsItem Text="Категории">
+            <RadzenButton Text="Добавить" Style="margin:10px;background-color: #4287f5;" class ="primary" Click="@AddCompetitor"></RadzenButton>
+            <RadzenButton Text="Разбить" Style="margin:10px;background-color: #4287f5;"  class ="primary"></RadzenButton>
+            <RadzenButton Text="Объеденить" Style="margin:10px;background-color: #4287f5;" class ="primary"></RadzenButton>
+            <RadzenGrid @ref="categoryGrid" AllowFiltering="true"  FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="10"
+                        AllowSorting="true" Data="Categories" TItem="Category">
+                <Columns>
+                    <RadzenGridColumn TItem="Category" Property="Id" Title="ID">
 
+                    </RadzenGridColumn>
+                    <RadzenGridColumn TItem="Category" Property="Name" Title="Наименование">
+
+                    </RadzenGridColumn>
+                    <RadzenGridColumn TItem="Category" Property="NumberOfCompetitors" Title="Количество участников">
+
+                    </RadzenGridColumn>
+                </Columns>
+            </RadzenGrid>
         </RadzenTabsItem>
 
         <RadzenTabsItem Text="Жеребьевка(пули)">
@@ -136,13 +153,17 @@
     [CascadingParameter] public IModalService Modal { get; set; }
 
     RadzenGrid<Competitor> competitorGrid;
+    RadzenGrid<Category> categoryGrid;
+
     List<Competitor> competitors = new List<Competitor>();
+    List<Category> Categories = new List<Category>();
     List<string> Grades = new List<string>();
 
     protected override void OnInitialized()
     {
         competitors = CompetitionService.GetCompetitors();
         Grades = CategoryService.GetGrades();
+        Categories = CategoryService.GetCategories();
     }
     void EditRow(Competitor competitor)
     {
@@ -176,16 +197,7 @@
         competitorGrid.Reload();
     }
 
-    void InsertRow()
-    {
-        competitorGrid.InsertRow(new Competitor());
-    }
 
-    void OnCreateRow(Competitor competitor)
-    {
-        competitor.Id = competitors.Max(x => x.Id) + 1;
-        competitors.Add(competitor);
-    }
 
     void Activate()
     {
@@ -205,6 +217,16 @@
         {
             competitors.AddRange((List<Competitor>)result.Data);
             await competitorGrid.Reload();
+        }
+    }
+
+    async Task AddCompetitor()
+    {
+        var form = Modal.Show<AddCompetitorForm>("Добавление участника соревнования");
+        var result = await form.Result;
+        if (result.Data != null)
+        {
+
         }
     }
 }

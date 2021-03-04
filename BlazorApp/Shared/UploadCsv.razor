@@ -6,8 +6,8 @@
 <div class="container" style="justify-content:center;">
     <InputFile OnChange="HandleSelection" />
     <h3>@status</h3>
-    <RadzenButton Text="Сохранить" Click="@SaveChanges"/>
-    <RadzenButton Text="Отмена" Click="@Cancel"/>
+    <RadzenButton Style="background-color: #4287f5;" Text="Сохранить" Click="@SaveChanges"/>
+    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Отмена" Click="@Cancel"/>
 </div>
 @code {
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
@@ -22,13 +22,23 @@
         {
             using (var reader = new StreamReader(file.Data, System.Text.Encoding.UTF8))
             {
-                FileContent = await reader.ReadToEndAsync();
-                FileName = file.Name;
+                try
+                {
+                    FileContent = await reader.ReadToEndAsync();
+                    FileName = file.Name;
 
-                var engine = new FileHelperEngine<Competitor>();
-                result = engine.ReadString(FileContent).ToList();
+                    var engine = new FileHelperEngine<Competitor>();
+                    result = engine.ReadString(FileContent).ToList();
 
-                status = result[0].FirstName + "," + result[0].LastName + "," + result[0].BirthDate.ToShortDateString();
+                    status = "Загрузка успешна";
+                }catch(FileHelpers.ConvertException e)
+                {
+                    status = "Данные в файле в неверном формате";
+                }catch(FileHelpers.FileHelpersException e)
+                {
+                    status = "Не подходит формат файла";
+                }
+                //status = result[0].FirstName + "," + result[0].LastName + "," + result[0].BirthDate.ToShortDateString();
             }
         }
     }
