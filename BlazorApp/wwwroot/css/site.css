@@ -226,3 +226,8 @@ app {
         background-color: #4287f5;
     }
 }
+
+.add-competitor-form{
+    margin:7px;
+    width:100%;
+}

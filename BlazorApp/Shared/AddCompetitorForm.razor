@@ -1,16 +1,25 @@
-﻿@using Models
+﻿@using FileHelpers
+@using BlazorInputFile
+@using Models
+@using System.IO
+@using System.Drawing
+
 @inject BlazorApp.Data.CategoryService CategoryService
 @inject BlazorApp.Services.SportsmenService SportsmenService
 <RadzenTemplateForm TItem="Competitor" Data="Competitor" Submit="SubmitForm" InvalidSubmit="InvalidSubmit">
     <div class="container" style="justify-content:space-around;">
         <div class="row">
             <!--Image-->
-            <div class="col">
-                <RadzenButton Text="Загрузить фото"></RadzenButton>
+            <div class="col" style="justify-content:center;">
+                
+                <img src="data:image/bmp;base64, @(Convert.ToBase64String(ms.ToArray()))" />
+
+                <InputFile OnChange="HandleSelection" />
             </div>
             <!--List of sportsmen-->
             <div class="col">
-                <RadzenListBox Data="@Sportsmen" TValue="Sportsman" Change=@(args => OnChange(args)) >
+                <RadzenLabel Text="Спортсмены" class="add-competitor-form"></RadzenLabel>
+                <RadzenListBox Data="@Sportsmen" TValue="Sportsman" Change=@(args => OnChange(args)) Style="width:100%" >
                     <Template Context="sportsman">
                         @sportsman.FirstName @sportsman.LastName @sportsman.BirthDate.ToShortDateString()
                     </Template>
@@ -19,10 +28,10 @@
             <!--Fields-->
             <div class="col" style="justify-content:center">
                 <div class="row">
-                    <RadzenTextBox Placeholder="Имя" Style="margin:7px;width:200px" @bind-Value="Competitor.FirstName"></RadzenTextBox>
+                    <RadzenTextBox Placeholder="Имя" class="add-competitor-form" @bind-Value="Competitor.FirstName"></RadzenTextBox>
                 </div>
                 <div class="row">
-                    <RadzenTextBox Placeholder="Фамилия" @bind-Value="Competitor.LastName" Style="margin:7px;width:200px"></RadzenTextBox>
+                    <RadzenTextBox Placeholder="Фамилия" @bind-Value="Competitor.LastName" class="add-competitor-form"></RadzenTextBox>
                 </div>
                 <div class="row" style="display:flex;vertical-align:central;justify-content:center;">
                     <h4 style="margin-top:10px">М</h4>
@@ -31,26 +40,26 @@
                 </div>
                 
                 <div class="row">
-                    <RadzenNumeric TValue="int?" Style="margin:7px;width:200px" Placeholder="Стартовый номер"></RadzenNumeric>
+                    <RadzenNumeric TValue="int?" class="add-competitor-form" Placeholder="Стартовый номер"></RadzenNumeric>
                 </div>
                 <div class="row">
-                    <RadzenDatePicker Style="margin:7px;width:200px" Placeholder="Дата рождения" @bind-Value="Competitor.BirthDate"></RadzenDatePicker>
+                    <RadzenDatePicker class="add-competitor-form" Placeholder="Дата рождения" @bind-Value="Competitor.BirthDate"></RadzenDatePicker>
                 </div>
                 <div class="row">
-                    <RadzenDropDown Data=@Grades Style="margin:7px;width:200px" Placeholder="Пояс" TValue="string"></RadzenDropDown>
+                    <RadzenDropDown Data=@Grades class="add-competitor-form" Placeholder="Пояс" @bind-Value="Competitor.Grade"></RadzenDropDown>
                 </div>
                 <div class="row">
-                    <RadzenTextBox Style="margin:7px;width:200px" Placeholder="Страна" @bind-Value="Competitor.Country"></RadzenTextBox>
+                    <RadzenTextBox class="add-competitor-form" Placeholder="Страна" @bind-Value="Competitor.Country"></RadzenTextBox>
                 </div>
                 <div class="row">
-                    <RadzenTextBox Style="margin:7px;width:200px" Placeholder="Город" @bind-Value="Competitor.City"></RadzenTextBox>
+                    <RadzenTextBox class="add-competitor-form" Placeholder="Город" @bind-Value="Competitor.City"></RadzenTextBox>
                 </div>
                 <div class="row">
-                    <RadzenTextBox Style="margin:7px;width:200px" Placeholder="Клуб" @bind-Value="Competitor.Club"></RadzenTextBox>
+                    <RadzenTextBox class="add-competitor-form" Placeholder="Клуб" @bind-Value="Competitor.Club"></RadzenTextBox>
                 </div>
                 
                 <div class="row">
-                    <RadzenNumeric TValue="int?" Style="margin:7px;width:200px" Placeholder="Вес" ></RadzenNumeric>
+                    <RadzenNumeric TValue="int?" class="add-competitor-form" Placeholder="Вес" ></RadzenNumeric>
                 </div>
             </div>
         </div>
@@ -65,6 +74,7 @@
     </div>
 </RadzenTemplateForm>
 @code {
+    MemoryStream ms = new MemoryStream();
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
     bool switcher;
@@ -91,6 +101,18 @@
         Competitor.Weight = s.Weight;
         Competitor.Age = s.Age;
         Competitor.BirthDate = s.BirthDate;
+    }
+
+    async Task HandleSelection(IFileListEntry[] files)
+    {
+        var file = files.FirstOrDefault();
+        if (file != null)
+        {
+            var imageFile = await file.ToImageFileAsync("image/jpeg", 400, 300);
+
+            ms = await imageFile.ReadAllAsync();
+            
+        }
     }
 
     void InvalidSubmit()
