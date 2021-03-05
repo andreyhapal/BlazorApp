@@ -8,6 +8,43 @@ namespace BlazorApp.Services
 {
     public class CompetitionService
     {
+        public List<Tatami> GetTatamis()
+        {
+            return new List<Tatami>()
+            {
+                new Tatami()
+                {
+                    Name="A",
+                    AmountOfMatches=12,
+                    Prefix="A-",
+                },
+                new Tatami()
+                {
+                    Name="B",
+                    AmountOfMatches=24,
+                    Prefix="B-",
+                },
+                new Tatami()
+                {
+                    Name="C",
+                    AmountOfMatches=36,
+                    Prefix="C-",
+                },
+                new Tatami()
+                {
+                    Name="D",
+                    AmountOfMatches=48,
+                    Prefix="D-",
+                },
+                new Tatami()
+                {
+                    Name="E",
+                    AmountOfMatches=50,
+                    Prefix="E-",
+                }
+            };
+        }
+
         public List<Competitor> GetCompetitors()
         {
             return new List<Competitor>()

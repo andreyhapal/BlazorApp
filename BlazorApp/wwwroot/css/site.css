@@ -222,12 +222,81 @@ app {
         width: 100%;
     }
 
-    .primary {
-        background-color: #4287f5;
-    }
+    
+}
+
+.primary {
+    background-color: #4287f5;
+    margin: 10px;
 }
 
 .add-competitor-form{
     margin:7px;
     width:100%;
+}
+
+.expand-panel {
+    width: 700px;
+    margin-bottom: 20px;
+    height: 600px;
+}
+
+.default-panel {
+    width: 700px;
+    margin-bottom: 20px;
+    height: 50px;
+}
+
+    .default-panel:hover {
+        background-color:#f2f2f2
+    }
+
+    .card-header {
+        color: white;
+        height: 50px;
+        background-color: #4287f5;
+        width: 100%;
+        text-align: center;
+        vertical-align: central;
+    }
+
+.card-status{
+    background-color:gray;
+    color:white;
+    text-align:center;
+    vertical-align:central;
+    height:20px;
+    width:100%;
+}
+
+.card-content{
+    height:130px;
+    width:100%;
+    
+}
+
+.card-footer{
+    padding:8px 20px;
+    height:70px;
+    width:100%;
+    display:flex;
+    justify-content:space-around;
+}
+
+.button {
+    background-color: #4287f5;
+    border: none;
+    color: white;
+    padding-top: 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    align-content:center;
+    justify-content:center;
+}
+
+.circle-button{
+    border-radius:50%;
 }

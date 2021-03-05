@@ -3,18 +3,19 @@
 
 @using BlazorApp.Models
 @using BlazorApp.Data
+
 @inject BlazorApp.Services.CompetitionService CompetitionService
 @inject BlazorApp.Data.CategoryService CategoryService
- 
+
 <div class="main-header-div">
     <h1 class="main-header">Управление соревнованием @Name</h1>
 </div>
 <RadzenTabs>
     <Tabs>
         <RadzenTabsItem Text="Участники">
-            <RadzenButton Icon="add_circle_outline" Style="margin: 10px;background-color: #4287f5;" Text="Добавить" Click="@AddCompetitor"  class ="primary"/>
-            <RadzenButton Icon="done" Style="margin:10px;background-color: #4287f5;" Text="Активировать" Click="@Activate"/>
-            <RadzenButton Icon="description" Style="margin:10px;background-color: #4287f5;" Text="Загрузить из CSV" Click="@LoadFromCSV"/>
+            <RadzenButton Icon="add_circle_outline" Style=@buttonStyle Text="Добавить" Click="@AddCompetitor" />
+            <RadzenButton Icon="done" Style=@buttonStyle Text="Активировать" Click="@Activate" />
+            <RadzenButton Icon="description" Style=@buttonStyle Text="Загрузить из CSV" Click="@LoadFromCSV" />
             <RadzenGrid @ref="competitorGrid" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="10"
                         AllowSorting="true" Data="competitors" TItem="Competitor" AllowColumnResize="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValues>
                 <Columns>
@@ -27,21 +28,21 @@
                             <RadzenCheckBox TriState="false" Value="@(multipleValues != null && (multipleValues as IEnumerable<Competitor>).Contains(data))" />
                         </Template>
                     </RadzenGridColumn>
-                    <RadzenGridColumn TItem="Competitor" Property="Id" Title="ID"/>
-                    <RadzenGridColumn TItem="Competitor" Property="StartNumber" Title="Номер"/>
-                    <RadzenGridColumn TItem="Competitor" Property="FirstName" Title="Имя"/>
-                    <RadzenGridColumn TItem="Competitor" Property="LastName" Title="Фамилия"/>
-                    <RadzenGridColumn TItem="Competitor" Property="BirthDate" Title="Дата рождения"/>
-                    <RadzenGridColumn TItem="Competitor" Property="Grade" Title="Пояс"/>
-                    <RadzenGridColumn TItem="Competitor" Property="Country" Title="Страна"/>
-                    <RadzenGridColumn TItem="Competitor" Property="City" Title="Город"/>
-                    <RadzenGridColumn TItem="Competitor" Property="Club" Title="Клуб"/>
-                    <RadzenGridColumn TItem="Competitor" Property="Category" Title="Категория"/>
-                    <RadzenGridColumn TItem="Competitor" Property="Weight" Title="Вес"/>
-                    <RadzenGridColumn TItem="Competitor" Property="IsActive" Title="Активный"/>
-                    <RadzenGridColumn TItem="Competitor" Context="competitor" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="200px">
+                    <RadzenGridColumn TItem="Competitor" Property="Id" Title="ID" />
+                    <RadzenGridColumn TItem="Competitor" Property="StartNumber" Title="Номер" />
+                    <RadzenGridColumn TItem="Competitor" Property="FirstName" Title="Имя" />
+                    <RadzenGridColumn TItem="Competitor" Property="LastName" Title="Фамилия" />
+                    <RadzenGridColumn TItem="Competitor" Property="BirthDate" Title="Дата рождения" />
+                    <RadzenGridColumn TItem="Competitor" Property="Grade" Title="Пояс" />
+                    <RadzenGridColumn TItem="Competitor" Property="Country" Title="Страна" />
+                    <RadzenGridColumn TItem="Competitor" Property="City" Title="Город" />
+                    <RadzenGridColumn TItem="Competitor" Property="Club" Title="Клуб" />
+                    <RadzenGridColumn TItem="Competitor" Property="Category" Title="Категория" />
+                    <RadzenGridColumn TItem="Competitor" Property="Weight" Title="Вес" />
+                    <RadzenGridColumn TItem="Competitor" Property="IsActive" Title="Активный" />
+                    <RadzenGridColumn TItem="Competitor" Context="competitor" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
                         <Template Context="competitor">
-                            <RadzenButton Icon="edit" Size="ButtonSize.Medium"  Style="background-color: #4287f5;">
+                            <RadzenButton Icon="edit" Size="ButtonSize.Medium" Style=@buttonStyle>
                             </RadzenButton>
                             <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Medium" Click="@(args => DeleteRow(competitor))">
                             </RadzenButton>
@@ -53,31 +54,66 @@
         </RadzenTabsItem>
 
         <RadzenTabsItem Text="Категории">
-            <RadzenButton Text="Добавить" Style="margin:10px;background-color: #4287f5;" class ="primary" Click="@AddCompetitor"></RadzenButton>
-            <RadzenButton Text="Разбить" Style="margin:10px;background-color: #4287f5;"  class ="primary"></RadzenButton>
-            <RadzenButton Text="Объеденить" Style="margin:10px;background-color: #4287f5;" class ="primary"></RadzenButton>
-            <RadzenGrid @ref="categoryGrid" AllowFiltering="true"  FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="10"
+            <RadzenButton Text="Добавить" Style=@buttonStyle Click="@AddCompetitor"></RadzenButton>
+            <RadzenButton Text="Разбить" Style=@buttonStyle></RadzenButton>
+            <RadzenButton Text="Объеденить" Style=@buttonStyle></RadzenButton>
+            <RadzenGrid @ref="categoryGrid" AllowFiltering="true" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="10"
                         AllowSorting="true" Data="Categories" TItem="Category">
                 <Columns>
-                    <RadzenGridColumn TItem="Category" Property="Id" Title="ID">
-
-                    </RadzenGridColumn>
-                    <RadzenGridColumn TItem="Category" Property="Name" Title="Наименование">
-
-                    </RadzenGridColumn>
-                    <RadzenGridColumn TItem="Category" Property="NumberOfCompetitors" Title="Количество участников">
-
-                    </RadzenGridColumn>
+                    <RadzenGridColumn TItem="Category" Property="Id" Title="ID" />
+                    <RadzenGridColumn TItem="Category" Property="Name" Title="Наименование" />
+                    <RadzenGridColumn TItem="Category" Property="NumberOfCompetitors" Title="Количество участников" />
                 </Columns>
             </RadzenGrid>
         </RadzenTabsItem>
 
         <RadzenTabsItem Text="Жеребьевка(пули)">
-
+            <RadzenButton Text="Генерировать все пули" Style=@buttonStyle />
+            @foreach (var category in Categories)
+            {
+                <RadzenPanel AllowCollapse="true" Collapsed="true" Style="width:100%;"
+                             Expand=@(() => Change(1,true)) Collapse=@(() => Change(1,false)) class="@(expanded[1]?"expand-panel":"default-panel")">
+                    <HeaderTemplate>
+                        
+                            <h4>@category.Name</h4>
+                        
+                    </HeaderTemplate>
+                    <ChildContent>
+                        
+                    </ChildContent>
+                </RadzenPanel>
+            }
         </RadzenTabsItem>
 
         <RadzenTabsItem Text="Татами">
+            <RadzenButton Text="Добавить татами" Style=@buttonStyle />
+            <div class="row row-cols-3" style="justify-content:space-around">
+                @foreach (var tatami in Tatamies)
+                {
+                    <div class="col" style="justify-content:center;margin:10px;">
+                        <RadzenCard Style="width:500px;height:315px;margin:auto;">
+                            <div class="card-header">
+                                <h2 style="margin-bottom:0px;">Татами @tatami.Name</h2>
 
+                            </div>
+                            <div class="card-status">
+                                <h6 style="margin-bottom:0px;">Количество боев @tatami.AmountOfMatches</h6>
+                            </div>
+                            <div class="card-content">
+
+                            </div>
+                            <div class="card-footer">
+                                <RadzenButton Style=@buttonStyle class="button circle-button" Icon="build"></RadzenButton>
+                                <RadzenButton Style=@buttonStyle class="button circle-button" Icon="av_timer"></RadzenButton>
+                                <RadzenButton Style=@buttonStyle class="button circle-button" Icon="computer"></RadzenButton>
+                                <RadzenButton Style=@buttonStyle class="button circle-button" Icon="list"></RadzenButton>
+                                <RadzenButton Style=@buttonStyle class="button circle-button" Icon="align_horizontal_left"></RadzenButton>
+                                <RadzenButton Style=@buttonStyle class="button circle-button" Icon="face"></RadzenButton>
+                            </div>
+                        </RadzenCard>
+                    </div>
+                }
+            </div>
         </RadzenTabsItem>
 
         <RadzenTabsItem Text="Судьи">
@@ -86,26 +122,36 @@
     </Tabs>
 </RadzenTabs>
 @code {
+    string buttonStyle = "margin:10px;background-color: #4287f5;";
+
     [Parameter]
     public string Name { get; set; }
     [Parameter]
     public string Id { get; set; }
+    [CascadingParameter]
+    public IModalService Modal { get; set; }
+
     object multipleValues;
-
-    [CascadingParameter] public IModalService Modal { get; set; }
-
     RadzenGrid<Competitor> competitorGrid;
     RadzenGrid<Category> categoryGrid;
 
     List<Competitor> competitors = new List<Competitor>();
     List<Category> Categories = new List<Category>();
     List<string> Grades = new List<string>();
+    List<Tatami> Tatamies = new List<Tatami>();
+
+    private bool[] expanded = { false, false, false, false };
+    private void Change(int panelNumber, bool expand)
+    {
+        expanded[panelNumber] = expand;
+    }
 
     protected override void OnInitialized()
     {
         competitors = CompetitionService.GetCompetitors();
         Grades = CategoryService.GetGrades();
         Categories = CategoryService.GetCategories();
+        Tatamies = CompetitionService.GetTatamis();
     }
 
     void DeleteRow(Competitor competitor)
@@ -141,7 +187,8 @@
         var result = await form.Result;
         if (result.Data != null)
         {
-
+            competitors.Add(result.Data as Competitor);
+            await competitorGrid.Reload();
         }
     }
 }

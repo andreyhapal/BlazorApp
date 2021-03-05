@@ -120,6 +120,6 @@
     {
 
     }
-    async Task SubmitForm() => await BlazoredModal.CloseAsync();
+    async Task SubmitForm() => await BlazoredModal.CloseAsync(ModalResult.Ok(Competitor));
     async Task Cancel() => await BlazoredModal.CancelAsync();
 }
