@@ -11,9 +11,9 @@
         <div class="row">
             <!--Image-->
             <div class="col" style="justify-content:center;">
-                
+                <RadzenLabel Text="Фото спортсмена" class="add-competitor-form"></RadzenLabel>
                 <img src="data:image/bmp;base64, @(Convert.ToBase64String(ms.ToArray()))" />
-
+                
                 <InputFile OnChange="HandleSelection" />
             </div>
             <!--List of sportsmen-->
@@ -28,6 +28,7 @@
             <!--Fields-->
             <div class="col" style="justify-content:center">
                 <div class="row">
+                    <RadzenLabel Text="Личные данные" class="add-competitor-form"></RadzenLabel>
                     <RadzenTextBox Placeholder="Имя" class="add-competitor-form" @bind-Value="Competitor.FirstName"></RadzenTextBox>
                 </div>
                 <div class="row">

@@ -16,8 +16,7 @@
             <RadzenButton Icon="done" Style="margin:10px;background-color: #4287f5;" Text="Активировать" Click="@Activate"/>
             <RadzenButton Icon="description" Style="margin:10px;background-color: #4287f5;" Text="Загрузить из CSV" Click="@LoadFromCSV"/>
             <RadzenGrid @ref="competitorGrid" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="10"
-                        AllowSorting="true" Data="competitors" TItem="Competitor" AllowColumnResize="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValues
-                        RowUpdate="@OnUpdateRow" >
+                        AllowSorting="true" Data="competitors" TItem="Competitor" AllowColumnResize="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValues>
                 <Columns>
                     <RadzenGridColumn TItem="Competitor" Width="40px" Sortable="false" Filterable="false">
                         <HeaderTemplate>
@@ -28,82 +27,25 @@
                             <RadzenCheckBox TriState="false" Value="@(multipleValues != null && (multipleValues as IEnumerable<Competitor>).Contains(data))" />
                         </Template>
                     </RadzenGridColumn>
-                    <RadzenGridColumn TItem="Competitor" Property="Id" Title="ID">
-
-                    </RadzenGridColumn>
-                    <RadzenGridColumn TItem="Competitor" Property="StartNumber" Title="Номер">
-                        <EditTemplate Context="competitor">
-                            <RadzenNumeric @bind-Value="competitor.StartNumber" Style="width:100%" />
-                        </EditTemplate>
-                    </RadzenGridColumn>
-
-                    <RadzenGridColumn TItem="Competitor" Property="FirstName" Title="Имя">
-                        <EditTemplate Context="competitor">
-                            <RadzenTextBox @bind-Value="competitor.FirstName" />
-                        </EditTemplate>
-                    </RadzenGridColumn>
-
-                    <RadzenGridColumn TItem="Competitor" Property="LastName" Title="Фамилия">
-                        <EditTemplate Context="competitor">
-                            <RadzenTextBox @bind-Value="competitor.LastName" />
-                        </EditTemplate>
-                    </RadzenGridColumn>
-                    <RadzenGridColumn TItem="Competitor" Property="BirthDate" Title="Дата рождения">
-                        <EditTemplate Context="competitor">
-                            <RadzenDatePicker DateFormat="d" @bind-Value="competitor.BirthDate" />
-                        </EditTemplate>
-                    </RadzenGridColumn>
-                    <RadzenGridColumn TItem="Competitor" Property="Grade" Title="Пояс">
-                        <EditTemplate Context="competitor">
-                            <RadzenDropDown Data="Grades" @bind-Value="competitor.Grade" />
-                        </EditTemplate>
-                    </RadzenGridColumn>
-
-                    <RadzenGridColumn TItem="Competitor" Property="Country" Title="Страна">
-                        <EditTemplate Context="competitor">
-                            <RadzenTextBox @bind-Value="competitor.Country" />
-                        </EditTemplate>
-                    </RadzenGridColumn>
-                    <RadzenGridColumn TItem="Competitor" Property="City" Title="Город">
-                        <EditTemplate Context="competitor">
-                            <RadzenTextBox @bind-Value="competitor.City" />
-                        </EditTemplate>
-                    </RadzenGridColumn>
-                    <RadzenGridColumn TItem="Competitor" Property="Club" Title="Клуб">
-                        <EditTemplate Context="competitor">
-                            <RadzenTextBox @bind-Value="competitor.Club" />
-                        </EditTemplate>
-                    </RadzenGridColumn>
-                    <RadzenGridColumn TItem="Competitor" Property="Category" Title="Категория">
-                        <EditTemplate Context="competitor">
-                            <RadzenTextBox @bind-Value="competitor.Category" />
-                        </EditTemplate>
-                    </RadzenGridColumn>
-                    <RadzenGridColumn TItem="Competitor" Property="Weight" Title="Вес">
-                        <EditTemplate Context="competitor">
-                            <RadzenNumeric @bind-Value="competitor.Weight" />
-                        </EditTemplate>
-                    </RadzenGridColumn>
-                    <RadzenGridColumn TItem="Competitor" Property="IsActive" Title="Активный">
-                        <EditTemplate Context="competitor">
-                            <RadzenCheckBox @bind-Value="competitor.IsActive"></RadzenCheckBox>
-                        </EditTemplate>
-                    </RadzenGridColumn>
+                    <RadzenGridColumn TItem="Competitor" Property="Id" Title="ID"/>
+                    <RadzenGridColumn TItem="Competitor" Property="StartNumber" Title="Номер"/>
+                    <RadzenGridColumn TItem="Competitor" Property="FirstName" Title="Имя"/>
+                    <RadzenGridColumn TItem="Competitor" Property="LastName" Title="Фамилия"/>
+                    <RadzenGridColumn TItem="Competitor" Property="BirthDate" Title="Дата рождения"/>
+                    <RadzenGridColumn TItem="Competitor" Property="Grade" Title="Пояс"/>
+                    <RadzenGridColumn TItem="Competitor" Property="Country" Title="Страна"/>
+                    <RadzenGridColumn TItem="Competitor" Property="City" Title="Город"/>
+                    <RadzenGridColumn TItem="Competitor" Property="Club" Title="Клуб"/>
+                    <RadzenGridColumn TItem="Competitor" Property="Category" Title="Категория"/>
+                    <RadzenGridColumn TItem="Competitor" Property="Weight" Title="Вес"/>
+                    <RadzenGridColumn TItem="Competitor" Property="IsActive" Title="Активный"/>
                     <RadzenGridColumn TItem="Competitor" Context="competitor" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="200px">
                         <Template Context="competitor">
-                            <RadzenButton Icon="edit" Size="ButtonSize.Medium" Click="@(args => EditRow(competitor))" Style="background-color: #4287f5;">
+                            <RadzenButton Icon="edit" Size="ButtonSize.Medium"  Style="background-color: #4287f5;">
                             </RadzenButton>
                             <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Medium" Click="@(args => DeleteRow(competitor))">
                             </RadzenButton>
                         </Template>
-                        <EditTemplate Context="competitor">
-                            <RadzenButton Icon="save" Size="ButtonSize.Medium" Click="@((args) => SaveRow(competitor))" Style="background-color: #4287f5;">
-                            </RadzenButton>
-                            <RadzenButton Icon="cancel" Size="ButtonSize.Medium" ButtonStyle="ButtonStyle.Secondary" Click="@((args) => CancelEdit(competitor))">
-                            </RadzenButton>
-                            <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Medium" Click="@(args => DeleteRow(competitor))">
-                            </RadzenButton>
-                        </EditTemplate>
                     </RadzenGridColumn>
                 </Columns>
             </RadzenGrid>
@@ -165,39 +107,12 @@
         Grades = CategoryService.GetGrades();
         Categories = CategoryService.GetCategories();
     }
-    void EditRow(Competitor competitor)
-    {
-        competitorGrid.EditRow(competitor);
-    }
-
-    void OnUpdateRow(Competitor competitor)
-    {
-        var comp = competitors.FirstOrDefault(x => x.Id == competitor.Id);
-        comp.FirstName = competitor.FirstName;
-        comp.BirthDate = competitor.BirthDate;
-        comp.Country = competitor.Country;
-        comp.City = competitor.City;
-
-        competitorGrid.Reload();
-    }
-
-    void SaveRow(Competitor competitor)
-    {
-        competitorGrid.UpdateRow(competitor);
-    }
-
-    void CancelEdit(Competitor competitor)
-    {
-        competitorGrid.CancelEditRow(competitor);
-    }
 
     void DeleteRow(Competitor competitor)
     {
         competitors.Remove(competitor);
         competitorGrid.Reload();
     }
-
-
 
     void Activate()
     {
