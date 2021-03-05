@@ -7,6 +7,8 @@
   <ItemGroup>
     <PackageReference Include="Blazored.Modal" Version="6.0.1" />
     <PackageReference Include="BlazorInputFile" Version="0.2.0" />
+    <PackageReference Include="bootstrap" Version="4.6.0" />
+    <PackageReference Include="bootstrap.sass" Version="4.6.0" />
     <PackageReference Include="FileHelpers" Version="3.4.2" />
     <PackageReference Include="glyphicon" Version="1.0.1" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.2" />

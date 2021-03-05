@@ -133,7 +133,7 @@ namespace BlazorApp.Data
         new Category()
         {
             Id = 1,
-            Name = "4-5 лет Девочки -16Кг (8 KYU)",
+            Name = "4-5 лет Девочки -16Кг (8 KYU)1",
             Type = "Кумите",
             Age = "4-5 лет",
             AgeFrom=10,
@@ -146,7 +146,7 @@ namespace BlazorApp.Data
         new Category()
         {
              Id=2,
-            Name="4-5 лет Девочки -16Кг (8 KYU)",
+            Name="4-5 лет Девочки -16Кг (8 KYU)2",
             Type = "Кумите",
             Age = "4-5 лет",
             AgeFrom=10,
@@ -158,7 +158,7 @@ namespace BlazorApp.Data
         new Category()
         {
              Id=3,
-            Name="4-5 лет Девочки -16Кг (8 KYU)",
+            Name="4-5 лет Девочки -16Кг (8 KYU)3",
             Type = "Кумите",
             Age = "4-5 лет",
             AgeFrom=10,
@@ -170,7 +170,7 @@ namespace BlazorApp.Data
         new Category()
         {
              Id=4,
-            Name="4-5 лет Девочки -16Кг (8 KYU)",
+            Name="4-5 лет Девочки -16Кг (8 KYU)4",
             Type = "Кумите",
             Age = "4-5 лет",
             AgeFrom=10,
