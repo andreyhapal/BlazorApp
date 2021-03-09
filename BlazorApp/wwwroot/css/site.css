@@ -188,7 +188,8 @@ app {
         border-collapse: collapse;
         width:100%;
     }
-    tr,td {
+    
+    /*tr,td {
         border: 1px solid #ddd;
         min-width: 100px;
         padding: 10px;
@@ -198,7 +199,7 @@ app {
         color: white;
         background-color:#1b6ec2;
             border:1px solid white;
-    }
+    }*/
     .main-header{
         padding-left:15px;
         margin-bottom:15px;
@@ -223,6 +224,11 @@ app {
     }
 
     
+}
+
+td {
+    text-align: center;
+    vertical-align: middle;
 }
 
 .primary {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlazorApp.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,5 +18,6 @@ namespace BlazorApp.Data
         public int WeightFrom { get; set; }
         public int WeightTo { get; set; }
         public int NumberOfCompetitors{get;set;}
+        public List<Competitor> Competitors { get; set; }
     }
 }

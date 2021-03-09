@@ -28,6 +28,7 @@ namespace BlazorApp.Models
         public string Country { get; set; }
         public string City { get; set; }
         public string Club { get; set; }
+        public List<Competitor> Competitors { get; set; }
 
     }
 }

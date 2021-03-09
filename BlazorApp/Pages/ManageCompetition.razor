@@ -69,23 +69,73 @@
 
         <RadzenTabsItem Text="Жеребьевка(пули)">
             <RadzenButton Text="Генерировать все пули" Style=@buttonStyle />
-            <div class="accordion" id="accordionExample">
-                @foreach (var category in Categories)
-                {
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingOne">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                @category.Name
-                            </button>
-                        </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
+            <RadzenAccordion>
+                <Items>
+                    @foreach (var category in Categories)
+                    {
+                    <RadzenAccordionItem Text=@category.Name Icon="accessibility">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" scope="col">ID</th>
+                                    <th colspan="4" scope="col" style="width:240px;">
+                                        Рейтинг
+                                    </th>
+                                    <th rowspan="2" scope="col">Имя</th>
+                                    <th rowspan="2" scope="col">Фамилия</th>
+                                    <th rowspan="2" scope="col">Дата рождения</th>
+                                    <th rowspan="2" scope="col">Пояс</th>
+                                    <th rowspan="2" scope="col">Страна</th>
+                                    <th rowspan="2" scope="col">Регион</th>
+                                    <th rowspan="2" scope="col">Клуб</th>
 
-                            </div>
-                        </div>
-                    </div>
-                }
-            </div>
+                                </tr>
+                                <tr>
+                                    <th style="width:60px;">Нету</th>
+                                    <th style="width:60px;">1</th>
+                                    <th style="width:60px;">2</th>
+                                    <th style="width:60px;">3</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var competitor in competitors)
+                                {
+                                    <tr>
+                                        <td>@competitor.Id</td>
+                                        <td colspan="4">
+                                            <RadzenRadioButtonList TValue="int" Style="justify-content:space-around">
+                                                <Items>
+                                                    <RadzenRadioButtonListItem Value="0" Style="margin-left:-8px;margin-right:7px;"></RadzenRadioButtonListItem>
+
+                                                    <RadzenRadioButtonListItem Value="1" Style="margin-right:7px;"></RadzenRadioButtonListItem>
+
+                                                    <RadzenRadioButtonListItem Value="2" Style="margin-right:7px;"></RadzenRadioButtonListItem>
+
+                                                    <RadzenRadioButtonListItem Value="3" Style="margin-right:7px;"></RadzenRadioButtonListItem>
+                                                </Items>
+                                            </RadzenRadioButtonList>
+                                        </td>
+                                        <td>@competitor.FirstName</td>
+                                        <td>@competitor.LastName</td>
+                                        <td>@competitor.BirthDate.ToShortDateString()</td>
+                                        <td>@competitor.Grade</td>
+                                        <td>@competitor.Country</td>
+                                        <td>@competitor.City</td>
+                                        <td>@competitor.Club</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <RadzenCheckBox TValue="bool" />
+                        <RadzenLabel Text="Бой за третье место" Component="CheckBox1" Style="margin-right: 15px;" />
+                        <RadzenButton Text="Генерировать пулю" Style="margin-right: 15px;"/>
+                        <RadzenButton Text="Удалить пулю" Style="margin-right: 15px;"/>
+                        <RadzenButton Text="Сохранить пулю" Style="margin-right: 15px;"/>
+                    </RadzenAccordionItem>
+                    }
+
+                </Items>
+            </RadzenAccordion>
         </RadzenTabsItem>
 
         <RadzenTabsItem Text="Татами">
