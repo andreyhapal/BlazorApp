@@ -4,6 +4,7 @@
 @using BlazorApp.Models
 @using BlazorApp.Data
 
+@inject TooltipService tooltipService
 @inject BlazorApp.Services.CompetitionService CompetitionService
 @inject BlazorApp.Data.CategoryService CategoryService
 @inject NavigationManager NavigationManager
@@ -160,7 +161,7 @@
 
                             </div>
                             <div class="card-footer">
-                                <RadzenButton Style=@buttonStyle class="button circle-button" Icon="build"></RadzenButton>
+                                <RadzenButton Style=@buttonStyle class="button circle-button" Icon="build" MouseEnter="@(args => ShowTooltipSettings(args) )"></RadzenButton>
                                 <RadzenButton Style=@buttonStyle class="button circle-button" Icon="av_timer" Click="ToScoreBoard"></RadzenButton>
                                 <RadzenButton Style=@buttonStyle class="button circle-button" Icon="computer"></RadzenButton>
                                 <RadzenButton Style=@buttonStyle class="button circle-button" Icon="list"></RadzenButton>
@@ -194,6 +195,8 @@
         </RadzenTabsItem>
     </Tabs>
 </RadzenTabs>
+
+
 @code {
     string buttonStyle = "margin:10px;background-color: #4287f5;";
 
@@ -269,4 +272,20 @@
     {
         NavigationManager.NavigateTo("/scoreboard");
     }
+
+    ElementReference htmlButton;
+    RadzenButton radzenButton;
+
+    void ShowTooltipSettings(ElementReference elementReference, TooltipOptions options = null) => tooltipService.Open(elementReference, "Настройки", options);
+    void ShowTooltipTimer(ElementReference elementReference, TooltipOptions options = null) => tooltipService.Open(elementReference, "Таймер", options);
+    void ShowTooltipComp(ElementReference elementReference, TooltipOptions options = null) => tooltipService.Open(elementReference, "Компутер", options);
+    void ShowTooltipList(ElementReference elementReference, TooltipOptions options = null) => tooltipService.Open(elementReference, "Список", options);
+    void ShowTooltipBullet(ElementReference elementReference, TooltipOptions options = null) => tooltipService.Open(elementReference, "Пули", options);
+    void ShowTooltipHead(ElementReference elementReference, TooltipOptions options = null) => tooltipService.Open(elementReference, "Спортсмены", options);
+
+
+    void ShowTooltipWithHtml(ElementReference elementReference, TooltipOptions options = null) => tooltipService.Open(elementReference, ds =>
+    @<div>
+        Some <b>HTML</b> content
+    </div>, options);
 }

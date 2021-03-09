@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Radzen.Blazor;
 using BlazorApp.Data;
 using BlazorApp.Services;
+using Radzen;
 
 namespace BlazorApp
 {
@@ -34,7 +35,7 @@ namespace BlazorApp
             services.AddSingleton<CategoryService>();
             services.AddSingleton<SportsmenService>();
             services.AddSingleton<CompetitionService>();
-
+            services.AddScoped<TooltipService>();
             services.AddBlazoredModal();
 
             //services.AddSingleton<IConfiguration>(Configuration);
