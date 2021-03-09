@@ -6,6 +6,7 @@
 
 @inject BlazorApp.Services.CompetitionService CompetitionService
 @inject BlazorApp.Data.CategoryService CategoryService
+@inject NavigationManager NavigationManager
 
 <div class="main-header-div">
     <h1 class="main-header">Управление соревнованием @Name</h1>
@@ -73,67 +74,70 @@
                 <Items>
                     @foreach (var category in Categories)
                     {
-                    <RadzenAccordionItem Text=@category.Name Icon="accessibility">
-                        <table class="table table-hover table-bordered">
-                            <thead>
-                                <tr>
-                                    <th rowspan="2" scope="col">ID</th>
-                                    <th colspan="4" scope="col" style="width:240px;">
-                                        Рейтинг
-                                    </th>
-                                    <th rowspan="2" scope="col">Имя</th>
-                                    <th rowspan="2" scope="col">Фамилия</th>
-                                    <th rowspan="2" scope="col">Дата рождения</th>
-                                    <th rowspan="2" scope="col">Пояс</th>
-                                    <th rowspan="2" scope="col">Страна</th>
-                                    <th rowspan="2" scope="col">Регион</th>
-                                    <th rowspan="2" scope="col">Клуб</th>
-
-                                </tr>
-                                <tr>
-                                    <th style="width:60px;">Нету</th>
-                                    <th style="width:60px;">1</th>
-                                    <th style="width:60px;">2</th>
-                                    <th style="width:60px;">3</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var competitor in competitors)
-                                {
+                        <RadzenAccordionItem Text=@category.Name Icon="accessibility">
+                            <table class="table table-hover table-bordered">
+                                <thead>
                                     <tr>
-                                        <td>@competitor.Id</td>
-                                        <td colspan="4">
-                                            <RadzenRadioButtonList TValue="int" Style="justify-content:space-around">
-                                                <Items>
-                                                    <RadzenRadioButtonListItem Value="0" Style="margin-left:-8px;margin-right:7px;"></RadzenRadioButtonListItem>
+                                        <th rowspan="2" scope="col">ID</th>
+                                        <th colspan="4" scope="col" style="width:240px;">
+                                            Рейтинг
+                                        </th>
+                                        <th rowspan="2" scope="col">Имя</th>
+                                        <th rowspan="2" scope="col">Фамилия</th>
+                                        <th rowspan="2" scope="col">Дата рождения</th>
+                                        <th rowspan="2" scope="col">Пояс</th>
+                                        <th rowspan="2" scope="col">Страна</th>
+                                        <th rowspan="2" scope="col">Регион</th>
+                                        <th rowspan="2" scope="col">Клуб</th>
 
-                                                    <RadzenRadioButtonListItem Value="1" Style="margin-right:7px;"></RadzenRadioButtonListItem>
-
-                                                    <RadzenRadioButtonListItem Value="2" Style="margin-right:7px;"></RadzenRadioButtonListItem>
-
-                                                    <RadzenRadioButtonListItem Value="3" Style="margin-right:7px;"></RadzenRadioButtonListItem>
-                                                </Items>
-                                            </RadzenRadioButtonList>
-                                        </td>
-                                        <td>@competitor.FirstName</td>
-                                        <td>@competitor.LastName</td>
-                                        <td>@competitor.BirthDate.ToShortDateString()</td>
-                                        <td>@competitor.Grade</td>
-                                        <td>@competitor.Country</td>
-                                        <td>@competitor.City</td>
-                                        <td>@competitor.Club</td>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
-                        <RadzenCheckBox TValue="bool" />
-                        <RadzenLabel Text="Бой за третье место" Component="CheckBox1" Style="margin-right: 15px;" />
-                        <RadzenButton Text="Генерировать пулю" Style="margin-right: 15px;"/>
-                        <RadzenButton Text="Удалить пулю" Style="margin-right: 15px;"/>
-                        <RadzenButton Text="Сохранить пулю" Style="margin-right: 15px;"/>
-                    </RadzenAccordionItem>
-                    }
+                                    <tr>
+                                        <th style="width:60px;">Нету</th>
+                                        <th style="width:60px;">1</th>
+                                        <th style="width:60px;">2</th>
+                                        <th style="width:60px;">3</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var competitor in competitors)
+                                    {
+                                        <tr>
+                                            <td>@competitor.Id</td>
+                                            <td colspan="4">
+                                                <RadzenRadioButtonList TValue="int" Style="justify-content:space-around">
+                                                    <Items>
+                                                        <RadzenRadioButtonListItem Value="0" Style="margin-left:-8px;margin-right:7px;"></RadzenRadioButtonListItem>
 
+                                                        <RadzenRadioButtonListItem Value="1" Style="margin-right:7px;"></RadzenRadioButtonListItem>
+
+                                                        <RadzenRadioButtonListItem Value="2" Style="margin-right:7px;"></RadzenRadioButtonListItem>
+
+                                                        <RadzenRadioButtonListItem Value="3" Style="margin-right:7px;"></RadzenRadioButtonListItem>
+                                                    </Items>
+                                                </RadzenRadioButtonList>
+                                            </td>
+                                            <td>@competitor.FirstName</td>
+                                            <td>@competitor.LastName</td>
+                                            <td>@competitor.BirthDate.ToShortDateString()</td>
+                                            <td>@competitor.Grade</td>
+                                            <td>@competitor.Country</td>
+                                            <td>@competitor.City</td>
+                                            <td>@competitor.Club</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                            <div style="justify-content:space-between;">
+                                <RadzenCheckBox TValue="bool" Style="margin: 10px;" />
+                                <RadzenLabel Text="Бой за третье место" Component="CheckBox1" Style="margin:10px;" />
+                                <RadzenButton Text="Генерировать пулю" Style=@buttonStyle />
+                                <RadzenButton Text="Удалить пулю" Style=@buttonStyle />
+                                <RadzenButton Text="Сохранить пулю" Style=@buttonStyle />
+                                <RadzenButton Text="Следующая" Style="float:right;margin:10px;background-color: #4287f5;"></RadzenButton>
+                                <RadzenButton Text="Предыдущая" Style="float:right;margin:10px;background-color: #4287f5;"></RadzenButton>
+                            </div>
+                        </RadzenAccordionItem>
+                    }
                 </Items>
             </RadzenAccordion>
         </RadzenTabsItem>
@@ -157,7 +161,7 @@
                             </div>
                             <div class="card-footer">
                                 <RadzenButton Style=@buttonStyle class="button circle-button" Icon="build"></RadzenButton>
-                                <RadzenButton Style=@buttonStyle class="button circle-button" Icon="av_timer"></RadzenButton>
+                                <RadzenButton Style=@buttonStyle class="button circle-button" Icon="av_timer" Click="ToScoreBoard"></RadzenButton>
                                 <RadzenButton Style=@buttonStyle class="button circle-button" Icon="computer"></RadzenButton>
                                 <RadzenButton Style=@buttonStyle class="button circle-button" Icon="list"></RadzenButton>
                                 <RadzenButton Style=@buttonStyle class="button circle-button" Icon="align_horizontal_left"></RadzenButton>
@@ -170,7 +174,23 @@
         </RadzenTabsItem>
 
         <RadzenTabsItem Text="Судьи">
+            <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="10"
+                        AllowSorting="true" Data="competitors" TItem="Competitor" AllowColumnResize="true">
+                <Columns>
+                    <RadzenGridColumn TItem="Competitor" Property="Id" Title="Id" />
+                    <RadzenGridColumn TItem="Competitor" Property="FirstName" Title="Имя" />
+                    <RadzenGridColumn TItem="Competitor" Property="LastName" Title="Фамилия" />
+                    <RadzenGridColumn TItem="Competitor" Property="BirthDate.ToShortDateString()" Title="Дата рождения" />
+                    <RadzenGridColumn TItem="Competitor" Property="Grade" Title="Пояс" />
+                    <RadzenGridColumn TItem="Competitor" Property="Country" Title="Страна" />
+                    <RadzenGridColumn TItem="Competitor" Property="City" Title="Город" />
+                    <RadzenGridColumn TItem="Competitor" Property="Club" Title="Клуб" />
+                    <RadzenGridColumn TItem="Competitor" Property="Rating" Title="Рейтинг" />
+                    <RadzenGridColumn TItem="Competitor" Property="Competition" Title="Соревнования" />
+                    <RadzenGridColumn TItem="Competitor" Property="Actions" />
 
+                </Columns>
+            </RadzenGrid>
         </RadzenTabsItem>
     </Tabs>
 </RadzenTabs>
@@ -243,5 +263,10 @@
             competitors.Add(result.Data as Competitor);
             await competitorGrid.Reload();
         }
+    }
+
+    void ToScoreBoard()
+    {
+        NavigationManager.NavigateTo("/scoreboard");
     }
 }

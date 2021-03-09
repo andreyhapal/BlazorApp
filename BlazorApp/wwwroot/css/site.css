@@ -41,10 +41,10 @@ app {
             margin-left: 1.5rem;
         }
 
-.main .top-row a:first-child {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+        .main .top-row a:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
 .sidebar {
     background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
@@ -133,12 +133,12 @@ app {
     z-index: 1000;
 }
 
-#blazor-error-ui .dismiss {
-    cursor: pointer;
-    position: absolute;
-    right: 0.75rem;
-    top: 0.5rem;
-}
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
 
 @media (max-width: 767.98px) {
     .main .top-row:not(.auth) {
@@ -160,7 +160,7 @@ app {
     }
 
     .sidebar {
-        width: 250px;
+        width: 200px;
         height: 100vh;
         position: sticky;
         top: 0;
@@ -171,7 +171,7 @@ app {
         top: 0;
     }
 
-   
+
 
     .navbar-toggler {
         display: none;
@@ -181,14 +181,15 @@ app {
         /* Never collapse the sidebar for wide screens */
         display: block;
     }
+
     .category-table {
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         border: 1px solid #ddd;
         border-color: black;
         border-collapse: collapse;
-        width:100%;
+        width: 100%;
     }
-    
+
     /*tr,td {
         border: 1px solid #ddd;
         min-width: 100px;
@@ -200,30 +201,30 @@ app {
         background-color:#1b6ec2;
             border:1px solid white;
     }*/
-    .main-header{
-        padding-left:15px;
-        margin-bottom:15px;
+    .main-header {
+        padding-left: 15px;
+        margin-bottom: 15px;
     }
-    
+
     @media screen and (min-width: 676px) {
         .modal-dialog {
             max-width: 1000px; /* New width for default modal */
-            margin:auto;
+            margin: auto;
         }
     }
-    .list-box{
-        height:300px;
+
+    .list-box {
+        height: 300px;
     }
+
     .main-header-div {
-        justify-content:center;
-        padding:10px;
+        justify-content: center;
+        padding: 10px;
         height: 70px;
         background-image: linear-gradient(90deg, rgb(5, 39, 103) 0%, #3a0647 70%);
         color: white;
         width: 100%;
     }
-
-    
 }
 
 td {
@@ -236,9 +237,9 @@ td {
     margin: 10px;
 }
 
-.add-competitor-form{
-    margin:7px;
-    width:100%;
+.add-competitor-form {
+    margin: 7px;
+    width: 100%;
 }
 
 .expand-panel {
@@ -254,39 +255,38 @@ td {
 }
 
     .default-panel:hover {
-        background-color:#f2f2f2
+        background-color: #f2f2f2
     }
 
-    .card-header {
-        color: white;
-        height: 50px;
-        background-color: #4287f5;
-        width: 100%;
-        text-align: center;
-        vertical-align: central;
-    }
-
-.card-status{
-    background-color:gray;
-    color:white;
-    text-align:center;
-    vertical-align:central;
-    height:20px;
-    width:100%;
+.card-header {
+    color: white;
+    height: 50px;
+    background-color: #4287f5;
+    width: 100%;
+    text-align: center;
+    vertical-align: central;
 }
 
-.card-content{
-    height:130px;
-    width:100%;
-    
+.card-status {
+    background-color: gray;
+    color: white;
+    text-align: center;
+    vertical-align: central;
+    height: 20px;
+    width: 100%;
 }
 
-.card-footer{
-    padding:8px 20px;
-    height:70px;
-    width:100%;
-    display:flex;
-    justify-content:space-around;
+.card-content {
+    height: 130px;
+    width: 100%;
+}
+
+.card-footer {
+    padding: 8px 20px;
+    height: 70px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
 }
 
 .button {
@@ -299,10 +299,10 @@ td {
     display: inline-block;
     font-size: 16px;
     margin: 4px 2px;
-    align-content:center;
-    justify-content:center;
+    align-content: center;
+    justify-content: center;
 }
 
-.circle-button{
-    border-radius:50%;
+.circle-button {
+    border-radius: 50%;
 }
