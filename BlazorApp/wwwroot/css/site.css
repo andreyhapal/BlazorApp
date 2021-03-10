@@ -324,12 +324,12 @@ td {
     justify-content:center;
 }
 .category-divide {
-    width:800px;
+    width:100%;
     table-layout: fixed;
 }
 .category-divide tbody{
     overflow:auto;
-    height:250px;
+    height:130px;
     display:block;
 }
 

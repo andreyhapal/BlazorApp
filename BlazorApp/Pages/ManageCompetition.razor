@@ -56,9 +56,9 @@
         </RadzenTabsItem>
 
         <RadzenTabsItem Text="Категории">
-            <RadzenButton Text="Добавить" class="primary-button m" Click=@AddCompetitionCategory/>
-            <RadzenButton Text="Разбить" class="primary-button m" Click=@DivideCategory/>
-            <RadzenButton Text="Объеденить" class="primary-button m" Click=@MergeCategory/>
+            <RadzenButton Text="Добавить" class="primary-button m" Click=@AddCompetitionCategory />
+            <RadzenButton Text="Разбить" class="primary-button m" Click=@DivideCategory />
+            <RadzenButton Text="Объеденить" class="primary-button m" Click=@MergeCategory />
             <RadzenGrid @ref="categoryGrid" AllowFiltering="true" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="10"
                         AllowSorting="true" Data="Categories" TItem="Category" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValuesCategory>
                 <Columns>
@@ -137,14 +137,15 @@
                                     }
                                 </tbody>
                             </table>
-                            <div>@*ASd*@
+                            <div>
+                                @*ASd*@
                                 <RadzenCheckBox TValue="bool" Style="margin: 10px;" />
                                 <RadzenLabel Text="Бой за третье место" Component="CheckBox1" Style="margin:10px;" />
                                 <RadzenButton Text="Генерировать пулю" class="primary-button m" />
                                 <RadzenButton Text="Удалить пулю" class="primary-button m" />
                                 <RadzenButton Text="Сохранить пулю" class="primary-button m" />
-                                <RadzenButton Text="Следующая" class="primary-button m f-r"/>
-                                <RadzenButton Text="Предыдущая" class="primary-button m f-r"/>
+                                <RadzenButton Text="Следующая" class="primary-button m f-r" />
+                                <RadzenButton Text="Предыдущая" class="primary-button m f-r" />
                             </div>
                         </RadzenAccordionItem>
                     }
@@ -167,15 +168,27 @@
                                 <h6 style="margin-bottom:0px;">Количество боев @tatami.AmountOfMatches</h6>
                             </div>
                             <div class="card-content">
-
+                                <table class="category-divide">
+                                    <tbody>
+                                        @foreach (var c in Categories)
+                                        {
+                                            <tr>
+                                                <td style="border-bottom:1px solid gray;width:448px;">
+                                                    @c.Name
+                                                </td>
+                                                
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
                             </div>
                             <div class="card-footer">
-                                <RadzenButton  class="button circle-button primary-button m" Icon="build" MouseEnter="@(args => ShowTooltip(args,"Настройки") )"/>
-                                <RadzenButton  class="button circle-button primary-button m" Icon="av_timer"  MouseEnter="@(args => ShowTooltip(args,"Таймер") )"Click="ToScoreBoard"/>
-                                <RadzenButton  class="button circle-button primary-button m" Icon="computer"  MouseEnter="@(args => ShowTooltip(args,"Компьютер") )"/>
-                                <RadzenButton  class="button circle-button primary-button m" Icon="list"  MouseEnter="@(args => ShowTooltip(args,"Список") )"/>
-                                <RadzenButton  class="button circle-button primary-button m" Icon="align_horizontal_left"  MouseEnter="@(args => ShowTooltip(args,"Пули") )"/>
-                                <RadzenButton  class="button circle-button primary-button m" Icon="face"  MouseEnter="@(args => ShowTooltip(args,"Подготовка участников") )"/>
+                                <RadzenButton class="button circle-button primary-button m" Icon="build" MouseEnter="@(args => ShowTooltip(args,"Настройки") )" />
+                                <RadzenButton class="button circle-button primary-button m" Icon="av_timer" MouseEnter="@(args => ShowTooltip(args,"Таймер") )" Click="ToScoreBoard" />
+                                <RadzenButton class="button circle-button primary-button m" Icon="computer" MouseEnter="@(args => ShowTooltip(args,"Компьютер") )" />
+                                <RadzenButton class="button circle-button primary-button m" Icon="list" MouseEnter="@(args => ShowTooltip(args,"Список") )" />
+                                <RadzenButton class="button circle-button primary-button m" Icon="align_horizontal_left" MouseEnter="@(args => ShowTooltip(args,"Пули") )" />
+                                <RadzenButton class="button circle-button primary-button m" Icon="face" MouseEnter="@(args => ShowTooltip(args,"Подготовка участников") )" />
                             </div>
                         </RadzenCard>
                     </div>
@@ -208,22 +221,22 @@
 
 @code {
 
-        [Parameter]
-        public string Name { get; set; }
-        [Parameter]
-        public string Id { get; set; }
-        [CascadingParameter]
-        public IModalService Modal { get; set; }
+    [Parameter]
+    public string Name { get; set; }
+    [Parameter]
+    public string Id { get; set; }
+    [CascadingParameter]
+    public IModalService Modal { get; set; }
 
-        object multipleValues;
-        object multipleValuesCategory;
-        RadzenGrid<Competitor> competitorGrid;
-        RadzenGrid<Category> categoryGrid;
+    object multipleValues;
+    object multipleValuesCategory;
+    RadzenGrid<Competitor> competitorGrid;
+    RadzenGrid<Category> categoryGrid;
 
-        List<Competitor> competitors = new List<Competitor>();
-        List<Category> Categories = new List<Category>();
-        List<string> Grades = new List<string>();
-        List<Tatami> Tatamies = new List<Tatami>();
+    List<Competitor> competitors = new List<Competitor>();
+    List<Category> Categories = new List<Category>();
+    List<string> Grades = new List<string>();
+    List<Tatami> Tatamies = new List<Tatami>();
 
     private bool[] expanded = { false, false, false, false };
     private void Change(int panelNumber, bool expand)
@@ -289,23 +302,23 @@
     {
         var form = Modal.Show<AddCompetitionCategoryForm>("Добавить соревновательную категорию");
         var result = await form.Result;
-        if(result.Data != null)
+        if (result.Data != null)
         {
             Categories.Add(result.Data as Category);
             await categoryGrid.Reload();
         }
     }
 
-    void ShowTooltip(ElementReference elementReference, string message,TooltipOptions options = null) => tooltipService.Open(elementReference, message, options);
+    void ShowTooltip(ElementReference elementReference, string message, TooltipOptions options = null) => tooltipService.Open(elementReference, message, options);
 
     async Task DivideCategory()
     {
-        if((multipleValuesCategory as IEnumerable<Category>).ToList().Count==1)
+        if ((multipleValuesCategory as IEnumerable<Category>).ToList().Count == 1)
         {
             ModalParameters parameters = new ModalParameters();
             parameters.Add(nameof(Category), (multipleValuesCategory as IEnumerable<Category>).ToList()[0]);
 
-            var form = Modal.Show<DivideCompetitionCategory>("Разбиение соревновательной категории",parameters);
+            var form = Modal.Show<DivideCompetitionCategory>("Разбиение соревновательной категории", parameters);
             var result = await form.Result;
             if (result.Data != null)
             {
@@ -317,7 +330,7 @@
 
     void MergeCategory()
     {
-        if((multipleValuesCategory as IEnumerable<Category>).ToList().Count > 1)
+        if ((multipleValuesCategory as IEnumerable<Category>).ToList().Count > 1)
         {
             var s = (multipleValuesCategory as IEnumerable<Category>).ToList();
             var maxAge = s.Max(x => x.AgeTo);
@@ -335,7 +348,7 @@
                 Sex = sex,
                 Name = name
             });
-            foreach(var c in s)
+            foreach (var c in s)
             {
                 Categories.Remove(c);
             }
