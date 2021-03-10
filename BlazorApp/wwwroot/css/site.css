@@ -317,3 +317,19 @@ td {
     .primary-button.m.f-r{
         float:right;
     }
+
+.center-content {
+    align-items:center;
+    display:flex;
+    justify-content:center;
+}
+.category-divide {
+    width:800px;
+    table-layout: fixed;
+}
+.category-divide tbody{
+    overflow:auto;
+    height:250px;
+    display:block;
+}
+

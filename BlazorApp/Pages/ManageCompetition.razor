@@ -34,7 +34,7 @@
                     <RadzenGridColumn TItem="Competitor" Property="StartNumber" Title="Номер" />
                     <RadzenGridColumn TItem="Competitor" Property="FirstName" Title="Имя" />
                     <RadzenGridColumn TItem="Competitor" Property="LastName" Title="Фамилия" />
-                    <RadzenGridColumn TItem="Competitor" Property="BirthDate" Title="Дата рождения" />
+                    <RadzenGridColumn TItem="Competitor" Property="BirthDate.ToShortDateString()" Title="Дата рождения" />
                     <RadzenGridColumn TItem="Competitor" Property="Grade" Title="Пояс" />
                     <RadzenGridColumn TItem="Competitor" Property="Country" Title="Страна" />
                     <RadzenGridColumn TItem="Competitor" Property="City" Title="Город" />
@@ -57,11 +57,20 @@
 
         <RadzenTabsItem Text="Категории">
             <RadzenButton Text="Добавить" class="primary-button m" Click=@AddCompetitionCategory/>
-            <RadzenButton Text="Разбить" class="primary-button m"/>
-            <RadzenButton Text="Объеденить" class="primary-button m"/>
+            <RadzenButton Text="Разбить" class="primary-button m" Click=@DivideCategory/>
+            <RadzenButton Text="Объеденить" class="primary-button m" Click=@MergeCategory/>
             <RadzenGrid @ref="categoryGrid" AllowFiltering="true" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="10"
-                        AllowSorting="true" Data="Categories" TItem="Category">
+                        AllowSorting="true" Data="Categories" TItem="Category" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValuesCategory>
                 <Columns>
+                    <RadzenGridColumn TItem="Category" Width="40px" Sortable="false" Filterable="false">
+                        <HeaderTemplate>
+                            <RadzenCheckBox TriState="false" TValue="bool" Value="@(Categories.Any(i => multipleValuesCategory != null && (multipleValuesCategory as IEnumerable<Category>).Contains(i)))"
+                                            Change="@(args => multipleValuesCategory = args ? Categories : null)" />
+                        </HeaderTemplate>
+                        <Template Context="data">
+                            <RadzenCheckBox TriState="false" Value="@(multipleValuesCategory != null && (multipleValuesCategory as IEnumerable<Category>).Contains(data))" />
+                        </Template>
+                    </RadzenGridColumn>
                     <RadzenGridColumn TItem="Category" Property="Id" Title="ID" />
                     <RadzenGridColumn TItem="Category" Property="Name" Title="Наименование" />
                     <RadzenGridColumn TItem="Category" Property="NumberOfCompetitors" Title="Количество участников" />
@@ -199,21 +208,22 @@
 
 @code {
 
-    [Parameter]
-    public string Name { get; set; }
-    [Parameter]
-    public string Id { get; set; }
-    [CascadingParameter]
-    public IModalService Modal { get; set; }
+        [Parameter]
+        public string Name { get; set; }
+        [Parameter]
+        public string Id { get; set; }
+        [CascadingParameter]
+        public IModalService Modal { get; set; }
 
-    object multipleValues;
-    RadzenGrid<Competitor> competitorGrid;
-    RadzenGrid<Category> categoryGrid;
+        object multipleValues;
+        object multipleValuesCategory;
+        RadzenGrid<Competitor> competitorGrid;
+        RadzenGrid<Category> categoryGrid;
 
-    List<Competitor> competitors = new List<Competitor>();
-    List<Category> Categories = new List<Category>();
-    List<string> Grades = new List<string>();
-    List<Tatami> Tatamies = new List<Tatami>();
+        List<Competitor> competitors = new List<Competitor>();
+        List<Category> Categories = new List<Category>();
+        List<string> Grades = new List<string>();
+        List<Tatami> Tatamies = new List<Tatami>();
 
     private bool[] expanded = { false, false, false, false };
     private void Change(int panelNumber, bool expand)
@@ -237,12 +247,15 @@
 
     void Activate()
     {
-        var selectedIds = (multipleValues as IEnumerable<Competitor>).Select(x => x.Id).ToList();
-        foreach (var id in selectedIds)
+        if (multipleValues != null)
         {
-            competitors.FirstOrDefault(x => x.Id == id).IsActive = true;
+            var selectedIds = (multipleValues as IEnumerable<Competitor>).Select(x => x.Id).ToList();
+            foreach (var id in selectedIds)
+            {
+                competitors.FirstOrDefault(x => x.Id == id).IsActive = true;
+            }
+            competitorGrid.Reload();
         }
-        competitorGrid.Reload();
     }
 
     async void LoadFromCSV()
@@ -272,15 +285,61 @@
         NavigationManager.NavigateTo("/scoreboard");
     }
 
-    void AddCompetitionCategory()
+    async Task AddCompetitionCategory()
     {
-
+        var form = Modal.Show<AddCompetitionCategoryForm>("Добавить соревновательную категорию");
+        var result = await form.Result;
+        if(result.Data != null)
+        {
+            Categories.Add(result.Data as Category);
+            await categoryGrid.Reload();
+        }
     }
-
-    ElementReference htmlButton;
-    RadzenButton radzenButton;
 
     void ShowTooltip(ElementReference elementReference, string message,TooltipOptions options = null) => tooltipService.Open(elementReference, message, options);
 
-    
+    async Task DivideCategory()
+    {
+        if((multipleValuesCategory as IEnumerable<Category>).ToList().Count==1)
+        {
+            ModalParameters parameters = new ModalParameters();
+            parameters.Add(nameof(Category), (multipleValuesCategory as IEnumerable<Category>).ToList()[0]);
+
+            var form = Modal.Show<DivideCompetitionCategory>("Разбиение соревновательной категории",parameters);
+            var result = await form.Result;
+            if (result.Data != null)
+            {
+                Categories.AddRange((List<Category>)result.Data);
+                await categoryGrid.Reload();
+            }
+        }
+    }
+
+    void MergeCategory()
+    {
+        if((multipleValuesCategory as IEnumerable<Category>).ToList().Count > 1)
+        {
+            var s = (multipleValuesCategory as IEnumerable<Category>).ToList();
+            var maxAge = s.Max(x => x.AgeTo);
+            var minAge = s.Min(x => x.AgeFrom);
+            var minWeight = s.Min(x => x.WeightFrom);
+            var maxWeight = s.Max(x => x.WeightTo);
+            var sex = s[0].Sex;
+            var name = minAge + "-" + maxAge + " " + sex + " " + minWeight + "-" + maxWeight;
+            Categories.Add(new Category()
+            {
+                AgeFrom = minAge,
+                AgeTo = maxAge,
+                WeightFrom = minWeight,
+                WeightTo = maxWeight,
+                Sex = sex,
+                Name = name
+            });
+            foreach(var c in s)
+            {
+                Categories.Remove(c);
+            }
+            categoryGrid.Reload();
+        }
+    }
 }

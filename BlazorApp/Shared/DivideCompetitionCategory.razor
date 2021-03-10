@@ -1,0 +1,120 @@
+﻿@using BlazorApp.Data
+
+@inject CategoryService CategoryService
+<div class="container" style="justify-content:center;">
+    <div class="row" style="text-align:center">
+        <h2 style="margin:auto;padding-bottom:20px;margin-top:-25px;">Название категории: @Category.Name</h2>
+    </div>
+    <div class="row">
+        <div class="col center-content">
+            <RadzenListBox Data="@ages" @bind-Value="SelectedAges" Multiple="true" TValue="object" />
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col center-content" style="display:flex;justify-content:space-between;padding:15px;">
+                    <RadzenLabel Text="Открытая граница"></RadzenLabel>
+                    <RadzenSwitch @bind-Value="@LeftBorder"></RadzenSwitch>
+                </div>
+                <div class="col center-content" style="display:flex;justify-content:space-between;padding:15px;">
+                    <RadzenLabel Text="Открытая граница"></RadzenLabel>
+                    <RadzenSwitch @bind-Value="@RightBorder"></RadzenSwitch>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col center-content">
+                    <RadzenNumeric @bind-Value="@Category.WeightFrom" TValue="int" Disabled="@LeftBorder" Style="width:100%;" Placeholder="Возраст ОТ"></RadzenNumeric>
+                </div>
+                <div class="col center-content">
+                    <RadzenNumeric @bind-Value="@Category.WeightTo" TValue="int" Disabled="@RightBorder" Style="width:100%;" Placeholder="Возраст ДО"></RadzenNumeric>
+                </div>
+            </div>
+        </div>
+        <div class="col center-content" style="align-items:center;display:flex;justify-content:center">
+            <RadzenListBox Data="@grades" @bind-Value="SelectedGrades" Multiple="true" TValue="object" />
+        </div>
+    </div>
+    <hr class="m-3" />
+    <div class="row">
+        <RadzenButton Text="Сохранить категорию" class="primary-button m" Style="margin-left:30px;" Click="SaveCategory" />
+    </div>
+    <hr class="m-3" />
+    <div class="row">
+        @if (DividedCategories.Count > 0)
+        {
+            <table class="category-divide" style="margin-left:30px;">
+                <tbody>
+
+                    @foreach (var category in DividedCategories)
+                    {
+                        <tr>
+                            <td style="margin:10px;width:500px;">@category.Name</td>
+                            <td style="margin:10px;">
+                                <RadzenButton Text="Удалить" ButtonStyle="ButtonStyle.Danger" Click="()=>Remove(category)" />
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        }
+    </div>
+    <hr class="m-3" />
+    <div class="row">
+        <RadzenButton Text="Сохранить" class="primary-button m" Style="margin-left:30px;" Click="SubmitForm" />
+        <RadzenButton Text="Отмена" class="btn-secondary primary-button m" Click="Cancel" />
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public Category Category { get; set; }
+
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; }
+
+    bool LeftBorder, RightBorder;
+
+    object SelectedAges;
+    object SelectedGrades;
+
+    List<Category> DividedCategories = new List<Category>();
+    List<Category> Categories = new List<Category>();
+    List<int> ages = new List<int>();
+    List<string> grades = new List<string>();
+    protected override void OnInitialized()
+    {
+        for (int i = Category.AgeFrom; i <= Category.AgeTo; i++)
+        {
+            ages.Add(i);
+        }
+        grades = CategoryService.GetGrades();
+    }
+
+    void SaveCategory()
+    {
+        var s = (SelectedAges as IEnumerable<int>).ToList();
+        s.Sort();
+        Category category = new Category();
+        category.AgeFrom = s[0];
+        category.AgeTo = s[1];
+        category.Sex = Category.Sex;
+        category.WeightFrom = Category.WeightFrom;
+        category.WeightTo = Category.WeightTo;
+        category.Name = category.AgeFrom + "-" + category.AgeTo + " " + category.Sex + " " + category.WeightFrom + "-" + category.WeightTo;
+
+        DividedCategories.Add(category);
+
+        StateHasChanged();
+        
+    }
+
+    void Remove(Category category)
+    {
+        DividedCategories.Remove(category);
+        StateHasChanged();
+    }
+
+    async Task SubmitForm() => await BlazoredModal.CloseAsync(ModalResult.Ok(DividedCategories));
+    async Task Cancel() => await BlazoredModal.CancelAsync();
+}

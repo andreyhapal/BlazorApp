@@ -1,0 +1,33 @@
+﻿@using BlazorApp.Data
+@inject CategoryService CategoryService
+
+<RadzenTemplateForm TItem="Category" Data="Category" Submit="SubmitForm" InvalidSubmit="InvalidSubmit">
+    <div class="container" style="justify-content:center;">
+        <div class="row">
+            <RadzenDropDown Data=@Categories TextProperty="Name" ValueProperty="Id" TValue="string">
+
+            </RadzenDropDown>
+        </div>
+        <div class="row">
+            <RadzenButton Text="Сохранить" class="primary-button m" ButtonType="ButtonType.Submit"/>
+            <RadzenButton Text="Отмена" class="btn-secondary primary-button m" Click="Cancel"/>
+        </div>
+    </div>
+</RadzenTemplateForm>
+    @code {
+        [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+        List<Category> Categories = new List<Category>();
+        Category Category = new Category();
+        protected override void OnInitialized()
+        {
+            Categories = CategoryService.GetCategories();
+        }
+
+        void InvalidSubmit()
+        {
+
+        }
+        async Task SubmitForm() => await BlazoredModal.CloseAsync(ModalResult.Ok(Category));
+        async Task Cancel() => await BlazoredModal.CancelAsync();
+    }
