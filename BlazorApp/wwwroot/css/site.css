@@ -307,3 +307,13 @@ td {
     border-radius: 50%;
 }
 
+.primary-button {
+    
+    background-color: #4287f5 !important; 
+}
+    .primary-button.m {
+        margin: 10px;
+    }
+    .primary-button.m.f-r{
+        float:right;
+    }

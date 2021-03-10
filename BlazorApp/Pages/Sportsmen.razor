@@ -7,7 +7,7 @@
 <div class="main-header-div">
 <h1 class="main-header">Спортсмены</h1>
     </div>
-<RadzenButton Icon="add_circle_outline" style="margin: 10px;background-color: #4287f5;" Text="Добавить" Click="@InsertRow" />
+<RadzenButton Icon="add_circle_outline" class="primary-button m" Text="Добавить" Click="@InsertRow" />
 <RadzenGrid @ref="sportsmenGrid" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Advanced" AllowPaging="true" PageSize="10"
             AllowSorting="true" Data="@sportsmen" TItem="Sportsman" AllowColumnResize="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValues
             RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
@@ -71,7 +71,7 @@
         </RadzenGridColumn>
         <RadzenGridColumn TItem="Sportsman" Context="sportsman" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="100px">
             <Template Context="sportsman">
-                <RadzenButton Icon="edit" Size="ButtonSize.Small" Click="@(args => EditRow(sportsman))">
+                <RadzenButton Icon="edit" Size="ButtonSize.Small" class="primary-button" Click="@(args => EditRow(sportsman))">
                 </RadzenButton>
             </Template>
             <EditTemplate Context="sportsman">
@@ -83,11 +83,11 @@
         </RadzenGridColumn>
         <RadzenGridColumn TItem="Sportsman" Context="sportsman" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="70px">
             <Template Context="sportsman">
-                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click="@(args => DeleteRow(sportsman))">
+                <RadzenButton Icon="close" class="btn-danger" Size="ButtonSize.Small" Click="@(args => DeleteRow(sportsman))">
                 </RadzenButton>
             </Template>
             <EditTemplate Context="sportsman">
-                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click="@(args => DeleteRow(sportsman))">
+                <RadzenButton Icon="close" class="btn-danger" Size="ButtonSize.Small" Click="@(args => DeleteRow(sportsman))">
                 </RadzenButton>
             </EditTemplate>
         </RadzenGridColumn>

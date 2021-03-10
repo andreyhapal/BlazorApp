@@ -15,9 +15,9 @@
 <RadzenTabs>
     <Tabs>
         <RadzenTabsItem Text="Участники">
-            <RadzenButton Icon="add_circle_outline" Style=@buttonStyle Text="Добавить" Click="@AddCompetitor" />
-            <RadzenButton Icon="done" Style=@buttonStyle Text="Активировать" Click="@Activate" />
-            <RadzenButton Icon="description" Style=@buttonStyle Text="Загрузить из CSV" Click="@LoadFromCSV" />
+            <RadzenButton Icon="add_circle_outline" class="primary-button m" Text="Добавить" Click="@AddCompetitor" />
+            <RadzenButton Icon="done" class="primary-button m" Text="Активировать" Click="@Activate" />
+            <RadzenButton Icon="description" class="primary-button m" Text="Загрузить из CSV" Click="@LoadFromCSV" />
             <RadzenGrid @ref="competitorGrid" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="10"
                         AllowSorting="true" Data="competitors" TItem="Competitor" AllowColumnResize="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValues>
                 <Columns>
@@ -44,7 +44,7 @@
                     <RadzenGridColumn TItem="Competitor" Property="IsActive" Title="Активный" />
                     <RadzenGridColumn TItem="Competitor" Context="competitor" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
                         <Template Context="competitor">
-                            <RadzenButton Icon="edit" Size="ButtonSize.Medium" Style=@buttonStyle>
+                            <RadzenButton Icon="edit" Size="ButtonSize.Medium" class="primary-button">
                             </RadzenButton>
                             <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Medium" Click="@(args => DeleteRow(competitor))">
                             </RadzenButton>
@@ -56,9 +56,9 @@
         </RadzenTabsItem>
 
         <RadzenTabsItem Text="Категории">
-            <RadzenButton Text="Добавить" Style=@buttonStyle Click="@AddCompetitor"></RadzenButton>
-            <RadzenButton Text="Разбить" Style=@buttonStyle></RadzenButton>
-            <RadzenButton Text="Объеденить" Style=@buttonStyle></RadzenButton>
+            <RadzenButton Text="Добавить" class="primary-button m" Click=@AddCompetitionCategory/>
+            <RadzenButton Text="Разбить" class="primary-button m"/>
+            <RadzenButton Text="Объеденить" class="primary-button m"/>
             <RadzenGrid @ref="categoryGrid" AllowFiltering="true" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="10"
                         AllowSorting="true" Data="Categories" TItem="Category">
                 <Columns>
@@ -70,7 +70,7 @@
         </RadzenTabsItem>
 
         <RadzenTabsItem Text="Жеребьевка(пули)">
-            <RadzenButton Text="Генерировать все пули" Style=@buttonStyle />
+            <RadzenButton Text="Генерировать все пули" class="primary-button m" />
             <RadzenAccordion>
                 <Items>
                     @foreach (var category in Categories)
@@ -128,14 +128,14 @@
                                     }
                                 </tbody>
                             </table>
-                            <div style="justify-content:space-between;">
+                            <div>@*ASd*@
                                 <RadzenCheckBox TValue="bool" Style="margin: 10px;" />
                                 <RadzenLabel Text="Бой за третье место" Component="CheckBox1" Style="margin:10px;" />
-                                <RadzenButton Text="Генерировать пулю" Style=@buttonStyle />
-                                <RadzenButton Text="Удалить пулю" Style=@buttonStyle />
-                                <RadzenButton Text="Сохранить пулю" Style=@buttonStyle />
-                                <RadzenButton Text="Следующая" Style="float:right;margin:10px;background-color: #4287f5;"></RadzenButton>
-                                <RadzenButton Text="Предыдущая" Style="float:right;margin:10px;background-color: #4287f5;"></RadzenButton>
+                                <RadzenButton Text="Генерировать пулю" class="primary-button m" />
+                                <RadzenButton Text="Удалить пулю" class="primary-button m" />
+                                <RadzenButton Text="Сохранить пулю" class="primary-button m" />
+                                <RadzenButton Text="Следующая" class="primary-button m f-r"/>
+                                <RadzenButton Text="Предыдущая" class="primary-button m f-r"/>
                             </div>
                         </RadzenAccordionItem>
                     }
@@ -144,7 +144,7 @@
         </RadzenTabsItem>
 
         <RadzenTabsItem Text="Татами">
-            <RadzenButton Text="Добавить татами" Style=@buttonStyle />
+            <RadzenButton Text="Добавить татами" class="primary-button m" />
             <div class="row row-cols-3" style="justify-content:space-around">
                 @foreach (var tatami in Tatamies)
                 {
@@ -161,12 +161,12 @@
 
                             </div>
                             <div class="card-footer">
-                                <RadzenButton Style=@buttonStyle class="button circle-button" Icon="build" MouseEnter="@(args => ShowTooltipSettings(args) )"></RadzenButton>
-                                <RadzenButton Style=@buttonStyle class="button circle-button" Icon="av_timer" Click="ToScoreBoard"></RadzenButton>
-                                <RadzenButton Style=@buttonStyle class="button circle-button" Icon="computer"></RadzenButton>
-                                <RadzenButton Style=@buttonStyle class="button circle-button" Icon="list"></RadzenButton>
-                                <RadzenButton Style=@buttonStyle class="button circle-button" Icon="align_horizontal_left"></RadzenButton>
-                                <RadzenButton Style=@buttonStyle class="button circle-button" Icon="face"></RadzenButton>
+                                <RadzenButton  class="button circle-button primary-button m" Icon="build" MouseEnter="@(args => ShowTooltip(args,"Настройки") )"/>
+                                <RadzenButton  class="button circle-button primary-button m" Icon="av_timer"  MouseEnter="@(args => ShowTooltip(args,"Таймер") )"Click="ToScoreBoard"/>
+                                <RadzenButton  class="button circle-button primary-button m" Icon="computer"  MouseEnter="@(args => ShowTooltip(args,"Компьютер") )"/>
+                                <RadzenButton  class="button circle-button primary-button m" Icon="list"  MouseEnter="@(args => ShowTooltip(args,"Список") )"/>
+                                <RadzenButton  class="button circle-button primary-button m" Icon="align_horizontal_left"  MouseEnter="@(args => ShowTooltip(args,"Пули") )"/>
+                                <RadzenButton  class="button circle-button primary-button m" Icon="face"  MouseEnter="@(args => ShowTooltip(args,"Подготовка участников") )"/>
                             </div>
                         </RadzenCard>
                     </div>
@@ -198,7 +198,6 @@
 
 
 @code {
-    string buttonStyle = "margin:10px;background-color: #4287f5;";
 
     [Parameter]
     public string Name { get; set; }
@@ -273,19 +272,15 @@
         NavigationManager.NavigateTo("/scoreboard");
     }
 
+    void AddCompetitionCategory()
+    {
+
+    }
+
     ElementReference htmlButton;
     RadzenButton radzenButton;
 
-    void ShowTooltipSettings(ElementReference elementReference, TooltipOptions options = null) => tooltipService.Open(elementReference, "Настройки", options);
-    void ShowTooltipTimer(ElementReference elementReference, TooltipOptions options = null) => tooltipService.Open(elementReference, "Таймер", options);
-    void ShowTooltipComp(ElementReference elementReference, TooltipOptions options = null) => tooltipService.Open(elementReference, "Компутер", options);
-    void ShowTooltipList(ElementReference elementReference, TooltipOptions options = null) => tooltipService.Open(elementReference, "Список", options);
-    void ShowTooltipBullet(ElementReference elementReference, TooltipOptions options = null) => tooltipService.Open(elementReference, "Пули", options);
-    void ShowTooltipHead(ElementReference elementReference, TooltipOptions options = null) => tooltipService.Open(elementReference, "Спортсмены", options);
+    void ShowTooltip(ElementReference elementReference, string message,TooltipOptions options = null) => tooltipService.Open(elementReference, message, options);
 
-
-    void ShowTooltipWithHtml(ElementReference elementReference, TooltipOptions options = null) => tooltipService.Open(elementReference, ds =>
-    @<div>
-        Some <b>HTML</b> content
-    </div>, options);
+    
 }

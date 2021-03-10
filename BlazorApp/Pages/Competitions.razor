@@ -7,7 +7,7 @@
 </div>
 
 
-<RadzenButton Icon="add_circle_outline" Style="margin: 10px;background-color: #4287f5;" Text="Добавить" Click="@InsertRow" />
+<RadzenButton Icon="add_circle_outline" class="primary-button m" Text="Добавить" Click="@InsertRow" />
 <RadzenGrid @ref="competitionGrid" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Advanced" AllowPaging="true" PageSize="10"
             AllowSorting="true" Data="competitions" TItem="Competition" AllowColumnResize="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValues
             RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
@@ -46,16 +46,16 @@
         </RadzenGridColumn>
         <RadzenGridColumn TItem="Competition" Context="competition" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="200px">
             <Template Context="competition">
-                <RadzenButton Icon="edit" Size="ButtonSize.Medium" Click="@(args => EditRow(competition))" Style="background-color: #4287f5;">
+                <RadzenButton Icon="edit" Size="ButtonSize.Medium" Click="@(args => EditRow(competition))" class="primary-button">
+                </RadzenButton>
+                <RadzenButton class="primary-button" Icon="account_circle" Size="ButtonSize.Medium" Click="@(()=>RedirectToManage(competition))">
                 </RadzenButton>
                 <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Medium" Click="@(args => DeleteRow(competition))">
                 </RadzenButton>
-                <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="account_circle" Size="ButtonSize.Medium" Click="@(()=>RedirectToManage(competition))">
 
-                </RadzenButton>
             </Template>
             <EditTemplate Context="competition">
-                <RadzenButton Icon="save" Size="ButtonSize.Medium" Click="@((args) => SaveRow(competition))" Style="background-color: #4287f5;">
+                <RadzenButton Icon="save" Size="ButtonSize.Medium" Click="@((args) => SaveRow(competition))" class="primary-button">
                 </RadzenButton>
                 <RadzenButton Icon="cancel" Size="ButtonSize.Medium" ButtonStyle="ButtonStyle.Secondary" Click="@((args) => CancelEdit(competition))">
                 </RadzenButton>
