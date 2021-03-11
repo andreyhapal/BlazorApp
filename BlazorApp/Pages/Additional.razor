@@ -1,0 +1,34 @@
+﻿@page "/additional"
+
+@using System.Net.Mail
+@using System.Net
+@inject BlazorApp.Data.CategoryService CategoryService
+
+<button class="btn btn-primary" @onclick="SendMessage">Рассылка</button>
+
+
+@code {
+        List<string> mails = new List<string>();
+    protected override void OnInitialized()
+    {
+        mails = CategoryService.GetEmails();
+    }
+
+    void SendMessage()
+    {
+        MailAddress from = new MailAddress("minsk.samurai.app@gmail.com", "Автор");
+        foreach (var c in mails)
+        {
+            MailAddress to = new MailAddress(c);
+            MailMessage m = new MailMessage(from, to);
+            m.Subject = "Тест";
+            m.Body = "<h2>опа</h2>";
+            m.IsBodyHtml = true;
+            // адрес smtp-сервера и порт, с которого будем отправлять письмо
+            SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+            smtp.Credentials = new NetworkCredential("minsk.samurai.app@gmail.com", "1234QwEr");
+            smtp.EnableSsl = true;
+            smtp.Send(m);
+        }
+    }
+}
