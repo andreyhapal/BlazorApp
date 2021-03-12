@@ -3,7 +3,7 @@
     <div class="container" style="justify-content:space-around;">
         <div class="row">
             <div class="col">
-                <RadzenTextBox Name="Name" Style="width:100%;margin:0px;padding:15px;" @bind-Value="AgeGroup.Age" Placeholder="Наименование"></RadzenTextBox>
+                <RadzenTextBox Name="Name" Style="width:100%;margin:0px;padding:15px;" @bind-Value="AgeGroup.AgeName" Placeholder="Наименование"></RadzenTextBox>
                 <RadzenRequiredValidator Component="Name" Text="Обязательное поле!"></RadzenRequiredValidator>
             </div>
         </div>
@@ -19,10 +19,10 @@
         </div>
         <div class="row">
             <div class="col">
-                <RadzenNumeric @bind-Value="@AgeGroup.AgeFrom" TValue="int" Disabled="@LeftBorderOpenAge" Style="width:100%;" Placeholder="Возраст ОТ"></RadzenNumeric>
+                <RadzenNumeric @bind-Value="@AgeGroup.From" TValue="int" Disabled="@LeftBorderOpenAge" Style="width:100%;" Placeholder="Возраст ОТ"></RadzenNumeric>
             </div>
             <div class="col">
-                <RadzenNumeric @bind-Value="@AgeGroup.AgeTo" TValue="int" Disabled="@RightBorderOpenAge" Style="width:100%;" Placeholder="Возраст ДО"></RadzenNumeric>
+                <RadzenNumeric @bind-Value="@AgeGroup.To" TValue="int" Disabled="@RightBorderOpenAge" Style="width:100%;" Placeholder="Возраст ДО"></RadzenNumeric>
             </div>
         </div>
         <div class="row">

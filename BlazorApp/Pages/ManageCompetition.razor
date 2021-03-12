@@ -60,20 +60,20 @@
             <RadzenButton Text="Разбить" class="primary-button m" Click=@DivideCategory />
             <RadzenButton Text="Объеденить" class="primary-button m" Click=@MergeCategory />
             <RadzenGrid @ref="categoryGrid" AllowFiltering="true" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="10"
-                        AllowSorting="true" Data="Categories" TItem="Category" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValuesCategory>
+                        AllowSorting="true" Data="Categories" TItem="SportCategory" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValuesCategory>
                 <Columns>
-                    <RadzenGridColumn TItem="Category" Width="40px" Sortable="false" Filterable="false">
+                    <RadzenGridColumn TItem="SportCategory" Width="40px" Sortable="false" Filterable="false">
                         <HeaderTemplate>
-                            <RadzenCheckBox TriState="false" TValue="bool" Value="@(Categories.Any(i => multipleValuesCategory != null && (multipleValuesCategory as IEnumerable<Category>).Contains(i)))"
+                            <RadzenCheckBox TriState="false" TValue="bool" Value="@(Categories.Any(i => multipleValuesCategory != null && (multipleValuesCategory as IEnumerable<SportCategory>).Contains(i)))"
                                             Change="@(args => multipleValuesCategory = args ? Categories : null)" />
                         </HeaderTemplate>
                         <Template Context="data">
-                            <RadzenCheckBox TriState="false" Value="@(multipleValuesCategory != null && (multipleValuesCategory as IEnumerable<Category>).Contains(data))" />
+                            <RadzenCheckBox TriState="false" Value="@(multipleValuesCategory != null && (multipleValuesCategory as IEnumerable<SportCategory>).Contains(data))" />
                         </Template>
                     </RadzenGridColumn>
-                    <RadzenGridColumn TItem="Category" Property="Id" Title="ID" />
-                    <RadzenGridColumn TItem="Category" Property="Name" Title="Наименование" />
-                    <RadzenGridColumn TItem="Category" Property="NumberOfCompetitors" Title="Количество участников" />
+                    <RadzenGridColumn TItem="SportCategory" Property="Id" Title="ID" />
+                    <RadzenGridColumn TItem="SportCategory" Property="Name" Title="Наименование" />
+                    <RadzenGridColumn TItem="SportCategory" Property="NumberOfCompetitors" Title="Количество участников" />
                 </Columns>
             </RadzenGrid>
         </RadzenTabsItem>
@@ -231,10 +231,10 @@
     object multipleValues;
     object multipleValuesCategory;
     RadzenGrid<Competitor> competitorGrid;
-    RadzenGrid<Category> categoryGrid;
+    RadzenGrid<SportCategory> categoryGrid;
 
     List<Competitor> competitors = new List<Competitor>();
-    List<Category> Categories = new List<Category>();
+    List<SportCategory> Categories = new List<SportCategory>();
     List<string> Grades = new List<string>();
     List<Tatami> Tatamies = new List<Tatami>();
 
@@ -304,7 +304,7 @@
         var result = await form.Result;
         if (result.Data != null)
         {
-            Categories.Add(result.Data as Category);
+            Categories.Add(result.Data as SportCategory);
             await categoryGrid.Reload();
         }
     }
@@ -322,7 +322,7 @@
             var result = await form.Result;
             if (result.Data != null)
             {
-                Categories.AddRange((List<Category>)result.Data);
+                Categories.AddRange((List<SportCategory>)result.Data);
                 await categoryGrid.Reload();
             }
         }
@@ -339,19 +339,19 @@
             var maxWeight = s.Max(x => x.WeightTo);
             var sex = s[0].Sex;
             var name = minAge + "-" + maxAge + " " + sex + " " + minWeight + "-" + maxWeight;
-            Categories.Add(new Category()
-            {
-                AgeFrom = minAge,
-                AgeTo = maxAge,
-                WeightFrom = minWeight,
-                WeightTo = maxWeight,
-                Sex = sex,
-                Name = name
-            });
-            foreach (var c in s)
-            {
-                Categories.Remove(c);
-            }
+            //Categories.Add(new SportCategory()
+            //{
+            //    WeightGroup = minAge,
+            //    To = maxAge,
+            //    From = minWeight,
+            //    To = maxWeight,
+            //    Sex = new Sex() { Name = sex },
+            //    Name = name
+            //});
+            //foreach (var c in s)
+            //{
+            //    Categories.Remove(c);
+            //}
             categoryGrid.Reload();
         }
     }

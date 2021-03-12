@@ -26,10 +26,10 @@
         </div>
         <div class="row">
             <div class="col">
-                <RadzenNumeric @bind-Value="@WeightGroup.WeightFrom" TValue="int" Disabled="@LeftBorderOpenAge" Style="width:100%;" Placeholder="Возраст ОТ"></RadzenNumeric>
+                <RadzenNumeric @bind-Value="@WeightGroup.From" TValue="int" Disabled="@LeftBorderOpenAge" Style="width:100%;" Placeholder="Возраст ОТ"></RadzenNumeric>
             </div>
             <div class="col">
-                <RadzenNumeric @bind-Value="@WeightGroup.WeightTo" TValue="int" Disabled="@RightBorderOpenAge" Style="width:100%;" Placeholder="Возраст ДО"></RadzenNumeric>
+                <RadzenNumeric @bind-Value="@WeightGroup.To" TValue="int" Disabled="@RightBorderOpenAge" Style="width:100%;" Placeholder="Возраст ДО"></RadzenNumeric>
             </div>
         </div>
         <div class="row">
@@ -58,7 +58,7 @@
     void OnChange(object value)
     {
         this.value = (int)value;
-        WeightGroup.Sex = this.value == 1 ? "МУЖ" : "ЖЕН";
+        //WeightGroup.Sex = this.value == 1 ? "МУЖ" : "ЖЕН";
     }
 
     async Task SubmitForm() => await BlazoredModal.CloseAsync(ModalResult.Ok(WeightGroup));

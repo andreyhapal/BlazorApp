@@ -1,7 +1,8 @@
 ﻿@using BlazorApp.Data
+@using BlazorApp.Models
 @inject CategoryService CategoryService
 
-<RadzenTemplateForm TItem="Category" Data="Category" Submit="SubmitForm" InvalidSubmit="InvalidSubmit">
+<RadzenTemplateForm TItem="SportCategory" Data="Category" Submit="SubmitForm" InvalidSubmit="InvalidSubmit">
     <div class="container" style="justify-content:center;">
         <div class="row">
             <RadzenDropDown Data=@Categories TextProperty="Name" ValueProperty="Id" TValue="string">
@@ -17,8 +18,8 @@
     @code {
         [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
-        List<Category> Categories = new List<Category>();
-        Category Category = new Category();
+        List<SportCategory> Categories = new List<SportCategory>();
+        SportCategory Category = new SportCategory();
         protected override void OnInitialized()
         {
             Categories = CategoryService.GetCategories();

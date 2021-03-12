@@ -1,6 +1,7 @@
 ﻿@page "/categories"
 
 @using BlazorApp.Data
+@using BlazorApp.Models
 @inject BlazorApp.Data.CategoryService categoryService
     <div class="main-header-div">
         <h1 class="main-header">Категории</h1>
@@ -36,12 +37,12 @@
                                 <td>@category.Id</td>
                                 <td>@category.Name</td>
                                 <td>@category.Type</td>
-                                <td>@category.Age</td>
-                                <td>@category.AgeFrom</td>
-                                <td>@category.AgeTo</td>
+                                <td></td>
+                                <td>@category.AgeGroup.From</td>
+                                <td>@category.AgeGroup.To</td>
                                 <td>@category.Sex</td>
-                                <td>@category.WeightFrom</td>
-                                <td>@category.WeightTo</td>
+                                <td>@category.WeightGroup.From</td>
+                                <td>@category.WeightGroup.To</td>
                                 <td>
                                     <RadzenButton Icon="delete" Click="()=>DeleteCategory(category)"/>
                                 </td>
@@ -64,9 +65,9 @@
                         @foreach (var ageGroup in ageGroups)
                         {
                             <tr>
-                                <td>@ageGroup.Age</td>
-                                <td>@ageGroup.AgeFrom</td>
-                                <td>@ageGroup.AgeTo</td>
+                                <td>@ageGroup.AgeName</td>
+                                <td>@ageGroup.From</td>
+                                <td>@ageGroup.To</td>
                                 <td>
                                     <RadzenButton Icon="build" Click="()=>EditAgeGroup(ageGroup)"/>
                                     <RadzenButton Icon="delete" Click="()=>DeleteAgeGroup(ageGroup)" Style="background-color:red;"/>
@@ -90,9 +91,9 @@
                         @foreach (var weightGroup in weightGroups)
                         {
                             <tr>
-                                <td>@weightGroup.Sex</td>
-                                <td>@weightGroup.WeightFrom</td>
-                                <td>@weightGroup.WeightTo</td>
+                                <td></td>
+                                <td>@weightGroup.From</td>
+                                <td>@weightGroup.To</td>
                                 <td>
                                     <button class="btn btn-info" @onclick="()=>EditWeightGroup(weightGroup)">Редактировать</button>
                                     <button class="btn btn-danger" @onclick="()=>DeleteWeightGroup(weightGroup)">Удалить</button>
@@ -156,9 +157,9 @@
 
     };
 
-        Category Category = new Category();
+        SportCategory Category = new SportCategory();
 
-        List<Category> categories = new List<Category>();
+        List<SportCategory> categories = new List<SportCategory>();
         List<WeightGroup> weightGroups = new List<WeightGroup>();
         List<AgeGroup> ageGroups = new List<AgeGroup>();
         List<string> types = new List<string>();
@@ -196,7 +197,7 @@
             grades = categoryService.GetGrades();
         }
 
-        private void DeleteCategory(Category category)
+        private void DeleteCategory(SportCategory category)
         {
             categories.Remove(category);
         }
@@ -215,18 +216,16 @@
             {
                 case AgeGroup ageGroup:
                     {
-                        NewCategory[0] = ageGroup.Age;
-                        Category.Age = ageGroup.Age;
-                        Category.AgeFrom = ageGroup.AgeFrom;
-                        Category.AgeTo = ageGroup.AgeTo;
+                        //Category.AgeFrom = ageGroup.AgeFrom;
+                        //Category.AgeTo = ageGroup.AgeTo;
                         break;
                     }
                 case WeightGroup weightGroup:
                     {
                         NewCategory[1] = weightGroup.Name;
-                        Category.WeightFrom = weightGroup.WeightFrom;
-                        Category.WeightTo = weightGroup.WeightTo;
-                        Category.Sex = weightGroup.Sex;
+                        //Category.WeightFrom = weightGroup.WeightFrom;
+                        //Category.WeightTo = weightGroup.WeightTo;
+                        //Category.Sex = weightGroup.Sex;
                         break;
                     }
                 case string s:
@@ -234,7 +233,7 @@
                         if (number == 2)
                         {
                             NewCategory[2] = s;
-                            Category.Type = s;
+                            //Category.Type = s;
                         }
                         break;
                     }
@@ -274,8 +273,8 @@
             if (result.Data != null)
             {
                 WeightGroup = (WeightGroup)result.Data;
-                if (WeightGroup.Sex == null) WeightGroup.Sex = "МУЖ";
-                weightGroups.Add(WeightGroup);
+                //if (WeightGroup.Sex == null) WeightGroup.Sex = "МУЖ";
+                //weightGroups.Add(WeightGroup);
                 StateHasChanged();
             }
         }

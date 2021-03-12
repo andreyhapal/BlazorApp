@@ -4,20 +4,14 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BlazorApp.Data
+namespace BlazorApp.Models
 {
-    public class WeightGroup
+    public class SportCategoryType
     {
         [Key]
         public int Id { get; set; }
 
         [Required]
         public string Name { get; set; }
-
-        public int From { get; set; }
-
-        [Required]
-        public int To { get; set; }
-
     }
 }
