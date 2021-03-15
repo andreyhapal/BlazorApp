@@ -202,7 +202,7 @@
                                 </table>
                             </div>
                             <div class="card-footer">
-                                <RadzenButton class="button circle-button primary-button m" Icon="build" MouseEnter="@(args => ShowTooltip(args,"Настройки") )" />
+                                <RadzenButton class="button circle-button primary-button m" Icon="build" MouseEnter="@(args => ShowTooltip(args,"Настройки") )" Click="()=>ToTatamiSettings(tatami.Id)"/>
                                 <RadzenButton class="button circle-button primary-button m" Icon="av_timer" MouseEnter="@(args => ShowTooltip(args,"Таймер") )" Click="ToScoreBoard" />
                                 <RadzenButton class="button circle-button primary-button m" Icon="computer" MouseEnter="@(args => ShowTooltip(args,"Компьютер") )" />
                                 <RadzenButton class="button circle-button primary-button m" Icon="list" MouseEnter="@(args => ShowTooltip(args,"Список") )" />
@@ -227,13 +227,6 @@
                             @data.DateOfBirth.ToShortDateString()
                         </Template>
                         </RadzenGridColumn>
-                    @*<RadzenGridColumn TItem="Referee" Property="Grade" Title="Пояс" >
-                        <Template Context="data">
-                            @data.Grade.Name
-                        </Template>
-                        </RadzenGridColumn>*@
-                    @*<RadzenGridColumn TItem="Referee" Property="Country" Title="Страна" />
-                    <RadzenGridColumn TItem="Referee" Property="City" Title="Город" />*@
                     <RadzenGridColumn TItem="Referee" Title="Рейтинг" />
                     <RadzenGridColumn TItem="Referee" Title="Соревнования" />
                     <RadzenGridColumn TItem="Referee"/>
@@ -278,7 +271,7 @@
         Grades = CategoryService.GetGrades();
         Categories = CompetitionService.GetCompetitionCategories(int.Parse(Id));
         Tatamies = CompetitionService.GetTatamis();
-        Referees = CompetitionService.GetReferees(); 
+        Referees = CompetitionService.GetReferees();
     }
 
     void DeleteRow(Competitor competitor)
@@ -362,26 +355,13 @@
         if ((multipleValuesCategory as IEnumerable<SportCategory>).ToList().Count > 1)
         {
             var s = (multipleValuesCategory as IEnumerable<SportCategory>).ToList();
-            //var maxAge = s.Max(x => x.AgeTo);
-            //var minAge = s.Min(x => x.AgeFrom);
-            //var minWeight = s.Min(x => x.WeightFrom);
-            //var maxWeight = s.Max(x => x.WeightTo);
-            //var sex = s[0].Sex;
-            //var name = minAge + "-" + maxAge + " " + sex + " " + minWeight + "-" + maxWeight;
-            //Categories.Add(new SportCategory()
-            //{
-            //    WeightGroup = minAge,
-            //    To = maxAge,
-            //    From = minWeight,
-            //    To = maxWeight,
-            //    Sex = new Sex() { Name = sex },
-            //    Name = name
-            //});
-            //foreach (var c in s)
-            //{
-            //    Categories.Remove(c);
-            //}
+
             categoryGrid.Reload();
         }
+    }
+
+    void ToTatamiSettings(int Id)
+    {
+        NavigationManager.NavigateTo($"/tatami/settings/{Id}");
     }
 }

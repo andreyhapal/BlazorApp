@@ -3,14 +3,26 @@
 @using BlazorApp.Models
 @using FileHelpers
 @using System.Text.Encodings
+@using BlazorApp.Util
 <div class="container" style="justify-content:center;">
-    <InputFile OnChange="HandleSelection" />
-    <h3>@status</h3>
-    <RadzenButton Style="background-color: #4287f5;" Text="Сохранить" Click="@SaveChanges"/>
-    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Отмена" Click="@Cancel"/>
+    <div class="row">
+        <p>CSV файл формата: Имя,Фамилия,IKO,Дата рождения,Возраст,Вес,Пояс,Пол,Тренер,(true/false)-зарегистрирован ли</p>
+    </div>
+    <div class="row">
+        <InputFile OnChange="HandleSelection" />
+    </div>
+    <div class="row">
+        <h3>@status</h3>
+    </div>
+    <div>
+        <RadzenButton Style="background-color: #4287f5;" Text="Сохранить" Click="@SaveChanges" />
+        <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Отмена" Click="@Cancel" />
+    </div>
 </div>
+
 @code {
-    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; }
 
     string FileContent, FileName;
     string status;
@@ -27,19 +39,46 @@
                     FileContent = await reader.ReadToEndAsync();
                     FileName = file.Name;
 
-                    var engine = new FileHelperEngine<Competitor>();
-                    result = engine.ReadString(FileContent).ToList();
+                    var engine = new FileHelperEngine<SportsmanCSV>();
+                    var tempSportsmansCsv = engine.ReadString(FileContent).ToList();
+                    result = ConvertCompetitorsFromCSV(tempSportsmansCsv);
 
                     status = "Загрузка успешна";
-                }catch(FileHelpers.ConvertException e)
+                }
+                catch (FileHelpers.ConvertException)
                 {
                     status = "Данные в файле в неверном формате";
-                }catch(FileHelpers.FileHelpersException e)
+                }
+                catch (FileHelpers.FileHelpersException)
                 {
                     status = "Не подходит формат файла";
                 }
-                //status = result[0].FirstName + "," + result[0].LastName + "," + result[0].BirthDate.ToShortDateString();
             }
+        }
+    }
+
+    private List<Competitor> ConvertCompetitorsFromCSV(List<SportsmanCSV> sportsmen)
+    {
+        List<Competitor> tempCompetitor = new List<Competitor>();
+
+        using (var db = new ApplicationContext()) 
+        {
+            sportsmen.ForEach(x =>
+            {
+                tempCompetitor.Add(new Competitor()
+                {
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    Age = x.Age,
+                    Weight = x.Weight,
+                    IKO = x.IKO,
+                    DateOfBirth = x.DateOfBirth,
+                    Grade = db.Grades.FirstOrDefault(y=>y.Name==x.Grade),
+                    Sex = db.Sexes.FirstOrDefault(y=>y.Name==x.Sex),
+                    IsRegistred = x.IsRegistered
+                });
+            });
+            return tempCompetitor;
         }
     }
 
