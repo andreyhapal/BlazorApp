@@ -1,4 +1,5 @@
 ﻿using BlazorApp.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,218 +11,49 @@ namespace BlazorApp.Services
     {
         public List<Tatami> GetTatamis()
         {
-            return new List<Tatami>()
+            using(var db = new ApplicationContext())
             {
-                new Tatami()
-                {
-                    Name="A",
-                    AmountOfMatches=12,
-                    Prefix="A-",
-                },
-                new Tatami()
-                {
-                    Name="B",
-                    AmountOfMatches=24,
-                    Prefix="B-",
-                },
-                new Tatami()
-                {
-                    Name="C",
-                    AmountOfMatches=36,
-                    Prefix="C-",
-                },
-                new Tatami()
-                {
-                    Name="D",
-                    AmountOfMatches=48,
-                    Prefix="D-",
-                },
-                new Tatami()
-                {
-                    Name="E",
-                    AmountOfMatches=50,
-                    Prefix="E-",
-                }
-            };
+                return db.Tatamis.ToList();
+            }
+        }
+
+        public List<Referee> GetReferees()
+        {
+            using (var db = new ApplicationContext())
+            {
+                var c = db.Referees.Include(x=>x.Grade).ToList();
+                return c;
+            }
         }
 
         public List<Competitor> GetCompetitors()
         {
-            return new List<Competitor>()
+            using (var db = new ApplicationContext())
             {
-                new Competitor()
-                {
-                    Id=1,
-                    FirstName="Сергей",
-                    LastName="Иванов",
-                    IKO=20012122,
-                    BirthDate=DateTime.Parse("07.07.2000"),
-                    Age=20,
-                    Sex="МУЖ",
-                    Grade="1 КЮ",
-                    Trainer="Вячеслав Петров",
-                    Weight=80,
-                    IsActive = false,
-                    Country = "Belarus",
-                    City = "Minsk",
-                    StartNumber = 0,
-                     Club = "KMS",
-
-                },
-                new Competitor()
-                {
-                    Id=2,
-                    FirstName="Сергей",
-                    LastName="Иванов",
-                    IKO=20012122,
-                    BirthDate=DateTime.Parse("07.07.2000"),
-                    Age=20,
-                    Sex="МУЖ",
-                    Grade="1 КЮ",
-                    Trainer="Вячеслав Петров",
-                    Weight=80,
-                    IsActive = false,
-                    Country = "Belarus",
-                    City = "Minsk",
-                    StartNumber = 0,
-                     Club = "KMS",
-                },
-                new Competitor()
-                {
-                    Id=3,
-                    FirstName="Сергей",
-                    LastName="Иванов",
-                    IKO=20012122,
-                    BirthDate=DateTime.Parse("07.07.2000"),
-                    Age=20,
-                    Sex="МУЖ",
-                    Grade="1 КЮ",
-                    Trainer="Вячеслав Петров",
-                    Weight=80,
-                    IsActive = false,
-                    Country = "Belarus",
-                    City = "Minsk",
-                    StartNumber = 0,
-                     Club = "KMS",
-                },
-                new Competitor()
-                {
-                    Id=4,
-                    FirstName="Сергей",
-                    LastName="Иванов",
-                    IKO=20012122,
-                    BirthDate=DateTime.Parse("07.07.2000"),
-                    Age=20,
-                    Sex="МУЖ",
-                    Grade="1 КЮ",
-                    Trainer="Вячеслав Петров",
-                    Weight=80,
-                    IsActive = false,
-                    Country = "Belarus",
-                    City = "Minsk",
-                    StartNumber = 0,
-                     Club = "KMS",
-                },
-                new Competitor()
-                {
-                    Id=5,
-                    FirstName="Сергей",
-                    LastName="Иванов",
-                    IKO=20012122,
-                    BirthDate=DateTime.Parse("07.07.2000"),
-                    Age=20,
-                    Sex="МУЖ",
-                    Grade="1 КЮ",
-                    Trainer="Вячеслав Петров",
-                    Weight=80,
-                    IsActive = false,
-                    Country = "Belarus",
-                    City = "Minsk",
-                    StartNumber = 0,
-                     Club = "KMS",
-                },
-                new Competitor()
-                {
-                    Id=6,
-                    FirstName="Сергей",
-                    LastName="Иванов",
-                    IKO=20012122,
-                    BirthDate=DateTime.Parse("07.07.2000"),
-                    Age=20,
-                    Sex="МУЖ",
-                    Grade="1 КЮ",
-                    Trainer="Вячеслав Петров",
-                    Weight=80,
-                    IsActive = false,
-                    Country = "Belarus",
-                    City = "Minsk",
-                    StartNumber = 0,
-                     Club = "KMS",
-                },
-            };
+                var c = db.Competitors
+                            .Include(x=>x.Competition)
+                            .Include(x=>x.CompetitionCategory)
+                            .Include(x=>x.Sex)
+                            .Include(x=>x.Grade)
+                            .ToList();
+                return c;
+            }
         }
 
         public List<Competition> GetCompetitions()
         {
-            return new List<Competition>()
+            using (var db = new ApplicationContext())
             {
-                new Competition()
-                {
-                    Id=1,
-                    DateFound = DateTime.Parse("01.01.2020"),
-                    Name="Global Tournament 2021",
-                    City="Minsk",
-                    Country="Belarus",
-                },
-                new Competition()
-                {
-                    Id=2,
-                    DateFound = DateTime.Parse("01.01.2020"),
-                    Name="WWS WWA 2021",
-                    City="Minsk",
-                    Country="Belarus",
-                },
-                new Competition()
-                {
-                    Id=3,
-                    DateFound = DateTime.Parse("01.01.2020"),
-                    Name="Championship 2021",
-                    City="Minsk",
-                    Country="Belarus",
-                },
-                new Competition()
-                {
-                    Id=4,
-                    DateFound = DateTime.Parse("01.01.2020"),
-                    Name="RUSCHAMP 2021",
-                    City="Minsk",
-                    Country="Belarus",
-                },
-                new Competition()
-                {
-                    Id=5,
-                    DateFound = DateTime.Parse("01.01.2020"),
-                    Name="GLOBALIZATION 2021",
-                    City="Minsk",
-                    Country="Belarus",
-                },
-                new Competition()
-                {
-                    Id=6,
-                    DateFound = DateTime.Parse("01.01.2020"),
-                    Name="USASHIP 2021",
-                    City="Minsk",
-                    Country="Belarus",
-                },
-                new Competition()
-                {
-                    Id=7,
-                    DateFound = DateTime.Parse("01.01.2020"),
-                    Name="MMA 2021",
-                    City="Minsk",
-                    Country="Belarus",
-                }
-            };
+                return db.Competitions.ToList();
+            }
+        }
+        
+        public List<CompetitionCategory> GetCompetitionCategories(int Id)
+        {
+            using (var db = new ApplicationContext())
+            {
+                return db.CompetitionCategories.ToList();
+            }
         }
     }
 }

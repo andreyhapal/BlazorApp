@@ -1,4 +1,5 @@
-﻿@using BlazorApp.Data
+﻿@using BlazorApp.Models
+@using BlazorApp.Data
 
 @inject CategoryService CategoryService
 <div class="container" style="justify-content:center;">
@@ -21,12 +22,12 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col center-content">
+                @*<div class="col center-content">
                     <RadzenNumeric @bind-Value="@Category.WeightFrom" TValue="int" Disabled="@LeftBorder" Style="width:100%;" Placeholder="Возраст ОТ"></RadzenNumeric>
                 </div>
                 <div class="col center-content">
                     <RadzenNumeric @bind-Value="@Category.WeightTo" TValue="int" Disabled="@RightBorder" Style="width:100%;" Placeholder="Возраст ДО"></RadzenNumeric>
-                </div>
+                </div>*@
             </div>
         </div>
         <div class="col center-content" style="align-items:center;display:flex;justify-content:center">
@@ -68,7 +69,7 @@
 
 @code {
     [Parameter]
-    public Category Category { get; set; }
+    public SportCategory Category { get; set; }
 
     [CascadingParameter]
     BlazoredModalInstance BlazoredModal { get; set; }
@@ -78,13 +79,13 @@
     object SelectedAges;
     object SelectedGrades;
 
-    List<Category> DividedCategories = new List<Category>();
-    List<Category> Categories = new List<Category>();
+    List<SportCategory> DividedCategories = new List<SportCategory>();
+    List<SportCategory> Categories = new List<SportCategory>();
     List<int> ages = new List<int>();
-    List<string> grades = new List<string>();
+    List<Grade> grades = new List<Grade>();
     protected override void OnInitialized()
     {
-        for (int i = Category.AgeFrom; i <= Category.AgeTo; i++)
+        for (int i = Category.AgeGroup.From; i <= Category.AgeGroup.To; i++)
         {
             ages.Add(i);
         }
@@ -95,21 +96,21 @@
     {
         var s = (SelectedAges as IEnumerable<int>).ToList();
         s.Sort();
-        Category category = new Category();
-        category.AgeFrom = s[0];
-        category.AgeTo = s[1];
-        category.Sex = Category.Sex;
-        category.WeightFrom = Category.WeightFrom;
-        category.WeightTo = Category.WeightTo;
-        category.Name = category.AgeFrom + "-" + category.AgeTo + " " + category.Sex + " " + category.WeightFrom + "-" + category.WeightTo;
+        SportCategory category = new SportCategory();
+        //category.AgeFrom = s[0];
+        //category.AgeTo = s[1];
+        //category.Sex = Category.Sex;
+        //category.WeightFrom = Category.WeightFrom;
+        //category.WeightTo = Category.WeightTo;
+        //category.Name = category.AgeFrom + "-" + category.AgeTo + " " + category.Sex + " " + category.WeightFrom + "-" + category.WeightTo;
 
         DividedCategories.Add(category);
 
         StateHasChanged();
-        
+
     }
 
-    void Remove(Category category)
+    void Remove(SportCategory category)
     {
         DividedCategories.Remove(category);
         StateHasChanged();

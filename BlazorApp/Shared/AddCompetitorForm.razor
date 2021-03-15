@@ -44,19 +44,19 @@
                     <RadzenNumeric TValue="int?" class="add-competitor-form" Placeholder="Стартовый номер"></RadzenNumeric>
                 </div>
                 <div class="row">
-                    <RadzenDatePicker class="add-competitor-form" Placeholder="Дата рождения" @bind-Value="Competitor.BirthDate"></RadzenDatePicker>
+                    <RadzenDatePicker class="add-competitor-form" Placeholder="Дата рождения" @bind-Value="Competitor.DateOfBirth"></RadzenDatePicker>
                 </div>
                 <div class="row">
-                    <RadzenDropDown Data=@Grades class="add-competitor-form" Placeholder="Пояс" @bind-Value="Competitor.Grade"></RadzenDropDown>
+                    <RadzenDropDown Data=@Grades class="add-competitor-form" Placeholder="Пояс" @bind-Value="Competitor.Grade.Name"></RadzenDropDown>
                 </div>
                 <div class="row">
                     <RadzenTextBox class="add-competitor-form" Placeholder="Страна" @bind-Value="Competitor.Country"></RadzenTextBox>
                 </div>
                 <div class="row">
-                    <RadzenTextBox class="add-competitor-form" Placeholder="Город" @bind-Value="Competitor.City"></RadzenTextBox>
+                    <RadzenTextBox class="add-competitor-form" Placeholder="Город" @bind-Value="Competitor.Region"></RadzenTextBox>
                 </div>
                 <div class="row">
-                    <RadzenTextBox class="add-competitor-form" Placeholder="Клуб" @bind-Value="Competitor.Club"></RadzenTextBox>
+                    <RadzenTextBox class="add-competitor-form" Placeholder="Клуб" @bind-Value="Competitor.ClubName"></RadzenTextBox>
                 </div>
                 
                 <div class="row">
@@ -80,7 +80,7 @@
 
     bool switcher;
 
-    List<string> Grades = new List<string>();
+    List<Grade> Grades = new List<Grade>();
     List<Sportsman> Sportsmen = new List<Sportsman>();
     Competitor Competitor = new Competitor();
 
@@ -98,10 +98,9 @@
         Competitor.Grade = s.Grade;
         Competitor.IKO = s.IKO;
         Competitor.Sex = s.Sex;
-        Competitor.Trainer = s.Trainer;
         Competitor.Weight = s.Weight;
         Competitor.Age = s.Age;
-        Competitor.BirthDate = s.BirthDate;
+        Competitor.DateOfBirth = s.DateOfBirth;
     }
 
     async Task HandleSelection(IFileListEntry[] files)

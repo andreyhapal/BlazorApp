@@ -1,4 +1,5 @@
 ﻿using BlazorApp.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,75 +11,16 @@ namespace BlazorApp.Services
     {
         public List<Sportsman> GetSportsmen()
         {
-            return new List<Sportsman>()
+            using (var db = new ApplicationContext())
             {
-                new Sportsman()
-                {
-                    Id=1,
-                    FirstName="Сергей",
-                    LastName="Иванов",
-                    IKO=20012122,
-                    BirthDate=DateTime.Parse("07.07.2000"),
-                    Age=20,
-                    Sex="МУЖ",
-                    Grade="1 КЮ",
-                    Trainer="Вячеслав Петров",
-                    Weight=80,
-                },
-                new Sportsman()
-                {
-                    Id=2,
-                    FirstName="Вадим",
-                    LastName="Иванов",
-                    IKO=20012122,
-                    BirthDate=DateTime.Parse("07.07.2000"),
-                    Age=20,
-                    Sex="МУЖ",
-                    Grade="1 КЮ",
-                    Trainer="Вячеслав Петров",
-                    Weight=80,
-                },
-                new Sportsman()
-                {
-                    Id=3,
-                    FirstName="Роман",
-                    LastName="Иванов",
-                    IKO=20012122,
-                    BirthDate=DateTime.Parse("07.07.2000"),
-                    Age=20,
-                    Sex="МУЖ",
-                    Grade="1 КЮ",
-                    Trainer="Вячеслав Петров",
-                    Weight=80,
-                },
-                new Sportsman()
-                {
-                    Id=4,
-                    FirstName="Дмитрий",
-                    LastName="Иванов",
-                    IKO=20012122,
-                    BirthDate=DateTime.Parse("07.07.2000"),
-                    Age=20,
-                    Sex="МУЖ",
-                    Grade="1 КЮ",
-                    Trainer="Вячеслав Петров",
-                    Weight=80,
-                },
-                new Sportsman()
-                {
-                    Id=5,
-                    FirstName="Филипп",
-                    LastName="Иванов",
-                    IKO=20012122,
-                    BirthDate=DateTime.Parse("07.07.2000"),
-                    Age=20,
-                    Sex="МУЖ",
-                    Grade="1 КЮ",
-                    Trainer="Вячеслав Петров",
-                    Weight=80,
-                },
-            };
+                var c = db.Sportsmens
+                        .Include(x => x.Grade)
+                        .Include(x => x.Sex)
+                        .Include(x=>x.SportClub)
+                        .Include(x=>x.Trainer)
+                        .ToList();
+                return c;
+            }
         }
-
     }
 }

@@ -18,6 +18,14 @@ namespace BlazorApp.Data
             //InitDb();
         }
 
+        public int GetAmountOfCompetitors(int Id)
+        {
+            using (var db = new ApplicationContext())
+            {
+                return db.Competitors.Include(x=>x.CompetitionCategory).Where(x => x.CompetitionCategory.Id == Id).ToList().Count;
+            }
+        }
+
         private void InitDb()
         {
             string connString = configuration.GetValue<string>("ConnectionString");
@@ -25,102 +33,34 @@ namespace BlazorApp.Data
 
         public List<WeightGroup> GetWeightGroups()
         {
-            return new List<WeightGroup>()
+            using (var db = new ApplicationContext())
             {
-                new WeightGroup()
-                {
-                    Name="МУЖ 30-40кг",
-                    From=30,
-                    To=40
-                },
-                new WeightGroup()
-                {
-                    Name="МУЖ 40-50кг",
-                    From=40,
-                    To=50
-                },new WeightGroup()
-                {
-                    Name="МУЖ 50-60кг",
-                    From = 50,
-                    To = 60
-                },new WeightGroup()
-                {
-                    Name="ЖЕН 30-40кг",
-                    From = 30,
-                    To=40
-                },new WeightGroup()
-                {
-                    Name="ЖЕН 40-50кг",
-                    From=40,
-                    To=50
-                },new WeightGroup()
-                {
-                    Name="ЖЕН 50-60кг",
-                    From=50,
-                    To=60
-                },
-
-            };
+                return db.WeightGroups.ToList();
+            }
         }
 
         public List<AgeGroup> GetAgeGroups()
         {
-
-            return new List<AgeGroup>()
+            using (var db = new ApplicationContext())
             {
-                new AgeGroup()
-                {
-                    AgeName="4-5 лет",
-                    From=4,
-                    To=5
-                },
-                new AgeGroup()
-                {
-                    AgeName="5-6 лет",
-                    From=5,
-                    To=6
-                },
-                new AgeGroup()
-                {
-                    AgeName="6-7 лет",
-                    From=6,
-                    To=7
-                },
-                new AgeGroup()
-                {
-                    AgeName="7-8 лет",
-                    From=7,
-                    To=8
-                },
-                new AgeGroup()
-                {
-                    AgeName="8-9 лет",
-                    From=8,
-                    To=9
-                }
-            };
+                return db.AgeGroups.ToList();
+            }
         }
 
-        public List<string> GetGrades()
+        public List<Grade> GetGrades()
         {
-            return new List<string>()
+            using (var db = new ApplicationContext())
             {
-                "0 KU",
-                "1 KU",
-                "2 KU",
-                "3 KU",
-                "4 KU",
-                "5 KU"
-            };
+                return db.Grades.ToList();
+            }
         }
 
-        public List<string> GetTypes()
+        public List<SportCategoryType> GetTypes()
         {
-            return new List<string>()
+            using (var db = new ApplicationContext())
             {
-                "Ката",
-                "Кумите"
-            };
+                return db.Types.ToList();
+            }
         }
 
         public List<SportCategory> GetCategories()
@@ -130,6 +70,15 @@ namespace BlazorApp.Data
                 return db.SportCategories.Include(x=>x.AgeGroup).Include(x=>x.WeightGroup).Include(x=>x.Sex).Include(x=>x.Type).ToList();
             }
         }
+
+        public List<Sex> GetSexes()
+        {
+            using (var db = new ApplicationContext())
+            {
+                return db.Sexes.ToList();
+            }
+        }
+
 
         public List<string> GetEmails()
         {

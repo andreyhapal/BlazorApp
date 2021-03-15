@@ -5,10 +5,10 @@
 @inject BlazorApp.Services.SportsmenService sportsmenService
 @inject BlazorApp.Data.CategoryService categoryService
 <div class="main-header-div">
-<h1 class="main-header">Спортсмены</h1>
-    </div>
+    <h1 class="main-header">Спортсмены</h1>
+</div>
 <RadzenButton Icon="add_circle_outline" class="primary-button m" Text="Добавить" Click="@InsertRow" />
-<RadzenGrid @ref="sportsmenGrid" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Advanced" AllowPaging="true" PageSize="10"
+<RadzenGrid @ref="sportsmenGrid" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="15"
             AllowSorting="true" Data="@sportsmen" TItem="Sportsman" AllowColumnResize="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValues
             RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
     <Columns>
@@ -21,75 +21,44 @@
                 <RadzenCheckBox TriState="false" Value="@(multipleValues != null && (multipleValues as IEnumerable<Sportsman>).Contains(data))" />
             </Template>
         </RadzenGridColumn>
-        <RadzenGridColumn TItem="Sportsman" Property="Id" Title="ID">
-
-        </RadzenGridColumn>
-        <RadzenGridColumn TItem="Sportsman" Property="IKO" Title="IKO">
-            <EditTemplate Context="sportsman">
-                <RadzenNumeric @bind-Value="sportsman.IKO" Style="width:100%" />
-            </EditTemplate>
-        </RadzenGridColumn>
-        <RadzenGridColumn TItem="Sportsman" Property="LastName" Title="Фамилия">
-            <EditTemplate Context="sportsman">
-                <RadzenTextBox @bind-Value="sportsman.LastName" />
-            </EditTemplate>
-        </RadzenGridColumn>
-        <RadzenGridColumn TItem="Sportsman" Property="FirstName" Title="Имя">
-            <EditTemplate Context="sportsman">
-                <RadzenTextBox @bind-Value="sportsman.FirstName" />
-            </EditTemplate>
-        </RadzenGridColumn>
-        <RadzenGridColumn TItem="Sportsman" Property="BirthDate" Title="Дата рождения">
-            <EditTemplate Context="sportsman">
-                <RadzenDatePicker @bind-Value="sportsman.BirthDate" Style="width:100%" />
-            </EditTemplate>
-        </RadzenGridColumn>
-        <RadzenGridColumn TItem="Sportsman" Property="Age" Title="Возраст">
-            <EditTemplate Context="sportsman">
-                <RadzenNumeric @bind-Value="sportsman.Age" Style="width:100%" />
-            </EditTemplate>
-        </RadzenGridColumn>
-        <RadzenGridColumn TItem="Sportsman" Property="Weight" Title="Вес">
-            <EditTemplate Context="sportsman">
-                <RadzenNumeric @bind-Value="sportsman.Weight" Style="width:100%" />
-            </EditTemplate>
-        </RadzenGridColumn>
+        <RadzenGridColumn TItem="Sportsman" Property="Id" Title="ID"/>
+        <RadzenGridColumn TItem="Sportsman" Property="IKO" Title="IKO"/>
+        <RadzenGridColumn TItem="Sportsman" Property="LastName" Title="Фамилия"/>
+        <RadzenGridColumn TItem="Sportsman" Property="FirstName" Title="Имя"/>
+        <RadzenGridColumn TItem="Sportsman" Property="DateOfBirth" Title="Дата рождения">
+            <Template Context="data">
+                @data.DateOfBirth.ToShortDateString()
+            </Template>
+            </RadzenGridColumn>
+        <RadzenGridColumn TItem="Sportsman" Property="Age" Title="Возраст"/>
+        <RadzenGridColumn TItem="Sportsman" Property="Weight" Title="Вес"/>
         <RadzenGridColumn TItem="Sportsman" Property="Grade" Title="Пояс">
-            <EditTemplate Context="sportsman">
-                <RadzenDropDown Data="grades" TValue="string" @bind-Value="sportsman.Grade" />
-            </EditTemplate>
+            <Template Context="data">
+                @data.Grade.Name
+            </Template>
         </RadzenGridColumn>
         <RadzenGridColumn TItem="Sportsman" Property="Sex" Title="Пол">
-            <EditTemplate Context="sportsman">
-                <RadzenDropDown Data="sexes" TValue="string" @bind-Value="sportsman.Sex" />
-            </EditTemplate>
+            <Template Context="data">
+                @data.Sex.Name
+            </Template>
         </RadzenGridColumn>
         <RadzenGridColumn TItem="Sportsman" Property="Trainer" Title="Тренер">
-            <EditTemplate Context="sportsman">
-                <RadzenTextBox @bind-Value="sportsman.Trainer" />
-            </EditTemplate>
+            <Template Context="data">
+                @data.Trainer.FirstName @data.Trainer.LastName
+            </Template>
         </RadzenGridColumn>
         <RadzenGridColumn TItem="Sportsman" Context="sportsman" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="100px">
             <Template Context="sportsman">
                 <RadzenButton Icon="edit" Size="ButtonSize.Small" class="primary-button" Click="@(args => EditRow(sportsman))">
                 </RadzenButton>
             </Template>
-            <EditTemplate Context="sportsman">
-                <RadzenButton Icon="save" Size="ButtonSize.Small" Click="@((args) => SaveRow(sportsman))">
-                </RadzenButton>
-                <RadzenButton Icon="cancel" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Secondary" Click="@((args) => CancelEdit(sportsman))">
-                </RadzenButton>
-            </EditTemplate>
         </RadzenGridColumn>
         <RadzenGridColumn TItem="Sportsman" Context="sportsman" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="70px">
             <Template Context="sportsman">
                 <RadzenButton Icon="close" class="btn-danger" Size="ButtonSize.Small" Click="@(args => DeleteRow(sportsman))">
                 </RadzenButton>
             </Template>
-            <EditTemplate Context="sportsman">
-                <RadzenButton Icon="close" class="btn-danger" Size="ButtonSize.Small" Click="@(args => DeleteRow(sportsman))">
-                </RadzenButton>
-            </EditTemplate>
+            
         </RadzenGridColumn>
 
     </Columns>
@@ -101,17 +70,14 @@
     RadzenGrid<Sportsman> sportsmenGrid;
 
     List<Sportsman> sportsmen = new List<Sportsman>();
-    List<string> grades = new List<string>();
-    List<string> sexes = new List<string>()
-    {
-            "МУЖ",
-            "ЖЕН"
-        };
+    List<Grade> grades;
+    List<Sex> sexes;
 
     protected override void OnInitialized()
     {
         sportsmen = sportsmenService.GetSportsmen();
         grades = categoryService.GetGrades();
+        sexes = categoryService.GetSexes();
     }
 
     void EditRow(Sportsman sportsman)

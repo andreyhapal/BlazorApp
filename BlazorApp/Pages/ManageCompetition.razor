@@ -1,5 +1,4 @@
-﻿@page "/manage"
-@page "/manage/{Id}/{Name}"
+﻿@page "/manage/{Id}/{Name}"
 
 @using BlazorApp.Models
 @using BlazorApp.Data
@@ -31,17 +30,33 @@
                         </Template>
                     </RadzenGridColumn>
                     <RadzenGridColumn TItem="Competitor" Property="Id" Title="ID" />
-                    <RadzenGridColumn TItem="Competitor" Property="StartNumber" Title="Номер" />
+                    <RadzenGridColumn TItem="Competitor" Property="IKO" Title="Номер" />
                     <RadzenGridColumn TItem="Competitor" Property="FirstName" Title="Имя" />
                     <RadzenGridColumn TItem="Competitor" Property="LastName" Title="Фамилия" />
-                    <RadzenGridColumn TItem="Competitor" Property="BirthDate.ToShortDateString()" Title="Дата рождения" />
-                    <RadzenGridColumn TItem="Competitor" Property="Grade" Title="Пояс" />
+                    <RadzenGridColumn TItem="Competitor" Property="BirthDate" Title="Дата рождения" >
+                        <Template Context="data">
+                            @data.DateOfBirth.ToShortDateString()
+                        </Template>
+                        </RadzenGridColumn>
+                    <RadzenGridColumn TItem="Competitor" Property="Grade" Title="Пояс" >
+                        <Template Context="data">
+                            @data.Grade.Name
+                        </Template>
+                        </RadzenGridColumn>
                     <RadzenGridColumn TItem="Competitor" Property="Country" Title="Страна" />
-                    <RadzenGridColumn TItem="Competitor" Property="City" Title="Город" />
-                    <RadzenGridColumn TItem="Competitor" Property="Club" Title="Клуб" />
-                    <RadzenGridColumn TItem="Competitor" Property="Category" Title="Категория" />
+                    <RadzenGridColumn TItem="Competitor" Property="Region" Title="Регион" />
+                    <RadzenGridColumn TItem="Competitor" Property="ClubName" Title="Клуб" />
+                    <RadzenGridColumn TItem="Competitor" Property="Category" Title="Категория" >
+                        <Template Context="data">
+                            @data.CompetitionCategory.Name
+                        </Template>
+                        </RadzenGridColumn>
                     <RadzenGridColumn TItem="Competitor" Property="Weight" Title="Вес" />
-                    <RadzenGridColumn TItem="Competitor" Property="IsActive" Title="Активный" />
+                    <RadzenGridColumn TItem="Competitor" Property="IsActive" Title="Активный" >
+                        <Template Context="data">
+                            <RadzenCheckBox @bind-Value="data.IsRegistred"/>
+                        </Template>
+                        </RadzenGridColumn>
                     <RadzenGridColumn TItem="Competitor" Context="competitor" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
                         <Template Context="competitor">
                             <RadzenButton Icon="edit" Size="ButtonSize.Medium" class="primary-button">
@@ -60,20 +75,24 @@
             <RadzenButton Text="Разбить" class="primary-button m" Click=@DivideCategory />
             <RadzenButton Text="Объеденить" class="primary-button m" Click=@MergeCategory />
             <RadzenGrid @ref="categoryGrid" AllowFiltering="true" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="10"
-                        AllowSorting="true" Data="Categories" TItem="SportCategory" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValuesCategory>
+                        AllowSorting="true" Data="Categories" TItem="CompetitionCategory" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValuesCategory>
                 <Columns>
-                    <RadzenGridColumn TItem="SportCategory" Width="40px" Sortable="false" Filterable="false">
+                    <RadzenGridColumn TItem="CompetitionCategory" Width="40px" Sortable="false" Filterable="false">
                         <HeaderTemplate>
-                            <RadzenCheckBox TriState="false" TValue="bool" Value="@(Categories.Any(i => multipleValuesCategory != null && (multipleValuesCategory as IEnumerable<SportCategory>).Contains(i)))"
+                            <RadzenCheckBox TriState="false" TValue="bool" Value="@(Categories.Any(i => multipleValuesCategory != null && (multipleValuesCategory as IEnumerable<CompetitionCategory>).Contains(i)))"
                                             Change="@(args => multipleValuesCategory = args ? Categories : null)" />
                         </HeaderTemplate>
                         <Template Context="data">
-                            <RadzenCheckBox TriState="false" Value="@(multipleValuesCategory != null && (multipleValuesCategory as IEnumerable<SportCategory>).Contains(data))" />
+                            <RadzenCheckBox TriState="false" Value="@(multipleValuesCategory != null && (multipleValuesCategory as IEnumerable<CompetitionCategory>).Contains(data))" />
                         </Template>
                     </RadzenGridColumn>
-                    <RadzenGridColumn TItem="SportCategory" Property="Id" Title="ID" />
-                    <RadzenGridColumn TItem="SportCategory" Property="Name" Title="Наименование" />
-                    <RadzenGridColumn TItem="SportCategory" Property="NumberOfCompetitors" Title="Количество участников" />
+                    <RadzenGridColumn TItem="CompetitionCategory" Property="Id" Title="ID" />
+                    <RadzenGridColumn TItem="CompetitionCategory" Property="Name" Title="Наименование" />
+                    <RadzenGridColumn TItem="CompetitionCategory" Title="Количество участников">
+                        <Template Context="data">
+                            @GetAmountOfCompetitors(data.Id)
+                        </Template>
+                    </RadzenGridColumn>
                 </Columns>
             </RadzenGrid>
         </RadzenTabsItem>
@@ -128,11 +147,11 @@
                                             </td>
                                             <td>@competitor.FirstName</td>
                                             <td>@competitor.LastName</td>
-                                            <td>@competitor.BirthDate.ToShortDateString()</td>
+                                            <td>@competitor.DateOfBirth.ToShortDateString()</td>
                                             <td>@competitor.Grade</td>
                                             <td>@competitor.Country</td>
-                                            <td>@competitor.City</td>
-                                            <td>@competitor.Club</td>
+                                            <td></td>
+                                            <td></td>
                                         </tr>
                                     }
                                 </tbody>
@@ -165,7 +184,7 @@
 
                             </div>
                             <div class="card-status">
-                                <h6 style="margin-bottom:0px;">Количество боев @tatami.AmountOfMatches</h6>
+                                <h6 style="margin-bottom:0px;">Количество боев *</h6>
                             </div>
                             <div class="card-content">
                                 <table class="category-divide">
@@ -198,19 +217,26 @@
 
         <RadzenTabsItem Text="Судьи">
             <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="10"
-                        AllowSorting="true" Data="competitors" TItem="Competitor" AllowColumnResize="true">
+                        AllowSorting="true" Data="Referees" TItem="Referee" AllowColumnResize="true">
                 <Columns>
-                    <RadzenGridColumn TItem="Competitor" Property="Id" Title="Id" />
-                    <RadzenGridColumn TItem="Competitor" Property="FirstName" Title="Имя" />
-                    <RadzenGridColumn TItem="Competitor" Property="LastName" Title="Фамилия" />
-                    <RadzenGridColumn TItem="Competitor" Property="BirthDate.ToShortDateString()" Title="Дата рождения" />
-                    <RadzenGridColumn TItem="Competitor" Property="Grade" Title="Пояс" />
-                    <RadzenGridColumn TItem="Competitor" Property="Country" Title="Страна" />
-                    <RadzenGridColumn TItem="Competitor" Property="City" Title="Город" />
-                    <RadzenGridColumn TItem="Competitor" Property="Club" Title="Клуб" />
-                    <RadzenGridColumn TItem="Competitor" Property="Rating" Title="Рейтинг" />
-                    <RadzenGridColumn TItem="Competitor" Property="Competition" Title="Соревнования" />
-                    <RadzenGridColumn TItem="Competitor" Property="Actions" />
+                    <RadzenGridColumn TItem="Referee" Property="Id" Title="Id" />
+                    <RadzenGridColumn TItem="Referee" Property="FirstName" Title="Имя" />
+                    <RadzenGridColumn TItem="Referee" Property="LastName" Title="Фамилия" />
+                    <RadzenGridColumn TItem="Referee" Property="BirthDate" Title="Дата рождения" >
+                        <Template Context="data">
+                            @data.DateOfBirth.ToShortDateString()
+                        </Template>
+                        </RadzenGridColumn>
+                    @*<RadzenGridColumn TItem="Referee" Property="Grade" Title="Пояс" >
+                        <Template Context="data">
+                            @data.Grade.Name
+                        </Template>
+                        </RadzenGridColumn>*@
+                    @*<RadzenGridColumn TItem="Referee" Property="Country" Title="Страна" />
+                    <RadzenGridColumn TItem="Referee" Property="City" Title="Город" />*@
+                    <RadzenGridColumn TItem="Referee" Title="Рейтинг" />
+                    <RadzenGridColumn TItem="Referee" Title="Соревнования" />
+                    <RadzenGridColumn TItem="Referee"/>
 
                 </Columns>
             </RadzenGrid>
@@ -231,25 +257,28 @@
     object multipleValues;
     object multipleValuesCategory;
     RadzenGrid<Competitor> competitorGrid;
-    RadzenGrid<SportCategory> categoryGrid;
+    RadzenGrid<CompetitionCategory> categoryGrid;
 
+    List<Referee> Referees = new List<Referee>();
     List<Competitor> competitors = new List<Competitor>();
-    List<SportCategory> Categories = new List<SportCategory>();
-    List<string> Grades = new List<string>();
+    List<CompetitionCategory> Categories = new List<CompetitionCategory>();
+    List<Grade> Grades = new List<Grade>();
     List<Tatami> Tatamies = new List<Tatami>();
 
-    private bool[] expanded = { false, false, false, false };
-    private void Change(int panelNumber, bool expand)
+
+    int GetAmountOfCompetitors(int Id)
     {
-        expanded[panelNumber] = expand;
+        return CategoryService.GetAmountOfCompetitors(Id);
     }
+
 
     protected override void OnInitialized()
     {
         competitors = CompetitionService.GetCompetitors();
         Grades = CategoryService.GetGrades();
-        Categories = CategoryService.GetCategories();
+        Categories = CompetitionService.GetCompetitionCategories(int.Parse(Id));
         Tatamies = CompetitionService.GetTatamis();
+        Referees = CompetitionService.GetReferees(); 
     }
 
     void DeleteRow(Competitor competitor)
@@ -265,7 +294,7 @@
             var selectedIds = (multipleValues as IEnumerable<Competitor>).Select(x => x.Id).ToList();
             foreach (var id in selectedIds)
             {
-                competitors.FirstOrDefault(x => x.Id == id).IsActive = true;
+                competitors.FirstOrDefault(x => x.Id == id).IsRegistred = true;
             }
             competitorGrid.Reload();
         }
@@ -304,7 +333,7 @@
         var result = await form.Result;
         if (result.Data != null)
         {
-            Categories.Add(result.Data as SportCategory);
+            Categories.Add(result.Data as CompetitionCategory);
             await categoryGrid.Reload();
         }
     }
@@ -313,16 +342,16 @@
 
     async Task DivideCategory()
     {
-        if ((multipleValuesCategory as IEnumerable<Category>).ToList().Count == 1)
+        if ((multipleValuesCategory as IEnumerable<SportCategory>).ToList().Count == 1)
         {
             ModalParameters parameters = new ModalParameters();
-            parameters.Add(nameof(Category), (multipleValuesCategory as IEnumerable<Category>).ToList()[0]);
+            parameters.Add(nameof(CompetitionCategory), (multipleValuesCategory as IEnumerable<SportCategory>).ToList()[0]);
 
             var form = Modal.Show<DivideCompetitionCategory>("Разбиение соревновательной категории", parameters);
             var result = await form.Result;
             if (result.Data != null)
             {
-                Categories.AddRange((List<SportCategory>)result.Data);
+                Categories.AddRange((List<CompetitionCategory>)result.Data);
                 await categoryGrid.Reload();
             }
         }
@@ -330,15 +359,15 @@
 
     void MergeCategory()
     {
-        if ((multipleValuesCategory as IEnumerable<Category>).ToList().Count > 1)
+        if ((multipleValuesCategory as IEnumerable<SportCategory>).ToList().Count > 1)
         {
-            var s = (multipleValuesCategory as IEnumerable<Category>).ToList();
-            var maxAge = s.Max(x => x.AgeTo);
-            var minAge = s.Min(x => x.AgeFrom);
-            var minWeight = s.Min(x => x.WeightFrom);
-            var maxWeight = s.Max(x => x.WeightTo);
-            var sex = s[0].Sex;
-            var name = minAge + "-" + maxAge + " " + sex + " " + minWeight + "-" + maxWeight;
+            var s = (multipleValuesCategory as IEnumerable<SportCategory>).ToList();
+            //var maxAge = s.Max(x => x.AgeTo);
+            //var minAge = s.Min(x => x.AgeFrom);
+            //var minWeight = s.Min(x => x.WeightFrom);
+            //var maxWeight = s.Max(x => x.WeightTo);
+            //var sex = s[0].Sex;
+            //var name = minAge + "-" + maxAge + " " + sex + " " + minWeight + "-" + maxWeight;
             //Categories.Add(new SportCategory()
             //{
             //    WeightGroup = minAge,

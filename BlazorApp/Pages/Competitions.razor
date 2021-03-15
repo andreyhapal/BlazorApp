@@ -8,7 +8,7 @@
 
 
 <RadzenButton Icon="add_circle_outline" class="primary-button m" Text="Добавить" Click="@InsertRow" />
-<RadzenGrid @ref="competitionGrid" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Advanced" AllowPaging="true" PageSize="10"
+<RadzenGrid @ref="competitionGrid" AllowFiltering="true"  AllowPaging="true" PageSize="10"
             AllowSorting="true" Data="competitions" TItem="Competition" AllowColumnResize="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValues
             RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
     <Columns>
@@ -22,46 +22,22 @@
             </Template>
         </RadzenGridColumn>
         <RadzenGridColumn TItem="Competition" Property="Id" Title="ID">
-
         </RadzenGridColumn>
-        <RadzenGridColumn TItem="Competition" Property="DateFound" Title="Дата начала">
-            <EditTemplate Context="competition">
-                <RadzenNumeric @bind-Value="competition.DateFound" Style="width:100%" />
-            </EditTemplate>
+        <RadzenGridColumn TItem="Competition" Property="StartDate" Title="Дата начала">
+            <Template Context="data">
+                @data.StartDate
+            </Template>
         </RadzenGridColumn>
-        <RadzenGridColumn TItem="Competition" Property="Name" Title="Название">
-            <EditTemplate Context="competition">
-                <RadzenTextBox @bind-Value="competition.Name" />
-            </EditTemplate>
-        </RadzenGridColumn>
-        <RadzenGridColumn TItem="Competition" Property="Country" Title="Страна">
-            <EditTemplate Context="competition">
-                <RadzenTextBox @bind-Value="competition.Country" />
-            </EditTemplate>
-        </RadzenGridColumn>
-        <RadzenGridColumn TItem="Competition" Property="City" Title="Город">
-            <EditTemplate Context="competition">
-                <RadzenDatePicker @bind-Value="competition.City" />
-            </EditTemplate>
-        </RadzenGridColumn>
-        <RadzenGridColumn TItem="Competition" Context="competition" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="200px">
+        <RadzenGridColumn TItem="Competition" Property="Name" Title="Название"/>
+        <RadzenGridColumn TItem="Competition" Context="competition" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="300px">
             <Template Context="competition">
                 <RadzenButton Icon="edit" Size="ButtonSize.Medium" Click="@(args => EditRow(competition))" class="primary-button">
                 </RadzenButton>
-                <RadzenButton class="primary-button" Icon="account_circle" Size="ButtonSize.Medium" Click="@(()=>RedirectToManage(competition))">
+                <RadzenButton class="primary-button" Icon="account_circle" Text="Управлять" Size="ButtonSize.Medium" Click="@(()=>RedirectToManage(competition))">
                 </RadzenButton>
                 <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Medium" Click="@(args => DeleteRow(competition))">
                 </RadzenButton>
-
             </Template>
-            <EditTemplate Context="competition">
-                <RadzenButton Icon="save" Size="ButtonSize.Medium" Click="@((args) => SaveRow(competition))" class="primary-button">
-                </RadzenButton>
-                <RadzenButton Icon="cancel" Size="ButtonSize.Medium" ButtonStyle="ButtonStyle.Secondary" Click="@((args) => CancelEdit(competition))">
-                </RadzenButton>
-                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Medium" Click="@(args => DeleteRow(competition))">
-                </RadzenButton>
-            </EditTemplate>
         </RadzenGridColumn>
     </Columns>
 </RadzenGrid>
@@ -85,9 +61,7 @@
     {
         var comp = competitions.FirstOrDefault(x => x.Id == competition.Id);
         comp.Name = competition.Name;
-        comp.DateFound = competition.DateFound;
-        comp.Country = competition.Country;
-        comp.City = competition.City;
+        
 
         competitionGrid.Reload();
     }
