@@ -85,8 +85,15 @@
         sexes = categoryService.GetSexes();
     }
 
-    void DeleteRow(Sportsman sportsman)
+    async void DeleteRow(Sportsman sportsman)
     {
+        var form = Modal.Show<DeleteForm>("Удалить спортсмена?");
+        var result = await form.Result;
+        if (!result.Cancelled)
+        {
+
+        }
+
         sportsmen.Remove(sportsman);
         sportsmenGrid.Reload();
     }

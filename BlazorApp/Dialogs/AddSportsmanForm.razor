@@ -4,7 +4,6 @@
 @using System.IO
 @using System.Drawing
 @using BlazorApp.Data
-@using BlazorApp.Models 
 
 @inject CategoryService CategoryService
 
@@ -12,7 +11,6 @@
     <div class="col">
         <RadzenFieldset Text="Личные данные">
             <div class="row">
-
                 <RadzenTextBox Placeholder="Имя" class="add-competitor-form" @bind-Value="Sportsman.FirstName"></RadzenTextBox>
             </div>
             <div class="row">
@@ -23,7 +21,6 @@
                 <RadzenSwitch @bind-Value="switcher" Style="margin:7px;" />
                 <h4 style="margin-top:10px">Ж</h4>
             </div>
-
             <div class="row">
                 <RadzenNumeric TValue="int?" class="add-competitor-form" Placeholder="Стартовый номер"></RadzenNumeric>
             </div>
@@ -31,11 +28,8 @@
                 <RadzenDatePicker class="add-competitor-form" Placeholder="Дата рождения" @bind-Value="Sportsman.DateOfBirth"></RadzenDatePicker>
             </div>
             <div class="row">
-                <RadzenDropDown Data=@(Grades.Select(x=>x.Name)) class="add-competitor-form" Placeholder="Пояс" @bind-Value="GradeName">
-
-                </RadzenDropDown>
+                <RadzenDropDown Data=@(Grades.Select(x=>x.Name)) class="add-competitor-form" Placeholder="Пояс" @bind-Value="GradeName"/>
             </div>
-
             <div class="row">
                 <RadzenNumeric TValue="int?" class="add-competitor-form" Placeholder="Возраст"></RadzenNumeric>
             </div>

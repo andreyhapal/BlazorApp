@@ -261,12 +261,10 @@
     List<Grade> Grades = new List<Grade>();
     List<Tatami> Tatamies = new List<Tatami>();
 
-
     int GetAmountOfCompetitors(int Id)
     {
         return CategoryService.GetAmountOfCompetitors(Id);
     }
-
 
     protected override void OnInitialized()
     {
@@ -317,8 +315,6 @@
             await competitorGrid.Reload();
         }
     }
-
-
 
     async Task AddCompetitionCategory()
     {

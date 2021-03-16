@@ -1,0 +1,13 @@
+﻿<div class="container">
+    <div class="row">
+        <RadzenButton Text="Подтвердить" Click="SubmitForm" class="primary-button m"/>
+        <RadzenButton Text="Отмена" Click="Cancel" class="primary-button m"/>
+    </div>
+</div>
+@code {
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; }
+
+    async Task SubmitForm() => await BlazoredModal.CloseAsync();
+    async Task Cancel() => await BlazoredModal.CancelAsync();
+}
