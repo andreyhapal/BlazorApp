@@ -8,7 +8,10 @@
 @inject BlazorApp.Data.CategoryService CategoryService
 @inject NavigationManager NavigationManager
 
-<div class="main-header-div">
+<div class="main-header-div" style="display:flex;">
+    <a @onclick="backUrl">
+        <img src="next-button.png" class="back-button" />
+    </a>
     <h1 class="main-header">Управление соревнованием @Name</h1>
 </div>
 <RadzenTabs>
@@ -33,30 +36,30 @@
                     <RadzenGridColumn TItem="Competitor" Property="IKO" Title="Номер" />
                     <RadzenGridColumn TItem="Competitor" Property="FirstName" Title="Имя" />
                     <RadzenGridColumn TItem="Competitor" Property="LastName" Title="Фамилия" />
-                    <RadzenGridColumn TItem="Competitor" Property="BirthDate" Title="Дата рождения" >
+                    <RadzenGridColumn TItem="Competitor" Property="BirthDate" Title="Дата рождения">
                         <Template Context="data">
                             @data.DateOfBirth.ToShortDateString()
                         </Template>
-                        </RadzenGridColumn>
-                    <RadzenGridColumn TItem="Competitor" Property="Grade" Title="Пояс" >
+                    </RadzenGridColumn>
+                    <RadzenGridColumn TItem="Competitor" Property="Grade" Title="Пояс">
                         <Template Context="data">
                             @data.Grade.Name
                         </Template>
-                        </RadzenGridColumn>
+                    </RadzenGridColumn>
                     <RadzenGridColumn TItem="Competitor" Property="Country" Title="Страна" />
                     <RadzenGridColumn TItem="Competitor" Property="Region" Title="Регион" />
                     <RadzenGridColumn TItem="Competitor" Property="ClubName" Title="Клуб" />
-                    <RadzenGridColumn TItem="Competitor" Property="Category" Title="Категория" >
+                    <RadzenGridColumn TItem="Competitor" Property="Category" Title="Категория">
                         <Template Context="data">
                             @data.CompetitionCategory.Name
                         </Template>
-                        </RadzenGridColumn>
+                    </RadzenGridColumn>
                     <RadzenGridColumn TItem="Competitor" Property="Weight" Title="Вес" />
-                    <RadzenGridColumn TItem="Competitor" Property="IsActive" Title="Активный" >
+                    <RadzenGridColumn TItem="Competitor" Property="IsActive" Title="Активный">
                         <Template Context="data">
-                            <RadzenCheckBox @bind-Value="data.IsRegistred"/>
+                            <RadzenCheckBox @bind-Value="data.IsRegistred" />
                         </Template>
-                        </RadzenGridColumn>
+                    </RadzenGridColumn>
                     <RadzenGridColumn TItem="Competitor" Context="competitor" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
                         <Template Context="competitor">
                             <RadzenButton Icon="edit" Size="ButtonSize.Medium" class="primary-button">
@@ -195,16 +198,16 @@
                                                 <td style="border-bottom:1px solid gray;width:448px;">
                                                     @c.Name
                                                 </td>
-                                                
+
                                             </tr>
                                         }
                                     </tbody>
                                 </table>
                             </div>
                             <div class="card-footer">
-                                <RadzenButton class="button circle-button primary-button m" Icon="build" MouseEnter="@(args => ShowTooltip(args,"Настройки") )" Click="()=>ToTatamiSettings(tatami.Id)"/>
-                                <RadzenButton class="button circle-button primary-button m" Icon="av_timer" MouseEnter="@(args => ShowTooltip(args,"Таймер") )" Click="ToScoreBoard" />
-                                <RadzenButton class="button circle-button primary-button m" Icon="computer" MouseEnter="@(args => ShowTooltip(args,"Компьютер") )" />
+                                <RadzenButton class="button circle-button primary-button m" Icon="build" MouseEnter="@(args => ShowTooltip(args,"Настройки") )" Click="()=>ToTatamiSettings(tatami.Id)" />
+                                <RadzenButton class="button circle-button primary-button m" Icon="av_timer" MouseEnter="@(args => ShowTooltip(args,"Таймер") )" Click="()=>ToTatamiTimer(tatami.Id)" />
+                                <RadzenButton class="button circle-button primary-button m" Icon="computer" MouseEnter="@(args => ShowTooltip(args,"Компьютер") )" Click="ToScoreBoard" />
                                 <RadzenButton class="button circle-button primary-button m" Icon="list" MouseEnter="@(args => ShowTooltip(args,"Список") )" />
                                 <RadzenButton class="button circle-button primary-button m" Icon="align_horizontal_left" MouseEnter="@(args => ShowTooltip(args,"Пули") )" />
                                 <RadzenButton class="button circle-button primary-button m" Icon="face" MouseEnter="@(args => ShowTooltip(args,"Подготовка участников") )" />
@@ -222,14 +225,14 @@
                     <RadzenGridColumn TItem="Referee" Property="Id" Title="Id" />
                     <RadzenGridColumn TItem="Referee" Property="FirstName" Title="Имя" />
                     <RadzenGridColumn TItem="Referee" Property="LastName" Title="Фамилия" />
-                    <RadzenGridColumn TItem="Referee" Property="BirthDate" Title="Дата рождения" >
+                    <RadzenGridColumn TItem="Referee" Property="BirthDate" Title="Дата рождения">
                         <Template Context="data">
                             @data.DateOfBirth.ToShortDateString()
                         </Template>
-                        </RadzenGridColumn>
+                    </RadzenGridColumn>
                     <RadzenGridColumn TItem="Referee" Title="Рейтинг" />
                     <RadzenGridColumn TItem="Referee" Title="Соревнования" />
-                    <RadzenGridColumn TItem="Referee"/>
+                    <RadzenGridColumn TItem="Referee" />
 
                 </Columns>
             </RadzenGrid>
@@ -315,10 +318,7 @@
         }
     }
 
-    void ToScoreBoard()
-    {
-        NavigationManager.NavigateTo("/scoreboard");
-    }
+
 
     async Task AddCompetitionCategory()
     {
@@ -362,6 +362,21 @@
 
     void ToTatamiSettings(int Id)
     {
-        NavigationManager.NavigateTo($"/tatami/settings/{Id}");
+        NavigationManager.NavigateTo("/manage/"+this.Id+"/"+this.Name+"/settings/"+Id);
+    }
+
+    void ToTatamiTimer(int Id)
+    {
+        NavigationManager.NavigateTo("/manage/" + this.Id + "/" + this.Name + "/timer/" + Id);
+    }
+
+    void ToScoreBoard()
+    {
+        NavigationManager.NavigateTo("/scoreboard");
+    }
+
+    void backUrl()
+    {
+        NavigationManager.NavigateTo("/competitions");
     }
 }

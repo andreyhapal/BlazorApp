@@ -339,4 +339,14 @@ td {
     display: block;
 }
 
+.back-button{
+    height:50px;
+    width:50px;
+    transform:rotate(180deg);
+}
+
+.digital-font {
+    font-family: 'digital-clock-font';
+    
+}
 

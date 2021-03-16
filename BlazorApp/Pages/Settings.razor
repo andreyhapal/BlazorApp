@@ -1,0 +1,24 @@
+﻿@page "/manage/{CompetId}/{CompetName}/settings/{Id}"
+
+@inject NavigationManager NavigationManager
+<div class="main-header-div" style="display:flex;">
+    <a @onclick="backUrl">
+        <img src="next-button.png" class="back-button" />
+    </a>
+    <h1 class="main-header">Настройка татами</h1>
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    [Parameter]
+    public string CompetId { get; set; }
+    [Parameter]
+    public string CompetName { get; set; }
+
+    void backUrl()
+    {
+        NavigationManager.NavigateTo("/manage/" + CompetId + "/" + CompetName);
+    }
+
+}

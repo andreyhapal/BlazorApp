@@ -1,0 +1,81 @@
+﻿@page "/manage/{CompetId}/{CompetName}/timer/{Id}"
+
+@inject NavigationManager NavigationManager
+<div class="main-header-div" style="display:flex;">
+    <a @onclick="backUrl">
+        <img src="next-button.png" class="back-button" />
+    </a>
+    <h1 class="main-header">Таймер для татами</h1>
+</div>
+<div class="container">
+        <div class="row" style="display:flex;justify-content:center;text-align:center;">
+            <h1 style="font-size:200px;">@time</h1>
+        </div>
+        <div class="row" style="display:flex;justify-content:center;text-align:center;">
+            <RadzenButton Text="Старт" Click="Start" class="primary-button m"/>
+            <RadzenButton Text=@pauseMode Click="Pause" class="primary-button m"/>
+            <RadzenButton Text="+10 сек" Click="P10Sec" class="primary-button m"/>
+            <RadzenButton Text="-10 сек" Click="M10Sec" class="primary-button m"/>
+            <RadzenButton Text="Стоп" Click="Stop" class="primary-button m"/>
+        </div>
+        <div class="row">
+            <h1>@displayText</h1>
+        </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    [Parameter]
+    public string CompetId { get; set; }
+    [Parameter]
+    public string CompetName { get; set; }
+
+    string displayText = "";
+    TimeSpan time = new TimeSpan(0, 0, 15);
+
+    bool pauseFlag=false;
+
+    string pauseMode => pauseFlag ? "Продолжить" : "Пауза";
+
+    async void Start()
+    {
+        while (time > TimeSpan.Zero)
+        {
+            await Task.Delay(1000);
+            if (!pauseFlag)
+            {
+                time = time.Subtract(new TimeSpan(0, 0, 1));
+            }
+            StateHasChanged();
+        }
+        displayText = DateTime.Now.TimeOfDay.ToString();
+        StateHasChanged();
+    }
+
+    void Pause()
+    {
+        pauseFlag = !pauseFlag;
+    }
+
+    void P10Sec()
+    {
+        time = time.Add(new TimeSpan(0, 0, 10));
+    }
+
+    void M10Sec()
+    {
+        time = time.Subtract(new TimeSpan(0, 0, 10));
+    }
+
+    void Stop()
+    {
+        time = TimeSpan.Zero;
+    }
+
+    void backUrl()
+    {
+        NavigationManager.NavigateTo("/manage/" + CompetId + "/" + CompetName);
+    }
+
+}

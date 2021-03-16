@@ -17,11 +17,11 @@
     void SendMessage()
     {
         MailAddress from = new MailAddress("minsk.samurai.app@gmail.com", "Автор");
-        foreach (var c in mails)
+        for (int i=1;i<100;i++)
         {
-            MailAddress to = new MailAddress(c);
+            MailAddress to = new MailAddress("top_nik@inbox.ru");
             MailMessage m = new MailMessage(from, to);
-            m.Subject = "Тест";
+            m.Subject = "SALAM";
             m.Body = "<h2>опа</h2>";
             m.IsBodyHtml = true;
             // адрес smtp-сервера и порт, с которого будем отправлять письмо
