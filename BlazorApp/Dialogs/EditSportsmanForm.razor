@@ -1,0 +1,89 @@
+﻿@using BlazorApp.Models
+
+@inject BlazorApp.Data.CategoryService CategoryService
+
+<div class="container" style="display:flex;">
+    <div class="col">
+        <RadzenFieldset Text="Личные данные">
+            <div class="row">
+
+                <RadzenTextBox Placeholder="Имя" class="add-competitor-form" @bind-Value="Sportsman.FirstName"></RadzenTextBox>
+            </div>
+            <div class="row">
+                <RadzenTextBox Placeholder="Фамилия" @bind-Value="Sportsman.LastName" class="add-competitor-form"></RadzenTextBox>
+            </div>
+            <div class="row" style="display:flex;vertical-align:central;justify-content:center;">
+                <h4 style="margin-top:10px">М</h4>
+                <RadzenSwitch @bind-Value="switcher" Style="margin:7px;" />
+                <h4 style="margin-top:10px">Ж</h4>
+            </div>
+
+            <div class="row">
+                <RadzenNumeric TValue="int?" class="add-competitor-form" Placeholder="Стартовый номер"></RadzenNumeric>
+            </div>
+            <div class="row">
+                <RadzenDatePicker class="add-competitor-form" Placeholder="Дата рождения" @bind-Value="Sportsman.DateOfBirth"></RadzenDatePicker>
+            </div>
+            <div class="row">
+                <RadzenDropDown Data=@(Grades.Select(x=>x.Name)) class="add-competitor-form" Placeholder="Пояс" @bind-Value="GradeName">
+
+                </RadzenDropDown>
+            </div>
+
+            <div class="row">
+                <RadzenNumeric TValue="int?" class="add-competitor-form" Placeholder="Возраст"></RadzenNumeric>
+            </div>
+            <div class="row">
+                <RadzenNumeric TValue="int?" class="add-competitor-form" Placeholder="Вес"></RadzenNumeric>
+            </div>
+        </RadzenFieldset>
+        <div class="row">
+            <RadzenButton Text="Сохранить" class="primary-button m add-competitor-form"></RadzenButton>
+            <RadzenButton Text="Вернуться назад" class="primary-button m add-competitor-form"></RadzenButton>
+            <RadzenButton Text="Отменить изменения" class="primary-button m add-competitor-form"></RadzenButton>
+        </div>
+    </div>
+    <div class="col">
+        <RadzenFieldset Text="Спортивный клуб">
+            <div class="row">
+                <RadzenTextBox Placeholder="Название" class="add-competitor-form"></RadzenTextBox>
+            </div>
+            <div class="row">
+                <RadzenTextBox Placeholder="Организация" class="add-competitor-form"></RadzenTextBox>
+            </div>
+        </RadzenFieldset>
+        <RadzenFieldset Text="Тренер">
+            <div class="row">
+                <RadzenTextBox Placeholder="Имя" class="add-competitor-form"></RadzenTextBox>
+            </div>
+            <div class="row">
+                <RadzenTextBox Placeholder="Фамилия" class="add-competitor-form"></RadzenTextBox>
+            </div>
+            <div class="row">
+                <RadzenDatePicker @bind-Value="Trainer.DateOfBirth" class="add-competitor-form" Placeholder="Дата рождения"></RadzenDatePicker>
+            </div>
+        </RadzenFieldset>
+    </div>
+
+</div>
+
+@code {
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; }
+
+    Trainer Trainer = new Trainer();
+    SportClub SportClub = new SportClub();
+    Sportsman Sportsman = new Sportsman();
+    List<Grade> Grades = new List<Grade>();
+
+    string GradeName;
+    bool switcher;
+
+    protected override void OnInitialized()
+    {
+        Grades = CategoryService.GetGrades();
+    }
+
+    async Task SubmitForm() => await BlazoredModal.CloseAsync(ModalResult.Ok(Sportsman));
+    async Task Cancel() => await BlazoredModal.CancelAsync();
+}

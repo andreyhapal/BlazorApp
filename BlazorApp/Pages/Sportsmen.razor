@@ -2,15 +2,17 @@
 
 @using BlazorApp.Data
 @using BlazorApp.Models
+@using BlazorApp.Dialogs
+
 @inject BlazorApp.Services.SportsmenService sportsmenService
 @inject BlazorApp.Data.CategoryService categoryService
+
 <div class="main-header-div">
     <h1 class="main-header">Спортсмены</h1>
 </div>
-<RadzenButton Icon="add_circle_outline" class="primary-button m" Text="Добавить" Click="@InsertRow" />
+<RadzenButton Icon="add_circle_outline" class="primary-button m" Text="Добавить" Click="AddSportsman"/>
 <RadzenGrid @ref="sportsmenGrid" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="15"
-            AllowSorting="true" Data="@sportsmen" TItem="Sportsman" AllowColumnResize="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValues
-            RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
+            AllowSorting="true" Data="@sportsmen" TItem="Sportsman" AllowColumnResize="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValues>
     <Columns>
         <RadzenGridColumn TItem="Sportsman" Width="40px" Sortable="false" Filterable="false">
             <HeaderTemplate>
@@ -49,7 +51,7 @@
         </RadzenGridColumn>
         <RadzenGridColumn TItem="Sportsman" Context="sportsman" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="100px">
             <Template Context="sportsman">
-                <RadzenButton Icon="edit" Size="ButtonSize.Small" class="primary-button" Click="@(args => EditRow(sportsman))">
+                <RadzenButton Icon="edit" Size="ButtonSize.Small" class="primary-button" Click="()=>EditSportsman(sportsman.Id)">
                 </RadzenButton>
             </Template>
         </RadzenGridColumn>
@@ -69,6 +71,9 @@
 
     RadzenGrid<Sportsman> sportsmenGrid;
 
+    [CascadingParameter]
+    public IModalService Modal { get; set; }
+
     List<Sportsman> sportsmen = new List<Sportsman>();
     List<Grade> grades;
     List<Sex> sexes;
@@ -80,42 +85,28 @@
         sexes = categoryService.GetSexes();
     }
 
-    void EditRow(Sportsman sportsman)
-    {
-        sportsmenGrid.EditRow(sportsman);
-    }
-
-    void OnUpdateRow(Sportsman sportsman)
-    {
-        sportsmen.RemoveAll(x => x.Id == sportsman.Id);
-        sportsman.Id = sportsmen.Max(x => x.Id) + 1;
-        sportsmen.Add(sportsman);
-        sportsmenGrid.Reload();
-    }
-
-    void SaveRow(Sportsman sportsman)
-    {
-        sportsmenGrid.UpdateRow(sportsman);
-    }
-
-    void CancelEdit(Sportsman sportsman)
-    {
-        sportsmenGrid.CancelEditRow(sportsman);
-    }
-
     void DeleteRow(Sportsman sportsman)
     {
         sportsmen.Remove(sportsman);
         sportsmenGrid.Reload();
     }
 
-    void InsertRow()
+    async void AddSportsman()
     {
-        sportsmenGrid.InsertRow(new Sportsman());
+        var form = Modal.Show<AddSportsmanForm>("Создать учетную запись спортсмена");
+        var result = await form.Result;
+        if (result.Data != null)
+        {
+
+        }
     }
 
-    void OnCreateRow(Sportsman sportsman)
+    async void EditSportsman(int Id)
     {
-        sportsmen.Add(sportsman);
+        ModalParameters parameters = new ModalParameters();
+        parameters.Add(nameof(Id), Id);
+
+        var form = Modal.Show<EditSportsmanForm>("Редактирование спортсмена",parameters);
+        var result = await form.Result;
     }
 }

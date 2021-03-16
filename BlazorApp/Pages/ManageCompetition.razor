@@ -207,7 +207,7 @@
                             <div class="card-footer">
                                 <RadzenButton class="button circle-button primary-button m" Icon="build" MouseEnter="@(args => ShowTooltip(args,"Настройки") )" Click="()=>ToTatamiSettings(tatami.Id)" />
                                 <RadzenButton class="button circle-button primary-button m" Icon="av_timer" MouseEnter="@(args => ShowTooltip(args,"Таймер") )" Click="()=>ToTatamiTimer(tatami.Id)" />
-                                <RadzenButton class="button circle-button primary-button m" Icon="computer" MouseEnter="@(args => ShowTooltip(args,"Компьютер") )" Click="ToScoreBoard" />
+                                <RadzenButton class="button circle-button primary-button m" Icon="computer" MouseEnter="@(args => ShowTooltip(args,"Компьютер") )" Click="()=>ToScoreBoard(tatami.Id)" />
                                 <RadzenButton class="button circle-button primary-button m" Icon="list" MouseEnter="@(args => ShowTooltip(args,"Список") )" />
                                 <RadzenButton class="button circle-button primary-button m" Icon="align_horizontal_left" MouseEnter="@(args => ShowTooltip(args,"Пули") )" />
                                 <RadzenButton class="button circle-button primary-button m" Icon="face" MouseEnter="@(args => ShowTooltip(args,"Подготовка участников") )" />
@@ -370,9 +370,9 @@
         NavigationManager.NavigateTo("/manage/" + this.Id + "/" + this.Name + "/timer/" + Id);
     }
 
-    void ToScoreBoard()
+    void ToScoreBoard(int Id)
     {
-        NavigationManager.NavigateTo("/scoreboard");
+        NavigationManager.NavigateTo("/manage/" + this.Id + "/" + this.Name + "/scoreboard/" + Id);
     }
 
     void backUrl()
