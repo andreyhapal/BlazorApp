@@ -2,7 +2,11 @@
 
 @using BlazorApp.Data
 @using BlazorApp.Models
+
 @inject BlazorApp.Data.CategoryService categoryService
+@inject BlazorApp.Services.AgeGroupService AgeGroupService
+@inject BlazorApp.Services.WeightGroupService WeightGroupService
+
 <div class="main-header-div">
     <h1 class="main-header">Категории</h1>
 </div>
@@ -136,8 +140,8 @@
     protected override void OnInitialized()
     {
         categories = categoryService.GetCategories();
-        weightGroups = categoryService.GetWeightGroups();
-        ageGroups = categoryService.GetAgeGroups();
+        weightGroups = WeightGroupService.GetWeightGroups();
+        ageGroups = AgeGroupService.GetAgeGroups();
         types = categoryService.GetTypes();
         grades = categoryService.GetGrades();
     }

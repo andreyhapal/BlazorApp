@@ -2,7 +2,8 @@
 
 @using System.Net.Mail
 @using System.Net
-@inject BlazorApp.Data.CategoryService CategoryService
+
+@inject BlazorApp.Services.AddictionalService AddictionalService 
 
 <button class="btn btn-primary" @onclick="SendMessage">Рассылка</button>
 
@@ -11,7 +12,7 @@
         List<string> mails = new List<string>();
     protected override void OnInitialized()
     {
-        mails = CategoryService.GetEmails();
+        mails = AddictionalService.GetEmails();
     }
 
     void SendMessage()

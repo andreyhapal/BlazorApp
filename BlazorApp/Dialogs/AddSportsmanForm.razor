@@ -1,11 +1,12 @@
-﻿@using FileHelpers
-@using BlazorInputFile
+﻿@using BlazorInputFile
 @using Models
 @using System.IO
-@using System.Drawing
 @using BlazorApp.Data
+@using BlazorApp.Services
 
 @inject CategoryService CategoryService
+@inject SportClubService SportClubService
+@inject TrainerService TrainerService 
 
 <div class="container" style="display:flex;">
     <div class="col">
@@ -107,8 +108,8 @@
         string sex = switcher ? "М" : "Ж";
         Sportsman.Sex = CategoryService.GetSexByName(sex);
         Sportsman.Grade = CategoryService.GetGradeByName(GradeName);
-        Sportsman.SportClub = CategoryService.GetSportClub(SportClub);
-        Sportsman.Trainer = CategoryService.GetTrainer(Trainer);
+        Sportsman.SportClub = SportClubService.GetSportClub(SportClub);
+        Sportsman.Trainer = TrainerService.GetTrainer(Trainer);
         Sportsman.Weight = (decimal)Weight;
 
         await BlazoredModal.CloseAsync(ModalResult.Ok(Sportsman));
