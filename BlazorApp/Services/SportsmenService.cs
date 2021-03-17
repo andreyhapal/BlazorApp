@@ -30,7 +30,7 @@ namespace BlazorApp.Services
                 using (var db = new ApplicationContext())
                 {
                     db.Sportsmens.Add(sportsman);
-                    db.SaveChanges();
+                    //db.SaveChanges();
                     response.IsSuccess = true;
                 }
             }
@@ -68,7 +68,12 @@ namespace BlazorApp.Services
             {
                 using (var db = new ApplicationContext())
                 {
-                    sportsman = db.Sportsmens.First(x => x.Id == Id);
+                    sportsman = db.Sportsmens
+                                    .Include(x=>x.SportClub)
+                                    .Include(x=>x.Grade)
+                                    .Include(x=>x.Sex)
+                                    .Include(x=>x.Trainer)
+                                    .First(x => x.Id == Id);
                     return sportsman;
                 }
             }catch(Exception e)
@@ -76,6 +81,29 @@ namespace BlazorApp.Services
                 Console.WriteLine(e.Message);
             }
             return sportsman;
+        }
+
+        public ResponseObject DeleteSportsman(int Id)
+        {
+            ResponseObject response = new ResponseObject();
+            try
+            {
+                using (var db = new ApplicationContext())
+                {
+                    var sportsman = db.Sportsmens.FirstOrDefault(x => x.Id == Id);
+                    if (sportsman != null)
+                    {
+                        db.Sportsmens.Remove(sportsman);
+                        db.SaveChanges();
+                    }
+                }
+                response.IsSuccess = true;
+            }catch(Exception e)
+            {
+                response.IsSuccess = false;
+                response.ExceptionMessage = e.Message;
+            }
+            return response;
         }
     }
 }

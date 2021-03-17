@@ -28,18 +28,20 @@
                 <RadzenDatePicker class="add-competitor-form" Placeholder="Дата рождения" @bind-Value="Sportsman.DateOfBirth"></RadzenDatePicker>
             </div>
             <div class="row">
-                <RadzenDropDown Data=@(Grades.Select(x=>x.Name)) class="add-competitor-form" Placeholder="Пояс" @bind-Value="GradeName"/>
+                <RadzenDropDown TValue="string" Data=@Grades class="add-competitor-form" Placeholder="Пояс" @bind-Value="GradeName" />
             </div>
-            <div class="row">
-                <RadzenNumeric TValue="int?" class="add-competitor-form" Placeholder="Возраст"></RadzenNumeric>
+            <div class="row" style="display:flex;justify-content:space-between">
+                <RadzenLabel Text="Возраст" Style="padding-left:15px;"></RadzenLabel>
+                <RadzenNumeric class="add-competitor-form" Placeholder="Возраст" @bind-Value="Sportsman.Age"></RadzenNumeric>
             </div>
-            <div class="row">
-                <RadzenNumeric TValue="int?" class="add-competitor-form" Placeholder="Вес"></RadzenNumeric>
+            <div class="row" style="display:flex;justify-content:space-between">
+                <RadzenLabel Text="Вес" Style="padding-left:15px;"></RadzenLabel>
+                <RadzenNumeric class="add-competitor-form" Placeholder="Вес" @bind-Value="Weight"></RadzenNumeric>
             </div>
         </RadzenFieldset>
         <div class="row">
-            <RadzenButton Text="Создать" class="primary-button m add-competitor-form"></RadzenButton>
-            <RadzenButton Text="Вернуться назад" class="primary-button m add-competitor-form"></RadzenButton>
+            <RadzenButton Text="Создать" class="primary-button m add-competitor-form" Click="SubmitForm"></RadzenButton>
+            <RadzenButton Text="Вернуться назад" class="primary-button m add-competitor-form" Click="Cancel"></RadzenButton>
         </div>
     </div>
     <div class="col">
@@ -49,21 +51,21 @@
         </RadzenFieldset>
         <RadzenFieldset Text="Спортивный клуб">
             <div class="row">
-                <RadzenTextBox Placeholder="Название" class="add-competitor-form"></RadzenTextBox>
+                <RadzenTextBox Placeholder="Название" class="add-competitor-form" @bind-Value="SportClub.Name" />
             </div>
             <div class="row">
-                <RadzenTextBox Placeholder="Организация" class="add-competitor-form"></RadzenTextBox>
+                <RadzenTextBox Placeholder="Организация" class="add-competitor-form" @bind-Value="SportClub.Organization" />
             </div>
         </RadzenFieldset>
         <RadzenFieldset Text="Тренер">
             <div class="row">
-                <RadzenTextBox Placeholder="Имя" class="add-competitor-form"></RadzenTextBox>
+                <RadzenTextBox Placeholder="Имя" class="add-competitor-form" @bind-Value="Trainer.FirstName" />
             </div>
             <div class="row">
-                <RadzenTextBox Placeholder="Фамилия" class="add-competitor-form"></RadzenTextBox>
+                <RadzenTextBox Placeholder="Фамилия" class="add-competitor-form" @bind-Value="Trainer.LastName" />
             </div>
             <div class="row">
-                <RadzenDatePicker @bind-Value="Trainer.DateOfBirth" class="add-competitor-form" Placeholder="Дата рождения"></RadzenDatePicker>
+                <RadzenDatePicker Placeholder="Дата рождения" class="add-competitor-form" @bind-Value="Trainer.DateOfBirth" />
             </div>
         </RadzenFieldset>
     </div>
@@ -74,17 +76,18 @@
     MemoryStream ms = new MemoryStream();
     bool switcher;
     string GradeName;
+    int Weight;
     [CascadingParameter]
     BlazoredModalInstance BlazoredModal { get; set; }
 
     Trainer Trainer = new Trainer();
     SportClub SportClub = new SportClub();
     Sportsman Sportsman = new Sportsman();
-    List<Grade> Grades = new List<Grade>();
+    List<string> Grades = new List<string>();
 
     protected override void OnInitialized()
     {
-        Grades = CategoryService.GetGrades();
+        Grades = CategoryService.GetGrades().Select(x=>x.Name).ToList();
     }
 
     async Task HandleSelection(IFileListEntry[] files)
@@ -99,6 +102,16 @@
         }
     }
 
-    async Task SubmitForm() => await BlazoredModal.CloseAsync(ModalResult.Ok(Sportsman));
+    async Task SubmitForm()
+    {
+        string sex = switcher ? "М" : "Ж";
+        Sportsman.Sex = CategoryService.GetSexByName(sex);
+        Sportsman.Grade = CategoryService.GetGradeByName(GradeName);
+        Sportsman.SportClub = CategoryService.GetSportClub(SportClub);
+        Sportsman.Trainer = CategoryService.GetTrainer(Trainer);
+        Sportsman.Weight = (decimal)Weight;
+
+        await BlazoredModal.CloseAsync(ModalResult.Ok(Sportsman));
+    }
     async Task Cancel() => await BlazoredModal.CancelAsync();
 }

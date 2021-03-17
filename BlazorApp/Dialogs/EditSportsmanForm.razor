@@ -1,6 +1,7 @@
 ﻿@using BlazorApp.Models
 
 @inject BlazorApp.Data.CategoryService CategoryService
+@inject BlazorApp.Services.SportsmenService SportsmenService
 
 <div class="container" style="display:flex;">
     <div class="col">
@@ -31,10 +32,10 @@
             </div>
 
             <div class="row">
-                <RadzenNumeric TValue="int?" class="add-competitor-form" Placeholder="Возраст"></RadzenNumeric>
+                <RadzenNumeric class="add-competitor-form" Placeholder="Возраст" @bind-Value="Sportsman.Age"></RadzenNumeric>
             </div>
             <div class="row">
-                <RadzenNumeric TValue="int?" class="add-competitor-form" Placeholder="Вес"></RadzenNumeric>
+                <RadzenNumeric class="add-competitor-form" Placeholder="Вес" @bind-Value="Sportsman.Weight"></RadzenNumeric>
             </div>
         </RadzenFieldset>
         <div class="row">
@@ -46,21 +47,21 @@
     <div class="col">
         <RadzenFieldset Text="Спортивный клуб">
             <div class="row">
-                <RadzenTextBox Placeholder="Название" class="add-competitor-form"></RadzenTextBox>
+                <RadzenTextBox Placeholder="Название" class="add-competitor-form" @bind-Value="Sportsman.SportClub.Name"></RadzenTextBox>
             </div>
             <div class="row">
-                <RadzenTextBox Placeholder="Организация" class="add-competitor-form"></RadzenTextBox>
+                <RadzenTextBox Placeholder="Организация" class="add-competitor-form" @bind-Value="Sportsman.SportClub.Organization"></RadzenTextBox>
             </div>
         </RadzenFieldset>
         <RadzenFieldset Text="Тренер">
             <div class="row">
-                <RadzenTextBox Placeholder="Имя" class="add-competitor-form"></RadzenTextBox>
+                <RadzenTextBox Placeholder="Имя" class="add-competitor-form" @bind-Value="Sportsman.Trainer.FirstName"></RadzenTextBox>
             </div>
             <div class="row">
-                <RadzenTextBox Placeholder="Фамилия" class="add-competitor-form"></RadzenTextBox>
+                <RadzenTextBox Placeholder="Фамилия" class="add-competitor-form" @bind-Value="Sportsman.Trainer.LastName"></RadzenTextBox>
             </div>
             <div class="row">
-                <RadzenDatePicker @bind-Value="Trainer.DateOfBirth" class="add-competitor-form" Placeholder="Дата рождения"></RadzenDatePicker>
+                <RadzenDatePicker @bind-Value="Sportsman.Trainer.DateOfBirth" class="add-competitor-form" Placeholder="Дата рождения"></RadzenDatePicker>
             </div>
         </RadzenFieldset>
     </div>
@@ -72,19 +73,29 @@
     BlazoredModalInstance BlazoredModal { get; set; }
     [Parameter]
     public int Id { get; set; }
-    Trainer Trainer = new Trainer();
-    SportClub SportClub = new SportClub();
+    
     Sportsman Sportsman = new Sportsman();
     List<Grade> Grades = new List<Grade>();
 
     string GradeName;
     bool switcher;
-
+    //int Weight;
     protected override void OnInitialized()
     {
         Grades = CategoryService.GetGrades();
+        Sportsman = SportsmenService.GetSportsmanById(this.Id);
     }
 
-    async Task SubmitForm() => await BlazoredModal.CloseAsync(ModalResult.Ok(Sportsman));
+    async Task SubmitForm()
+    {
+        string sex = switcher ? "М" : "Ж";
+        Sportsman.Sex = CategoryService.GetSexByName(sex);
+        Sportsman.Grade = CategoryService.GetGradeByName(GradeName);
+        
+        //Sportsman.Weight = (decimal)Weight;
+
+        await BlazoredModal.CloseAsync(ModalResult.Ok(Sportsman));
+    }
+
     async Task Cancel() => await BlazoredModal.CancelAsync();
 }

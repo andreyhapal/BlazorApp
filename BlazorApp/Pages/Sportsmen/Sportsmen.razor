@@ -3,14 +3,17 @@
 @using BlazorApp.Data
 @using BlazorApp.Models
 @using BlazorApp.Dialogs
+@using BlazorApp.Util
 
-@inject BlazorApp.Services.SportsmenService sportsmenService
-@inject BlazorApp.Data.CategoryService categoryService
+@inject BlazorApp.Services.SportsmenService SportsmenService
+@inject BlazorApp.Data.CategoryService CategoryService
+@inject NotificationService NotificationService
 
 <div class="main-header-div">
     <h1 class="main-header">Спортсмены</h1>
 </div>
-<RadzenButton Icon="add_circle_outline" class="primary-button m" Text="Добавить" Click="AddSportsman"/>
+<RadzenButton Icon="add_circle_outline" class="primary-button m" Text="Добавить" Click="AddSportsman" />
+
 <RadzenGrid @ref="sportsmenGrid" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="15"
             AllowSorting="true" Data="@sportsmen" TItem="Sportsman" AllowColumnResize="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValues>
     <Columns>
@@ -23,17 +26,17 @@
                 <RadzenCheckBox TriState="false" Value="@(multipleValues != null && (multipleValues as IEnumerable<Sportsman>).Contains(data))" />
             </Template>
         </RadzenGridColumn>
-        <RadzenGridColumn TItem="Sportsman" Property="Id" Title="ID"/>
-        <RadzenGridColumn TItem="Sportsman" Property="IKO" Title="IKO"/>
-        <RadzenGridColumn TItem="Sportsman" Property="LastName" Title="Фамилия"/>
-        <RadzenGridColumn TItem="Sportsman" Property="FirstName" Title="Имя"/>
+        <RadzenGridColumn TItem="Sportsman" Property="Id" Title="ID" />
+        <RadzenGridColumn TItem="Sportsman" Property="IKO" Title="IKO" />
+        <RadzenGridColumn TItem="Sportsman" Property="LastName" Title="Фамилия" />
+        <RadzenGridColumn TItem="Sportsman" Property="FirstName" Title="Имя" />
         <RadzenGridColumn TItem="Sportsman" Property="DateOfBirth" Title="Дата рождения">
             <Template Context="data">
                 @data.DateOfBirth.ToShortDateString()
             </Template>
-            </RadzenGridColumn>
-        <RadzenGridColumn TItem="Sportsman" Property="Age" Title="Возраст"/>
-        <RadzenGridColumn TItem="Sportsman" Property="Weight" Title="Вес"/>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="Sportsman" Property="Age" Title="Возраст" />
+        <RadzenGridColumn TItem="Sportsman" Property="Weight" Title="Вес" />
         <RadzenGridColumn TItem="Sportsman" Property="Grade" Title="Пояс">
             <Template Context="data">
                 @data.Grade.Name
@@ -57,10 +60,10 @@
         </RadzenGridColumn>
         <RadzenGridColumn TItem="Sportsman" Context="sportsman" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="70px">
             <Template Context="sportsman">
-                <RadzenButton Icon="close" class="btn-danger" Size="ButtonSize.Small" Click="@(args => DeleteRow(sportsman))">
+                <RadzenButton Icon="close" class="btn-danger" Size="ButtonSize.Small" Click="@(args => Delete(sportsman.Id))">
                 </RadzenButton>
             </Template>
-            
+
         </RadzenGridColumn>
 
     </Columns>
@@ -80,22 +83,22 @@
 
     protected override void OnInitialized()
     {
-        sportsmen = sportsmenService.GetSportsmen();
-        grades = categoryService.GetGrades();
-        sexes = categoryService.GetSexes();
+        sportsmen = SportsmenService.GetSportsmen();
+        grades = CategoryService.GetGrades();
+        sexes = CategoryService.GetSexes();
     }
 
-    async void DeleteRow(Sportsman sportsman)
+    async void Delete(int Id)
     {
         var form = Modal.Show<DeleteForm>("Удалить спортсмена?");
         var result = await form.Result;
         if (!result.Cancelled)
         {
-
+            SportsmenService.DeleteSportsman(Id);
         }
-
-        sportsmen.Remove(sportsman);
-        sportsmenGrid.Reload();
+        
+        //sportsmen.Remove(sportsman);
+        //sportsmenGrid.Reload();
     }
 
     async void AddSportsman()
@@ -104,7 +107,15 @@
         var result = await form.Result;
         if (result.Data != null)
         {
-
+            ResponseObject response = SportsmenService.CreateSportsman(result.Data as Sportsman);
+            if (response.IsSuccess == false)
+            {
+                ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Ошибка!", Detail = "Не удалось добавить спортсмена!", Duration = 4000 });
+            }
+            else
+            {
+                ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Успешно!", Detail = "Спортсмен успешно добавлен!", Duration = 4000 });
+            }
         }
     }
 
@@ -113,7 +124,25 @@
         ModalParameters parameters = new ModalParameters();
         parameters.Add(nameof(Id), Id);
 
-        var form = Modal.Show<EditSportsmanForm>("Редактирование спортсмена",parameters);
+        var form = Modal.Show<EditSportsmanForm>("Редактирование спортсмена", parameters);
         var result = await form.Result;
+
+        if (result.Data != null)
+        {
+            ResponseObject response = SportsmenService.UpdateSportsman(result.Data as Sportsman);
+            if (response.IsSuccess == false)
+            {
+                ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Ошибка!", Detail = "Не удалось обновить данные о спортсмене!", Duration = 4000 });
+            }
+            else
+            {
+                ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Успешно!", Detail = "Данные успешно обновлены!", Duration = 4000 });
+            }
+        }
+    }
+
+    void ShowNotification(NotificationMessage message)
+    {
+        NotificationService.Notify(message);
     }
 }
