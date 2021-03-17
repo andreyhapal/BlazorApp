@@ -2,12 +2,15 @@
 
 @using BlazorApp.Models
 @using BlazorApp.Data
+@using BlazorApp.Dialogs
+@using BlazorApp.Dialogs.CategoryForms
+@using BlazorApp.Dialogs.SportsmanForms
 
 @inject TooltipService tooltipService
+@inject NavigationManager NavigationManager
 @inject BlazorApp.Services.CompetitionService CompetitionService
 @inject BlazorApp.Data.CategoryService CategoryService
-@inject NavigationManager NavigationManager
-@inject BlazorApp.Services.CompetitorService CompetitorService 
+@inject BlazorApp.Services.CompetitorService CompetitorService
 
 <div class="main-header-div" style="display:flex;">
     <a @onclick="backUrl">
@@ -269,7 +272,7 @@
 
     protected override void OnInitialized()
     {
-        competitors = CompetitionService.GetCompetitors();
+        competitors = CompetitorService.GetCompetitors();
         Grades = CategoryService.GetGrades();
         Categories = CompetitionService.GetCompetitionCategories(int.Parse(Id));
         Tatamies = CompetitionService.GetTatamis();
@@ -359,7 +362,7 @@
 
     void ToTatamiSettings(int Id)
     {
-        NavigationManager.NavigateTo("/manage/"+this.Id+"/"+this.Name+"/settings/"+Id);
+        NavigationManager.NavigateTo("/manage/" + this.Id + "/" + this.Name + "/settings/" + Id);
     }
 
     void ToTatamiTimer(int Id)

@@ -34,6 +34,7 @@ namespace BlazorApp
             services.AddScoped<TooltipService>();
             services.AddBlazoredModal();
             services.AddScoped<NotificationService>();
+            services.AddScoped<CompetitorService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
