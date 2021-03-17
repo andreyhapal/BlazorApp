@@ -106,12 +106,15 @@
 
         <RadzenTabsItem Text="Жеребьевка(пули)">
             <RadzenButton Text="Генерировать все пули" class="primary-button m" />
-            <RadzenAccordion>
-                <Items>
+            
+            
+
+            
                     @foreach (var category in Categories)
                     {
-                        <RadzenAccordionItem Text=@category.Name Icon="accessibility">
-                            <table class="table table-hover table-bordered">
+                        <button class="button button1" style="width:100%" data-toggle="collapse" data-target="#demo">@category.Name </button>
+                        <div id="demo" class="collapse">
+                            <!--<table class="table table-hover table-bordered">
                                 <thead>
                                     <tr>
                                         <th rowspan="2" scope="col">ID</th>
@@ -163,20 +166,19 @@
                                     }
                                 </tbody>
                             </table>
-                            <div>
+                            <div>-->
                                 @*ASd*@
-                                <RadzenCheckBox TValue="bool" Style="margin: 10px;" />
+                                <!--<RadzenCheckBox TValue="bool" Style="margin: 10px;" />
                                 <RadzenLabel Text="Бой за третье место" Component="CheckBox1" Style="margin:10px;" />
                                 <RadzenButton Text="Генерировать пулю" class="primary-button m" />
                                 <RadzenButton Text="Удалить пулю" class="primary-button m" />
                                 <RadzenButton Text="Сохранить пулю" class="primary-button m" />
                                 <RadzenButton Text="Следующая" class="primary-button m f-r" />
-                                <RadzenButton Text="Предыдущая" class="primary-button m f-r" />
-                            </div>
-                        </RadzenAccordionItem>
+                                <RadzenButton Text="Предыдущая" class="primary-button m f-r" />-->
+                            @*</div>*@
+                        </div>
                     }
-                </Items>
-            </RadzenAccordion>
+               
         </RadzenTabsItem>
 
         <RadzenTabsItem Text="Татами">
