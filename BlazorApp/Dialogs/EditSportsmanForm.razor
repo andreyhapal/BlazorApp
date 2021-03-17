@@ -70,7 +70,8 @@
 @code {
     [CascadingParameter]
     BlazoredModalInstance BlazoredModal { get; set; }
-
+    [Parameter]
+    public int Id { get; set; }
     Trainer Trainer = new Trainer();
     SportClub SportClub = new SportClub();
     Sportsman Sportsman = new Sportsman();
