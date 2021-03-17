@@ -26,20 +26,6 @@ namespace BlazorApp.Services
             }
         }
 
-        public List<Competitor> GetCompetitors()
-        {
-            using (var db = new ApplicationContext())
-            {
-                var c = db.Competitors
-                            .Include(x=>x.Competition)
-                            .Include(x=>x.CompetitionCategory)
-                            .Include(x=>x.Sex)
-                            .Include(x=>x.Grade)
-                            .ToList();
-                return c;
-            }
-        }
-
         public List<Competition> GetCompetitions()
         {
             using (var db = new ApplicationContext())
