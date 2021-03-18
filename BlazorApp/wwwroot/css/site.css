@@ -242,6 +242,11 @@ td {
     width: 100%;
 }
 
+.wide-form {
+    margin: 7px;
+    width: 100%;
+}
+
 .expand-panel {
     width: 700px;
     margin-bottom: 20px;

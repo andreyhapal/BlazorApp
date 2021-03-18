@@ -1,0 +1,55 @@
+﻿@using BlazorApp.Models
+@using BlazorInputFile
+@using System.IO
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <img src="data:image/bmp;base64, @(Convert.ToBase64String(ms.ToArray()))" style="margin:15px;" />
+            <InputFile OnChange="HandleSelection" />
+        </div>
+    </div>
+    <div class="row">
+        <RadzenTextBox Placeholder="Название соревнования" class="wide-form">
+
+        </RadzenTextBox>
+    </div>
+    <div class="row">
+        <RadzenDatePicker @bind-Value="Competition.StartDate" Placeholder="Дата начала" class="wide-form">
+
+        </RadzenDatePicker>
+
+        <RadzenDatePicker @bind-Value="Competition.EndDate" Placeholder="Дата окончания" class="wide-form">
+
+        </RadzenDatePicker>
+    </div>
+
+    <div class="row">
+        <RadzenButton Text="Сохранить" Click="Save" class="primary-button m" />
+        <RadzenButton Text="Отмена" Click="Cancel" class="primary-button m" />
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; }
+
+    MemoryStream ms = new MemoryStream();
+    Competition Competition = new Competition();
+
+    async Task HandleSelection(IFileListEntry[] files)
+    {
+        var file = files.FirstOrDefault();
+        if (file != null)
+        {
+            var imageFile = await file.ToImageFileAsync("image/jpeg", 400, 300);
+
+            ms = await imageFile.ReadAllAsync();
+
+        }
+    }
+
+    async Task Save() => await BlazoredModal.CloseAsync(ModalResult.Ok(Competition));
+
+    async Task Cancel() => await BlazoredModal.CancelAsync();
+}

@@ -1,6 +1,8 @@
 ﻿@page "/competitions"
 
 @using Models
+@using Dialogs
+@using Dialogs.CompetitionForms
 
 @inject BlazorApp.Services.CompetitionService CompetitionService
 @inject NavigationManager NavigationManager
@@ -9,10 +11,9 @@
     <h1 class="main-header">Соревнования</h1>
 </div>
 
-<RadzenButton Icon="add_circle_outline" class="primary-button m" Text="Добавить" Click="@InsertRow" />
+<RadzenButton Icon="add_circle_outline" class="primary-button m" Text="Добавить" Click="@AddCompetition" />
 <RadzenGrid @ref="competitionGrid" AllowFiltering="true"  AllowPaging="true" PageSize="10"
-            AllowSorting="true" Data="competitions" TItem="Competition" AllowColumnResize="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValues
-            RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
+            AllowSorting="true" Data="competitions" TItem="Competition" AllowColumnResize="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValues>
     <Columns>
         <RadzenGridColumn TItem="Competition" Width="40px" Sortable="false" Filterable="false">
             <HeaderTemplate>
@@ -33,11 +34,11 @@
         <RadzenGridColumn TItem="Competition" Property="Name" Title="Название"/>
         <RadzenGridColumn TItem="Competition" Context="competition" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="300px">
             <Template Context="competition">
-                <RadzenButton Icon="edit" Size="ButtonSize.Medium" Click="@(args => EditRow(competition))" class="primary-button">
+                <RadzenButton Icon="edit" Size="ButtonSize.Medium" Click="@(args => EditCompetition(competition.Id))" class="primary-button">
                 </RadzenButton>
                 <RadzenButton class="primary-button" Icon="account_circle" Text="Управлять" Size="ButtonSize.Medium" Click="@(()=>RedirectToManage(competition))">
                 </RadzenButton>
-                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Medium" Click="@(args => DeleteRow(competition))">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Medium" Click="@(args => DeleteCompetition(competition.Id))">
                 </RadzenButton>
             </Template>
         </RadzenGridColumn>
@@ -50,50 +51,47 @@
     RadzenGrid<Competition> competitionGrid;
     List<Competition> competitions = new List<Competition>();
 
+    [CascadingParameter]
+    public IModalService Modal { get; set; }
+
     protected override void OnInitialized()
     {
         competitions = CompetitionService.GetCompetitions();
     }
-    void EditRow(Competition competition)
+
+    async void AddCompetition()
     {
-        competitionGrid.EditRow(competition);
+        var form = Modal.Show<AddCompetition>("Создание соревнования");
+        var result = await form.Result;
+
+        if (result.Data != null)
+        {
+            CompetitionService.CreateCompetition(result.Data as Competition);
+        }
     }
 
-    void OnUpdateRow(Competition competition)
+    async void EditCompetition(int Id)
     {
-        var comp = competitions.FirstOrDefault(x => x.Id == competition.Id);
-        comp.Name = competition.Name;
-        
+        var form = Modal.Show<EditCompetition>("Редактирование соревнования");
+        var result = await form.Result;
 
-        competitionGrid.Reload();
+        if (result.Data != null)
+        {
+            CompetitionService.EditCompetition(result.Data as Competition);
+        }
     }
 
-    void SaveRow(Competition competition)
+    async void DeleteCompetition(int Id)
     {
-        competitionGrid.UpdateRow(competition);
+        var form = Modal.Show<DeleteForm>("Удаление соревнования");
+        var result = await form.Result;
+
+        if (!result.Cancelled)
+        {
+            CompetitionService.DeleteCompetition(Id);
+        }
     }
 
-    void CancelEdit(Competition competition)
-    {
-        competitionGrid.CancelEditRow(competition);
-    }
-
-    void DeleteRow(Competition competition)
-    {
-        competitions.Remove(competition);
-        competitionGrid.Reload();
-    }
-
-    void InsertRow()
-    {
-        competitionGrid.InsertRow(new Competition());
-    }
-
-    void OnCreateRow(Competition competition)
-    {
-        competition.Id = competitions.Max(x => x.Id) + 1;
-        competitions.Add(competition);
-    }
     void RedirectToManage(Competition competition)
     {
         NavigationManager.NavigateTo("manage/"+competition.Id+"/"+competition.Name);

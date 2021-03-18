@@ -1,9 +1,11 @@
 ﻿@page "/categories"
 
-@using BlazorApp.Dialogs.AgeGroupForms
 @using BlazorApp.Data
 @using BlazorApp.Models
+@using BlazorApp.Dialogs
 @using BlazorApp.Dialogs.WeightGroupForms
+@using BlazorApp.Dialogs.AgeGroupForms
+@using BlazorApp.Dialogs.CategoryForms
 
 @inject BlazorApp.Data.CategoryService categoryService
 @inject BlazorApp.Services.AgeGroupService AgeGroupService
@@ -15,7 +17,7 @@
 <RadzenTabs>
     <Tabs>
         <RadzenTabsItem Text="Категории">
-            <RadzenButton Text="Добавить" class="primary-button m" />
+            <RadzenButton Text="Добавить" class="primary-button m" Click="AddSportCategory" />
             <RadzenGrid Data=@categories AllowFiltering="true" AllowSorting="true" AllowPaging="true">
                 <Columns>
                     <RadzenGridColumn TItem="SportCategory" Property="Id" Title="ID" Width="100px" />
@@ -65,7 +67,7 @@
             </RadzenGrid>
         </RadzenTabsItem>
         <RadzenTabsItem Text="Возрастные группы">
-            <RadzenButton Text="Добавить" class="primary-button m"/>
+            <RadzenButton Text="Добавить" class="primary-button m" />
             <RadzenGrid Data=@ageGroups AllowFiltering="true" AllowSorting="true" AllowPaging="true">
                 <Columns>
                     <RadzenGridColumn TItem="AgeGroup" Property="Id" Title="ID" />
@@ -73,9 +75,9 @@
                     <RadzenGridColumn TItem="AgeGroup" Property="From" Title="Возраст От" />
                     <RadzenGridColumn TItem="AgeGroup" Property="To" Title="Возраст ДО" />
                     <RadzenGridColumn TItem="AgeGroup" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="70px">
-                        <Template Context="data"> 
-                            <RadzenButton Icon="close" class="btn-danger" Size="ButtonSize.Small"/>
-                            <RadzenButton Icon="edit" class="primary-button" Size="ButtonSize.Small"/>
+                        <Template Context="data">
+                            <RadzenButton Icon="close" class="btn-danger" Size="ButtonSize.Small" />
+                            <RadzenButton Icon="edit" class="primary-button" Size="ButtonSize.Small" />
                         </Template>
                     </RadzenGridColumn>
                 </Columns>
@@ -91,8 +93,8 @@
                     <RadzenGridColumn TItem="WeightGroup" Property="To" Title="Вес ДО" />
                     <RadzenGridColumn TItem="WeightGroup" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="70px">
                         <Template Context="data">
-                            <RadzenButton Icon="close" class="btn-danger" Size="ButtonSize.Small"/>
-                            <RadzenButton Icon="edit" class="primary-button" Size="ButtonSize.Small"/>
+                            <RadzenButton Icon="close" class="btn-danger" Size="ButtonSize.Small" />
+                            <RadzenButton Icon="edit" class="primary-button" Size="ButtonSize.Small" />
                         </Template>
                     </RadzenGridColumn>
                 </Columns>
@@ -102,42 +104,14 @@
     </Tabs>
 </RadzenTabs>
 
-
-
 @code {
     [CascadingParameter] public IModalService Modal { get; set; }
-
-
-
-    SportCategory Category = new SportCategory();
 
     List<SportCategory> categories = new List<SportCategory>();
     List<WeightGroup> weightGroups = new List<WeightGroup>();
     List<AgeGroup> ageGroups = new List<AgeGroup>();
     List<SportCategoryType> types = new List<SportCategoryType>();
     List<Grade> grades = new List<Grade>();
-
-
-    AgeGroup AgeGroup = new AgeGroup();
-    WeightGroup WeightGroup = new WeightGroup();
-
-    void SaveAgeGroup()
-    {
-        ageGroups.Add(AgeGroup);
-        StateHasChanged();
-    }
-
-    void DeleteAgeGroup(AgeGroup ageGroup)
-    {
-        ageGroups.Remove(ageGroup);
-        StateHasChanged();
-    }
-
-    void DeleteWeightGroup(WeightGroup weightGroup)
-    {
-        weightGroups.Remove(weightGroup);
-        StateHasChanged();
-    }
 
     protected override void OnInitialized()
     {
@@ -148,21 +122,36 @@
         grades = categoryService.GetGrades();
     }
 
-    private void DeleteCategory(SportCategory category)
+    async void AddSportCategory()
     {
-
+        var form = Modal.Show<AddSportCategory>("Создание спортивной категории");
+        var result = await form.Result;
+        if (result.Data != null)
+        {
+            categoryService.CreateSportCategory(result.Data as SportCategory);
+        }
     }
 
-    private void SaveChanges()
+    async void DeleteSportCategory(int Id)
     {
-
+        var form = Modal.Show<DeleteForm>("Удалить спортивную категорию?");
+        var result = await form.Result;
+        if (!result.Cancelled)
+        {
+            categoryService.DeleteSportCategory(Id);
+        }
     }
 
-    private void OnChange(object args, int number)
+    async void EditSportCategory(int Id)
     {
+        var form = Modal.Show<EditSportCategory>("Редактирование спортивной категории");
+        var result = await form.Result;
 
+        if (result.Data != null)
+        {
+            categoryService.UpdateSportCategory(result.Data as SportCategory);
+        }
     }
-
 
     async Task CreateAgeGroup()
     {
@@ -170,9 +159,7 @@
         var result = await form.Result;
         if (result.Data != null)
         {
-            AgeGroup = (AgeGroup)result.Data;
-            ageGroups.Add(AgeGroup);
-            StateHasChanged();
+
         }
     }
 
@@ -182,10 +169,7 @@
         var result = await form.Result;
         if (result.Data != null)
         {
-            WeightGroup = (WeightGroup)result.Data;
-            //if (WeightGroup.Sex == null) WeightGroup.Sex = "МУЖ";
-            //weightGroups.Add(WeightGroup);
-            StateHasChanged();
+
         }
     }
 
@@ -196,9 +180,7 @@
         var result = await Modal.Show<AgeGroupForm>("Редактировать возрастную группу", parameters).Result;
         if (!result.Cancelled)
         {
-            ageGroups.Remove(ageGroup);
-            ageGroups.Add((AgeGroup)result.Data);
-            StateHasChanged();
+
         }
 
     }
@@ -210,9 +192,7 @@
         var result = await Modal.Show<EditWeightGroup>("Редактировать весовую группу", parameters).Result;
         if (!result.Cancelled)
         {
-            weightGroups.Remove(weightGroup);
-            weightGroups.Add((WeightGroup)result.Data);
-            StateHasChanged();
+
         }
 
     }

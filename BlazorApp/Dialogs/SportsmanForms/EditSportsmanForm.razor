@@ -61,7 +61,7 @@
                 <RadzenTextBox Placeholder="Фамилия" class="add-competitor-form" @bind-Value="Sportsman.Trainer.LastName"></RadzenTextBox>
             </div>
             <div class="row">
-                <RadzenDatePicker @bind-Value="Sportsman.Trainer.DateOfBirth" class="add-competitor-form" Placeholder="Дата рождения"></RadzenDatePicker>
+                <RadzenDatePicker @bind-Value="Sportsman.Trainer.DateOfBirth" class="add-competitor-form" Placeholder="Дата рождения" ></RadzenDatePicker>
             </div>
         </RadzenFieldset>
     </div>
@@ -92,8 +92,6 @@
         Sportsman.Sex = CategoryService.GetSexByName(sex);
         Sportsman.Grade = CategoryService.GetGradeByName(GradeName);
         
-        //Sportsman.Weight = (decimal)Weight;
-
         await BlazoredModal.CloseAsync(ModalResult.Ok(Sportsman));
     }
 
