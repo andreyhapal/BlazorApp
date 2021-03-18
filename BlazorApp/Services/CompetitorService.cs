@@ -9,6 +9,14 @@ namespace BlazorApp.Services
 {
     public class CompetitorService
     {
+        public List<Competitor> GetCompetitorsInCategory(CompetitionCategory category)
+        {
+            using (var db = new ApplicationContext())
+            {
+                return db.Competitors.Include(x => x.CompetitionCategory).Where(x => x.CompetitionCategory.Name == category.Name).ToList();
+            }
+        }
+
         public int GetAmountOfCompetitors(int Id)
         {
             using (var db = new ApplicationContext())

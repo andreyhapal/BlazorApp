@@ -12,6 +12,24 @@
             <h1 style="font-size:200px;">@time</h1>
         </div>
         <div class="row" style="display:flex;justify-content:center;text-align:center;">
+            <RadzenRadioButtonList TValue="int" Change=@(args=>OnChange(args))>
+                <Items>
+                    <RadzenRadioButtonListItem Text="1 минута" Value="1">
+
+                    </RadzenRadioButtonListItem>
+                    <RadzenRadioButtonListItem Text="2 минуты" Value="2">
+
+                    </RadzenRadioButtonListItem>
+                    <RadzenRadioButtonListItem Text="3 минуты" Value="3">
+
+                    </RadzenRadioButtonListItem>
+                    <RadzenRadioButtonListItem Text="10 минут" Value="10">
+
+                    </RadzenRadioButtonListItem>
+                </Items>
+            </RadzenRadioButtonList>
+        </div>
+        <div class="row" style="display:flex;justify-content:center;text-align:center;">
             <RadzenButton Text="Старт" Click="Start" class="primary-button m"/>
             <RadzenButton Text=@pauseMode Click="Pause" class="primary-button m"/>
             <RadzenButton Text="+10 сек" Click="P10Sec" class="primary-button m"/>
@@ -19,11 +37,13 @@
             <RadzenButton Text="Стоп" Click="Stop" class="primary-button m"/>
         </div>
         <div class="row">
-            <h1>@displayText</h1>
+            <h1>Время завершения матча: @displayText</h1>
         </div>
 </div>
 
 @code {
+
+
     [Parameter]
     public string Id { get; set; }
     [Parameter]
@@ -32,7 +52,7 @@
     public string CompetName { get; set; }
 
     string displayText = "";
-    TimeSpan time = new TimeSpan(0, 0, 15);
+    TimeSpan time = new TimeSpan(0, 1, 0);
 
     bool pauseFlag=false;
 
@@ -76,6 +96,12 @@
     void backUrl()
     {
         NavigationManager.NavigateTo("/manage/" + CompetId + "/" + CompetName);
+    }
+
+    void OnChange(object args)
+    {
+        time = new TimeSpan(0,(int)args,0);
+        StateHasChanged();
     }
 
 }
