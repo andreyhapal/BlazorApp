@@ -377,3 +377,11 @@ td {
     color: black;
     border: 2px solid #4287f5;
 }
+
+.add-category-form{
+    height:400px;
+}
+
+.add-category-form1 {
+    height: 200px;
+}

@@ -7,7 +7,7 @@
 @using BlazorApp.Dialogs.AgeGroupForms
 @using BlazorApp.Dialogs.CategoryForms
 
-@inject BlazorApp.Data.CategoryService categoryService
+@inject BlazorApp.Services.CategoryService categoryService
 @inject BlazorApp.Services.AgeGroupService AgeGroupService
 @inject BlazorApp.Services.WeightGroupService WeightGroupService
 
@@ -67,7 +67,7 @@
             </RadzenGrid>
         </RadzenTabsItem>
         <RadzenTabsItem Text="Возрастные группы">
-            <RadzenButton Text="Добавить" class="primary-button m" />
+            <RadzenButton Text="Добавить" class="primary-button m" Click="CreateAgeGroup"/>
             <RadzenGrid Data=@ageGroups AllowFiltering="true" AllowSorting="true" AllowPaging="true">
                 <Columns>
                     <RadzenGridColumn TItem="AgeGroup" Property="Id" Title="ID" />
@@ -76,15 +76,15 @@
                     <RadzenGridColumn TItem="AgeGroup" Property="To" Title="Возраст ДО" />
                     <RadzenGridColumn TItem="AgeGroup" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="70px">
                         <Template Context="data">
-                            <RadzenButton Icon="close" class="btn-danger" Size="ButtonSize.Small" />
-                            <RadzenButton Icon="edit" class="primary-button" Size="ButtonSize.Small" />
+                            <RadzenButton Icon="close" class="btn-danger" Size="ButtonSize.Small" Click="()=>DeleteAgeGroup(data.Id)"/>
+                            <RadzenButton Icon="edit" class="primary-button" Size="ButtonSize.Small" Click="()=>EditAgeGroup(data)"/>
                         </Template>
                     </RadzenGridColumn>
                 </Columns>
             </RadzenGrid>
         </RadzenTabsItem>
         <RadzenTabsItem Text="Весовые группы">
-            <RadzenButton Text="Добавить" class="primary-button m" />
+            <RadzenButton Text="Добавить" class="primary-button m" Click="CreateWeightGroup" />
             <RadzenGrid Data=@weightGroups AllowFiltering="true" AllowSorting="true" AllowPaging="true">
                 <Columns>
                     <RadzenGridColumn TItem="WeightGroup" Property="Id" Title="ID" />
@@ -93,8 +93,8 @@
                     <RadzenGridColumn TItem="WeightGroup" Property="To" Title="Вес ДО" />
                     <RadzenGridColumn TItem="WeightGroup" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="70px">
                         <Template Context="data">
-                            <RadzenButton Icon="close" class="btn-danger" Size="ButtonSize.Small" />
-                            <RadzenButton Icon="edit" class="primary-button" Size="ButtonSize.Small" />
+                            <RadzenButton Icon="close" class="btn-danger" Size="ButtonSize.Small" Click="()=>DeleteWeightGroup(data.Id)"/>
+                            <RadzenButton Icon="edit" class="primary-button" Size="ButtonSize.Small" Click="()=>EditWeightGroup(data)"/>
                         </Template>
                     </RadzenGridColumn>
                 </Columns>
@@ -159,7 +159,7 @@
         var result = await form.Result;
         if (result.Data != null)
         {
-
+            AgeGroupService.CreateAgeGroup(result.Data as AgeGroup);
         }
     }
 
@@ -169,7 +169,7 @@
         var result = await form.Result;
         if (result.Data != null)
         {
-
+            WeightGroupService.CreateWeightGroup(result.Data as WeightGroup);
         }
     }
 
@@ -178,9 +178,9 @@
         ModalParameters parameters = new ModalParameters();
         parameters.Add(nameof(AgeGroup), ageGroup);
         var result = await Modal.Show<AgeGroupForm>("Редактировать возрастную группу", parameters).Result;
-        if (!result.Cancelled)
+        if (result.Data!=null)
         {
-
+            AgeGroupService.UpdateAgeGroup(ageGroup);
         }
 
     }
@@ -190,10 +190,30 @@
         ModalParameters parameters = new ModalParameters();
         parameters.Add(nameof(WeightGroup), weightGroup);
         var result = await Modal.Show<EditWeightGroup>("Редактировать весовую группу", parameters).Result;
-        if (!result.Cancelled)
+        if (result.Data!=null)
         {
-
+            WeightGroupService.UpdateWeightGroup(weightGroup);
         }
 
+    }
+
+    async void DeleteAgeGroup(int Id)
+    {
+        var form = Modal.Show<DeleteForm>("Удалить возрастную группу?");
+        var result = await form.Result;
+        if (!result.Cancelled)
+        {
+            AgeGroupService.DeleteAgeGroup(Id);
+        }
+    }
+
+    async void DeleteWeightGroup(int Id)
+    {
+        var form = Modal.Show<DeleteForm>("Удалить весовую группу?");
+        var result = await form.Result;
+        if (!result.Cancelled)
+        {
+            WeightGroupService.DeleteWeightGroup(Id);
+        }
     }
 }

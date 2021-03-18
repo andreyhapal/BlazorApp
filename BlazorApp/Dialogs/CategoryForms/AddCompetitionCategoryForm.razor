@@ -1,6 +1,7 @@
 ﻿@using BlazorApp.Data
 @using BlazorApp.Models
-@inject CategoryService CategoryService
+
+@inject BlazorApp.Services.CategoryService CategoryService
 
 <RadzenTemplateForm TItem="SportCategory" Data="Category" Submit="SubmitForm" InvalidSubmit="InvalidSubmit">
     <div class="container" style="justify-content:center;">
@@ -10,12 +11,13 @@
             </RadzenDropDown>
         </div>
         <div class="row">
-            <RadzenButton Text="Сохранить" class="primary-button m" ButtonType="ButtonType.Submit"/>
-            <RadzenButton Text="Отмена" class="btn-secondary primary-button m" Click="Cancel"/>
+            <RadzenButton Text="Сохранить" class="primary-button m" ButtonType="ButtonType.Submit" />
+            <RadzenButton Text="Отмена" class="btn-secondary primary-button m" Click="Cancel" />
         </div>
     </div>
 </RadzenTemplateForm>
-    @code {
+
+@code {
         [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
         List<SportCategory> Categories = new List<SportCategory>();
@@ -31,4 +33,4 @@
         }
         async Task SubmitForm() => await BlazoredModal.CloseAsync(ModalResult.Ok(Category));
         async Task Cancel() => await BlazoredModal.CancelAsync();
-    }
+}

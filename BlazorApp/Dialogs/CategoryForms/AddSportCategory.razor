@@ -1,5 +1,76 @@
-﻿<h3>AddSportCategory</h3>
+﻿@using BlazorApp.Models
+@using BlazorApp.Data
+
+@inject BlazorApp.Services.AgeGroupService AgeGroupService
+@inject BlazorApp.Services.WeightGroupService WeightGroupService
+@inject BlazorApp.Services.CategoryService CategoryService 
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h3>Возраст</h3>
+            <RadzenListBox Data="ageGroups" @bind-Value="sportCategory.AgeGroup" class="add-category-form" >
+                <Template >
+                    @((context as AgeGroup).AgeName)
+                </Template>
+            </RadzenListBox>
+        </div>
+        <div class="col">
+            <h3>Вес</h3>
+            <RadzenListBox Data="weightGroups" @bind-Value="sportCategory.WeightGroup" class="add-category-form">
+                <Template>
+                    @((context as WeightGroup).Name)
+                </Template>
+            </RadzenListBox>
+        </div>
+        <div class="col">
+           <h3>Пояс</h3>
+            <RadzenListBox Data="grades" @bind-Value="grade" class="add-category-form">
+                <Template>
+                    @((context as Grade).Name)
+                </Template>
+            </RadzenListBox>
+        </div>
+        <div class="col">
+            <h3>Тип</h3>
+            <RadzenListBox Data="sportCategoryTypes" @bind-Value="sportCategory.Type" class="add-category-form1">
+                <Template>
+                    @((context as SportCategoryType).Name)
+                </Template>
+            </RadzenListBox>
+            <h3>Пол</h3>
+            <RadzenListBox Data="sexes" @bind-Value="sportCategory.Sex" class="add-category-form1">
+                <Template>
+                    @((context as Sex).Name)
+                </Template>
+            </RadzenListBox>
+        </div>
+    </div>
+    
+    <hr class="m-2" />
+    <div class="row">
+        <RadzenButton Text="Сохранить" class="primary-button m"></RadzenButton>
+        <RadzenButton Text="Отмена" class="primary-button m"></RadzenButton>
+    </div>
+</div>
+
 
 @code {
+    SportCategory sportCategory = new SportCategory();
+    Grade grade = new Grade();
+    List<AgeGroup> ageGroups = new List<AgeGroup>();
+    List<WeightGroup> weightGroups = new List<WeightGroup>();
+    List<Grade> grades = new List<Grade>();
+    List<Sex> sexes = new List<Sex>();
+    List<SportCategoryType> sportCategoryTypes = new List<SportCategoryType>();
+
+    protected override void OnInitialized()
+    {
+        ageGroups = AgeGroupService.GetAgeGroups();
+        weightGroups = WeightGroupService.GetWeightGroups();
+        grades = CategoryService.GetGrades();
+        sexes = CategoryService.GetSexes();
+        sportCategoryTypes = CategoryService.GetTypes();
+    }
 
 }

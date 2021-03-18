@@ -4,22 +4,23 @@
 @using System.IO
 @using System.Drawing
 
-@inject BlazorApp.Data.CategoryService CategoryService
+@inject BlazorApp.Services.CategoryService CategoryService
 @inject BlazorApp.Services.SportsmenService SportsmenService
 <RadzenTemplateForm TItem="Competitor" Data="Competitor" Submit="SubmitForm" InvalidSubmit="InvalidSubmit">
     <div class="container" style="justify-content:space-around;">
         <div class="row">
             @*Image*@
-            <div class="col" style="justify-content:center;">
-                <RadzenLabel Text="Фото спортсмена" class="add-competitor-form"></RadzenLabel>
+            <div class="col-3" style="justify-content:center;">
+                <RadzenFieldset Text="Фото спортсмена">
                 <img src="data:image/bmp;base64, @(Convert.ToBase64String(ms.ToArray()))" />
 
-                <InputFile OnChange="HandleSelection" />
+                <InputFile OnChange="HandleSelection" class="w-50"/>
+                </RadzenFieldset>
             </div>
             <!--List of sportsmen-->
             <div class="col-6">
-                <RadzenLabel Text="Спортсмены" class="add-competitor-form"></RadzenLabel>
-                <RadzenGrid Data="Sportsmen" AllowFiltering="true" AllowPaging="true" AllowSorting="true">
+                <RadzenFieldset Text="Спортсмены">
+                <RadzenGrid Data="Sportsmen" AllowFiltering="true" FilterMode="FilterMode.Simple" AllowPaging="true" AllowSorting="true">
                     <Columns>
                         <RadzenGridColumn TItem="Sportsman" Title="Имя">
                             <Template Context="data">
@@ -43,11 +44,12 @@
                         </RadzenGridColumn>
                     </Columns>
                 </RadzenGrid>
+                    </RadzenFieldset>
             </div>
             <!--Fields-->
             <div class="col" style="justify-content:center">
+                <RadzenFieldset Text="Личные данные">
                 <div class="row">
-                    <RadzenLabel Text="Личные данные" class="add-competitor-form"></RadzenLabel>
                     <RadzenTextBox Placeholder="Имя" class="add-competitor-form" @bind-Value="Competitor.FirstName"></RadzenTextBox>
                 </div>
                 <div class="row">
@@ -83,14 +85,16 @@
                 <div class="row">
                     <RadzenNumeric TValue="int?" class="add-competitor-form" Placeholder="Вес"></RadzenNumeric>
                 </div>
+                    </RadzenFieldset>
             </div>
         </div>
         <div class="row">
             <div class="col" style="display:flex;justify-content:space-between;padding:15px;"></div>
             <div class="col" style="display:flex;justify-content:space-between;padding:15px;"></div>
-            <div class="col" style="display:flex;justify-content:space-between;padding:15px;">
-                <button type="submit" class="btn btn-primary primary">Сохранить</button>
-                <button @onclick="Cancel" class="btn btn-secondary">Отмена</button>
+            <div class="col" style="display:flex;justify-content:end;padding:15px;">
+               <RadzenButton Text="Сохранить" class="primary-button m"></RadzenButton>
+                <RadzenButton Text="Отмена" class="primary-button m" Click="Cancel"></RadzenButton>
+                
             </div>
         </div>
     </div>
