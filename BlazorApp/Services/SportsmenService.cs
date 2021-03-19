@@ -29,12 +29,16 @@ namespace BlazorApp.Services
             {
                 using (var db = new ApplicationContext())
                 {
+                    sportsman.Grade = db.Grades.FirstOrDefault(x => x.Name == sportsman.Grade.Name);
+                    sportsman.Sex = db.Sexes.FirstOrDefault(x => x.Name == sportsman.Sex.Name);
+                    sportsman.Trainer = db.Trainers.FirstOrDefault(x => x.FirstName == sportsman.Trainer.FirstName && x.LastName ==sportsman.Trainer.LastName);
+                    sportsman.SportClub = db.SportClubs.FirstOrDefault(x => x.Name == sportsman.SportClub.Name);
                     db.Sportsmens.Add(sportsman);
-                    //db.SaveChanges();
+                    db.SaveChanges();
                     response.IsSuccess = true;
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 response.IsSuccess = false;
                 response.ExceptionMessage = e.Message;
@@ -49,6 +53,10 @@ namespace BlazorApp.Services
             {
                 using (var db = new ApplicationContext())
                 {
+                    sportsman.Grade = db.Grades.FirstOrDefault(x => x.Name == sportsman.Grade.Name);
+                    sportsman.Sex = db.Sexes.FirstOrDefault(x => x.Name == sportsman.Sex.Name);
+                    sportsman.Trainer = db.Trainers.FirstOrDefault(x => x.FirstName == sportsman.Trainer.FirstName && x.LastName == sportsman.Trainer.LastName);
+                    sportsman.SportClub = db.SportClubs.FirstOrDefault(x => x.Name == sportsman.SportClub.Name);
                     db.Sportsmens.Update(sportsman);
                     db.SaveChanges();
                     response.IsSuccess = true;

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlazorApp.Models
 {
-    public class Sportsman : AbstractSportsman
+    public class Sportsman : AbstractSportsman, ICloneable
     {
         [Key]
         public int Id { get; set; }
@@ -18,6 +18,24 @@ namespace BlazorApp.Models
         public int TrainerId { get; set; }
         [ForeignKey("TrainerId")]
         public Trainer Trainer { get; set; }
+
+        public object Clone()
+        {
+            return new Sportsman()
+            {
+                Id = this.Id,
+                IKO = this.IKO,
+                FirstName = this.FirstName,
+                LastName = this.LastName,
+                Weight = this.Weight,
+                Age =this.Age,
+                DateOfBirth = this.DateOfBirth,
+                Grade = this.Grade,
+                Sex = this.Sex,
+                SportClub = this.SportClub,
+                Trainer = this.Trainer        
+            };
+        }
     }
 
     public abstract class AbstractSportsman

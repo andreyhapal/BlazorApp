@@ -20,7 +20,8 @@ namespace BlazorApp.Util
         {
             FirstName = "",
             LastName = "",
-            DateOfBirth = DateTime.Parse("01.01.0001")
+            DateOfBirth = DateTime.Parse("01.01.0001"),
+            Club = SportClub
         };
     }
 }

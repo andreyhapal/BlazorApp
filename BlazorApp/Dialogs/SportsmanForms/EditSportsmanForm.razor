@@ -39,8 +39,8 @@
             </div>
         </RadzenFieldset>
         <div class="row">
-            <RadzenButton Text="Сохранить" class="primary-button m add-competitor-form"></RadzenButton>
-            <RadzenButton Text="Вернуться назад" class="primary-button m add-competitor-form"></RadzenButton>
+            <RadzenButton Text="Сохранить" class="primary-button m add-competitor-form" Click="SubmitForm"></RadzenButton>
+            <RadzenButton Text="Вернуться назад" class="primary-button m add-competitor-form" Click="Cancel"></RadzenButton>
             <RadzenButton Text="Отменить изменения" class="primary-button m add-competitor-form"></RadzenButton>
         </div>
     </div>
@@ -73,25 +73,31 @@
     BlazoredModalInstance BlazoredModal { get; set; }
     [Parameter]
     public int Id { get; set; }
-    
+
+    Sportsman ConstSportsman = new Sportsman();
     Sportsman Sportsman = new Sportsman();
     List<Grade> Grades = new List<Grade>();
 
     string GradeName;
     bool switcher;
-    //int Weight;
     protected override void OnInitialized()
     {
         Grades = CategoryService.GetGrades();
         Sportsman = SportsmenService.GetSportsmanById(this.Id);
+        ConstSportsman = (Sportsman)Sportsman.Clone();
+    }
+
+    void Reset()
+    {
+        Sportsman = (Sportsman)ConstSportsman.Clone();
     }
 
     async Task SubmitForm()
     {
         string sex = switcher ? "М" : "Ж";
-        Sportsman.Sex = CategoryService.GetSexByName(sex);
-        Sportsman.Grade = CategoryService.GetGradeByName(GradeName);
-        
+        Sportsman.Sex = new Sex() { Name = sex };
+        Sportsman.Grade = new Grade() { Name = GradeName };
+
         await BlazoredModal.CloseAsync(ModalResult.Ok(Sportsman));
     }
 

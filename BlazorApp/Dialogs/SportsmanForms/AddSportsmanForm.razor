@@ -74,17 +74,17 @@
 </div>
 
 @code {
-    MemoryStream ms = new MemoryStream();
-    bool switcher;
-    string GradeName;
-    int Weight;
-    [CascadingParameter]
-    BlazoredModalInstance BlazoredModal { get; set; }
+        MemoryStream ms = new MemoryStream();
+        bool switcher;
+        string GradeName;
+        int Weight;
+        [CascadingParameter]
+        BlazoredModalInstance BlazoredModal { get; set; }
 
-    Trainer Trainer = new Trainer();
-    SportClub SportClub = new SportClub();
-    Sportsman Sportsman = new Sportsman();
-    List<string> Grades = new List<string>();
+        Trainer Trainer = new Trainer();
+        SportClub SportClub = new SportClub();
+        Sportsman Sportsman = new Sportsman();
+        List<string> Grades = new List<string>();
 
     protected override void OnInitialized()
     {
@@ -106,8 +106,8 @@
     async Task SubmitForm()
     {
         string sex = switcher ? "М" : "Ж";
-        Sportsman.Sex = CategoryService.GetSexByName(sex);
-        Sportsman.Grade = CategoryService.GetGradeByName(GradeName);
+        Sportsman.Sex = new Sex() { Name = sex };
+        Sportsman.Grade = new Grade() { Name = GradeName };
         Sportsman.SportClub = SportClubService.GetSportClub(SportClub);
         Sportsman.Trainer = TrainerService.GetTrainer(Trainer);
         Sportsman.Weight = (decimal)Weight;

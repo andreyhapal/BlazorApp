@@ -5,10 +5,12 @@
 @using BlazorApp.Dialogs
 @using BlazorApp.Dialogs.SportsmanForms
 @using BlazorApp.Util
+@using System.Threading
 
 @inject BlazorApp.Services.SportsmenService SportsmenService
 @inject BlazorApp.Services.CategoryService CategoryService
 @inject NotificationService NotificationService
+@inject NavigationManager NavigationManager
 
 <div class="main-header-div">
     <h1 class="main-header">Спортсмены</h1>
@@ -136,6 +138,8 @@
             {
                 ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Успешно!", Detail = "Данные успешно обновлены!", Duration = 4000 });
             }
+            //NavigationManager.NavigateTo("sportsmen", true);
+
         }
     }
 
