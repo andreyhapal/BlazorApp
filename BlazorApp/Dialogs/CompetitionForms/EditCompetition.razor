@@ -1,4 +1,45 @@
-﻿
+﻿@using BlazorApp.Models
+@using BlazorApp.Services
+
+@inject CompetitionService CompetitionService
+
+<div class="container">
+        <div class="row">
+            <RadzenLabel Text="Название"></RadzenLabel>
+            <RadzenTextBox @bind-Value="Competition.Name" class="add-competitor-form"></RadzenTextBox>
+        </div>
+        <div class="row">
+            <RadzenLabel Text="Дата начала" />
+            <RadzenDatePicker @bind-Value="Competition.StartDate" Placeholder="Дата начала" class="add-competitor-form"></RadzenDatePicker>
+        </div>
+        <div class="row">
+            <RadzenLabel Text="Дата окончания"></RadzenLabel>
+            <RadzenDatePicker @bind-Value="Competition.EndDate" Placeholder="Дата окончания" class="add-competitor-form"></RadzenDatePicker>
+        </div>
+
+    <div class="row">
+        <RadzenButton class="primary-button m" Text="Сохранить" Click="Save" />
+        <RadzenButton class="primary-button m" Text="Отменить" Click="Cancel" />
+    </div>
+</div>
 @code {
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    Competition Competition = new Competition();
+
+    protected override void OnInitialized()
+    {
+        Competition = CompetitionService.GetCompetitionById(Id);
+    }
+
+    async Task Save() => await BlazoredModal.CloseAsync(ModalResult.Ok(Competition));
+
+
+    async Task Cancel() => await BlazoredModal.CancelAsync();
+
 
 }

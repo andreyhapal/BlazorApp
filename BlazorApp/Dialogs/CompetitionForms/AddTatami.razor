@@ -1,0 +1,39 @@
+﻿@using BlazorApp.Models
+
+@inject BlazorApp.Services.CompetitionService CompetitionService
+
+<div class="container">
+    <div class="row">
+        <RadzenTextBox @bind-Value="tatami.Name" class="add-competitor-form" Placeholder="Наименование"></RadzenTextBox>
+    </div>
+    <div class="row">
+        <RadzenTextBox @bind-Value="tatami.MatchPrefix" class="add-competitor-form" Placeholder="Префикс татами"></RadzenTextBox>
+    </div>
+    <div class="row">
+        <RadzenDropDown Data="competitions" TValue="Competition" @bind-Value="tatami.Competition" class="add-competitor-form" Placeholder="Соревнование">
+            <Template>
+                @((context as Competition).Name)
+            </Template>
+        </RadzenDropDown>
+    </div>
+    <div class="row">
+        <RadzenButton Text="Сохранить" class="primary-button m" Click="Save"/>
+        <RadzenButton Text="Отмена" class="primary-button m" Click="Cancel"/>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; }
+
+    List<Competition> competitions = new List<Competition>();
+    Tatami tatami = new Tatami();
+    protected override void OnInitialized()
+    {
+        competitions = CompetitionService.GetCompetitions();
+    }
+
+    async Task Save() => await BlazoredModal.CloseAsync(ModalResult.Ok(tatami));
+
+    async Task Cancel() => await BlazoredModal.CancelAsync();
+}

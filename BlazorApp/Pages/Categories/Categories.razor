@@ -18,7 +18,7 @@
     <Tabs>
         <RadzenTabsItem Text="Категории">
             <RadzenButton Text="Добавить" class="primary-button m" Click="AddSportCategory" />
-            <RadzenGrid Data=@categories AllowFiltering="true" AllowSorting="true" AllowPaging="true">
+            <RadzenGrid Data=@categories AllowFiltering="true" AllowSorting="true" AllowPaging="true" PageNumbersCount="10" PageSize="15">
                 <Columns>
                     <RadzenGridColumn TItem="SportCategory" Property="Id" Title="ID" Width="100px" />
                     <RadzenGridColumn TItem="SportCategory" Property="Name" Title="Категория" />
@@ -68,7 +68,7 @@
         </RadzenTabsItem>
         <RadzenTabsItem Text="Возрастные группы">
             <RadzenButton Text="Добавить" class="primary-button m" Click="CreateAgeGroup"/>
-            <RadzenGrid Data=@ageGroups AllowFiltering="true" AllowSorting="true" AllowPaging="true">
+            <RadzenGrid Data=@ageGroups AllowFiltering="true" AllowSorting="true" AllowPaging="true" PageNumbersCount="10" PageSize="15">
                 <Columns>
                     <RadzenGridColumn TItem="AgeGroup" Property="Id" Title="ID" />
                     <RadzenGridColumn TItem="AgeGroup" Property="AgeName" Title="Возрастная группа" />
@@ -85,7 +85,7 @@
         </RadzenTabsItem>
         <RadzenTabsItem Text="Весовые группы">
             <RadzenButton Text="Добавить" class="primary-button m" Click="CreateWeightGroup" />
-            <RadzenGrid Data=@weightGroups AllowFiltering="true" AllowSorting="true" AllowPaging="true">
+            <RadzenGrid Data=@weightGroups AllowFiltering="true" AllowSorting="true" AllowPaging="true" PageNumbersCount="10" PageSize="15">
                 <Columns>
                     <RadzenGridColumn TItem="WeightGroup" Property="Id" Title="ID" />
                     <RadzenGridColumn TItem="WeightGroup" Property="Name" Title="Весовая группа" />

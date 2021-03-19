@@ -3,9 +3,11 @@
 @using Models
 @using Dialogs
 @using Dialogs.CompetitionForms
+@using BlazorApp.Util
 
 @inject BlazorApp.Services.CompetitionService CompetitionService
 @inject NavigationManager NavigationManager
+@inject NotificationService NotificationService
 
 <div class="main-header-div">
     <h1 class="main-header">Соревнования</h1>
@@ -32,6 +34,9 @@
             </Template>
         </RadzenGridColumn>
         <RadzenGridColumn TItem="Competition" Property="Name" Title="Название"/>
+
+        <!--status of competition INSERT COLUMN-->
+
         <RadzenGridColumn TItem="Competition" Context="competition" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="300px">
             <Template Context="competition">
                 <RadzenButton Icon="edit" Size="ButtonSize.Medium" Click="@(args => EditCompetition(competition.Id))" class="primary-button">
@@ -42,6 +47,7 @@
                 </RadzenButton>
             </Template>
         </RadzenGridColumn>
+
     </Columns>
 </RadzenGrid>
 
@@ -66,13 +72,23 @@
 
         if (result.Data != null)
         {
-            CompetitionService.CreateCompetition(result.Data as Competition);
+            ResponseObject response = CompetitionService.CreateCompetition(result.Data as Competition);
+            if (response.IsSuccess == false)
+            {
+                ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Ошибка!", Detail = "Не удалось добавить соревнование!", Duration = 4000 });
+            }
+            else
+            {
+                ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Успешно!", Detail = "Соревнование успешно добавлено!", Duration = 4000 });
+            }
         }
     }
 
     async void EditCompetition(int Id)
     {
-        var form = Modal.Show<EditCompetition>("Редактирование соревнования");
+        ModalParameters parameters = new ModalParameters();
+        parameters.Add(nameof(Id), Id);
+        var form = Modal.Show<EditCompetition>("Редактирование соревнования",parameters);
         var result = await form.Result;
 
         if (result.Data != null)
@@ -95,6 +111,11 @@
     void RedirectToManage(Competition competition)
     {
         NavigationManager.NavigateTo("manage/"+competition.Id+"/"+competition.Name);
+    }
+
+    void ShowNotification(NotificationMessage message)
+    {
+        NotificationService.Notify(message);
     }
 }
 

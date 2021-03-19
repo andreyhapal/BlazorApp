@@ -12,88 +12,90 @@
             @*Image*@
             <div class="col-3" style="justify-content:center;">
                 <RadzenFieldset Text="Фото спортсмена">
-                <img src="data:image/bmp;base64, @(Convert.ToBase64String(ms.ToArray()))" />
-                <InputFile OnChange="HandleSelection" class="w-50"/>
+                    <img src="data:image/bmp;base64, @(Convert.ToBase64String(ms.ToArray()))" />
+                    <InputFile OnChange="HandleSelection" class="w-50" />
                 </RadzenFieldset>
             </div>
             <!--List of sportsmen-->
             <div class="col-6">
                 <RadzenFieldset Text="Спортсмены">
-                <RadzenGrid Data="Sportsmen" AllowFiltering="true" FilterMode="FilterMode.Simple" AllowPaging="true" AllowSorting="true">
-                    <Columns>
-                        <RadzenGridColumn TItem="Sportsman" Title="Имя">
-                            <Template Context="data">
-                                @data.FirstName
-                            </Template>
-                        </RadzenGridColumn>
-                        <RadzenGridColumn TItem="Sportsman" Title="Фамилия">
-                            <Template Context="data">
-                                @data.LastName
-                            </Template>
-                        </RadzenGridColumn>
-                        <RadzenGridColumn TItem="Sportsman" Title="Дата рождения">
-                            <Template Context="data">
-                                @data.DateOfBirth.ToShortDateString()
-                            </Template>
-                        </RadzenGridColumn>
-                        <RadzenGridColumn TItem="Sportsman" Filterable="false" Sortable="false" Width="50px">
-                            <Template Context="data">
-                                <RadzenButton Icon="done" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Small" Click="()=>OnChange(data)"></RadzenButton>
-                            </Template>
-                        </RadzenGridColumn>
-                    </Columns>
-                </RadzenGrid>
-                    </RadzenFieldset>
+                    <RadzenGrid Data="Sportsmen" AllowFiltering="true" FilterMode="FilterMode.Simple" AllowPaging="true" AllowSorting="true">
+                        <Columns>
+                            <RadzenGridColumn TItem="Sportsman" Title="Имя">
+                                <Template Context="data">
+                                    @data.FirstName
+                                </Template>
+                            </RadzenGridColumn>
+                            <RadzenGridColumn TItem="Sportsman" Title="Фамилия">
+                                <Template Context="data">
+                                    @data.LastName
+                                </Template>
+                            </RadzenGridColumn>
+                            <RadzenGridColumn TItem="Sportsman" Title="Дата рождения">
+                                <Template Context="data">
+                                    @data.DateOfBirth.ToShortDateString()
+                                </Template>
+                            </RadzenGridColumn>
+                            <RadzenGridColumn TItem="Sportsman" Filterable="false" Sortable="false" Width="50px">
+                                <Template Context="data">
+                                    <RadzenButton Icon="done" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Small" Click="()=>OnChange(data)"></RadzenButton>
+                                </Template>
+                            </RadzenGridColumn>
+                        </Columns>
+                    </RadzenGrid>
+                </RadzenFieldset>
             </div>
             <!--Fields-->
             <div class="col" style="justify-content:center">
                 <RadzenFieldset Text="Личные данные">
-                <div class="row">
-                    <RadzenTextBox Placeholder="Имя" class="add-competitor-form" @bind-Value="Competitor.FirstName"></RadzenTextBox>
-                </div>
-                <div class="row">
-                    <RadzenTextBox Placeholder="Фамилия" @bind-Value="Competitor.LastName" class="add-competitor-form"></RadzenTextBox>
-                </div>
-                <div class="row" style="display:flex;vertical-align:central;justify-content:center;">
-                    <h4 style="margin-top:10px">М</h4>
-                    <RadzenSwitch @bind-Value="switcher" Style="margin:7px;" />
-                    <h4 style="margin-top:10px">Ж</h4>
-                </div>
+                    <div class="row">
+                        <RadzenTextBox Placeholder="Имя" class="add-competitor-form" @bind-Value="Competitor.FirstName"></RadzenTextBox>
+                    </div>
+                    <div class="row">
+                        <RadzenTextBox Placeholder="Фамилия" @bind-Value="Competitor.LastName" class="add-competitor-form"></RadzenTextBox>
+                    </div>
+                    <div class="row" style="display:flex;vertical-align:central;justify-content:center;">
+                        <h4 style="margin-top:10px">М</h4>
+                        <RadzenSwitch @bind-Value="switcher" Style="margin:7px;" />
+                        <h4 style="margin-top:10px">Ж</h4>
+                    </div>
 
-                <div class="row">
-                    <RadzenNumeric TValue="int?" class="add-competitor-form" Placeholder="Стартовый номер"></RadzenNumeric>
-                </div>
-                <div class="row">
-                    <RadzenDatePicker class="add-competitor-form" Placeholder="Дата рождения" @bind-Value="Competitor.DateOfBirth"></RadzenDatePicker>
-                </div>
-                <div class="row">
-                    <RadzenDropDown Data=@(Grades.Select(x=>x.Name)) class="add-competitor-form" Placeholder="Пояс" @bind-Value="GradeName">
-                        
-                    </RadzenDropDown>
-                </div>
-                <div class="row">
-                    <RadzenTextBox class="add-competitor-form" Placeholder="Страна" @bind-Value="Competitor.Country"></RadzenTextBox>
-                </div>
-                <div class="row">
-                    <RadzenTextBox class="add-competitor-form" Placeholder="Город" @bind-Value="Competitor.Region"></RadzenTextBox>
-                </div>
-                <div class="row">
-                    <RadzenTextBox class="add-competitor-form" Placeholder="Клуб" @bind-Value="Competitor.ClubName"></RadzenTextBox>
-                </div>
+                    <div class="row">
+                        <RadzenNumeric TValue="int?" class="add-competitor-form" Placeholder="Стартовый номер"></RadzenNumeric>
+                    </div>
+                    <div class="row">
+                        <RadzenLabel Text="Дата рождения" class="add-competitor-form"></RadzenLabel>
+                        <RadzenDatePicker class="add-competitor-form" @bind-Value=@Competitor.DateOfBirth DateFormat="d"></RadzenDatePicker>
+                    </div>
+                    <div class="row">
+                        <RadzenDropDown Data=@(Grades.Select(x=>x.Name)) class="add-competitor-form" Placeholder="Пояс" @bind-Value="GradeName">
 
-                <div class="row">
-                    <RadzenNumeric TValue="int?" class="add-competitor-form" Placeholder="Вес"></RadzenNumeric>
-                </div>
-                    </RadzenFieldset>
+                        </RadzenDropDown>
+                    </div>
+                    <div class="row">
+                        <RadzenTextBox class="add-competitor-form" Placeholder="Страна" @bind-Value="Competitor.Country"></RadzenTextBox>
+                    </div>
+                    <div class="row">
+                        <RadzenTextBox class="add-competitor-form" Placeholder="Город" @bind-Value="Competitor.Region"></RadzenTextBox>
+                    </div>
+                    <div class="row">
+                        <RadzenTextBox class="add-competitor-form" Placeholder="Клуб" @bind-Value="Competitor.ClubName"></RadzenTextBox>
+                    </div>
+
+                    <div class="row">
+                        <RadzenLabel Text="Вес" class="add-competitor-form"></RadzenLabel>
+                        <RadzenNumeric class="add-competitor-form" Placeholder="Вес" @bind-Value="Competitor.Weight"></RadzenNumeric>
+                    </div>
+                </RadzenFieldset>
             </div>
         </div>
         <div class="row">
             <div class="col" style="display:flex;justify-content:space-between;padding:15px;"></div>
             <div class="col" style="display:flex;justify-content:space-between;padding:15px;"></div>
             <div class="col" style="display:flex;justify-content:end;padding:15px;">
-               <RadzenButton Text="Сохранить" class="primary-button m"></RadzenButton>
+                <RadzenButton Text="Сохранить" class="primary-button m" Click="SubmitForm"></RadzenButton>
                 <RadzenButton Text="Отмена" class="primary-button m" Click="Cancel"></RadzenButton>
-                
+
             </div>
         </div>
     </div>
@@ -119,14 +121,18 @@
     void OnChange(Object value)
     {
         Sportsman s = value as Sportsman;
+        Competitor.SportsmanId = s.Id;
         Competitor.FirstName = s.FirstName;
         Competitor.LastName = s.LastName;
         Competitor.Grade = s.Grade;
+        GradeName = s.Grade.Name;
         Competitor.IKO = s.IKO;
         Competitor.Sex = s.Sex;
         Competitor.Weight = s.Weight;
         Competitor.Age = s.Age;
+        Competitor.ClubName = s.SportClub.Name;
         Competitor.DateOfBirth = s.DateOfBirth;
+        
         switcher = Competitor.Sex.Name == "М" ? false : true;
     }
 
@@ -138,7 +144,6 @@
             var imageFile = await file.ToImageFileAsync("image/jpeg", 400, 300);
 
             ms = await imageFile.ReadAllAsync();
-
         }
     }
 

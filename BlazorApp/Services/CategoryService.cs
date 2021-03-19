@@ -73,13 +73,7 @@ namespace BlazorApp.Services
             }
         }
 
-        public Sex GetSexByName(string Name)
-        {
-            using (var db = new ApplicationContext())
-            {
-                return db.Sexes.First(x => x.Name == Name);
-            }
-        }
+        
 
         public List<Grade> GetGrades()
         {
@@ -89,13 +83,7 @@ namespace BlazorApp.Services
             }
         }
 
-        public Grade GetGradeByName(string Name)
-        {
-            using (var db = new ApplicationContext())
-            {
-                return db.Grades.First(x => x.Name == Name);
-            }
-        }
+        
         public List<SportCategoryType> GetTypes()
         {
             using (var db = new ApplicationContext())
