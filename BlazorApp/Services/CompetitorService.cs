@@ -51,12 +51,14 @@ namespace BlazorApp.Services
                     competitor.Sex = db.Sexes.FirstOrDefault(x => x.Name == competitor.Sex.Name);
                     competitor.AgeGroup = db.AgeGroups.FirstOrDefault(a => (competitor.Age >= a.From && competitor.Age <= a.To && a.To != 0) || (competitor.Age >= a.From && a.To == 0));
                     competitor.WeightGroup = db.WeightGroups.FirstOrDefault(a => (competitor.Weight >= a.From && competitor.Weight <= a.To && a.To != 0) || (competitor.Weight >= a.From && a.To == 0));
+                    
                     var sportCategory = db.SportCategories
                                             .Include(x => x.AgeGroup)
                                             .Include(x => x.WeightGroup)
                                             .Include(x => x.Sex)
                                             .Include(x => x.Type)
                                             .FirstOrDefault(x => x.AgeGroup.Id == competitor.AgeGroup.Id && x.WeightGroup.Id == competitor.WeightGroup.Id && x.Sex.Id == competitor.Sex.Id);
+                    
                     var newCompetitionCategory = db.CompetitionCategories.FirstOrDefault(x => x.SportCategoryId == sportCategory.Id && x.CompetitionId==competitionId);
                     if (newCompetitionCategory != null) competitor.CompetitionCategory = newCompetitionCategory;
                     else
@@ -77,6 +79,7 @@ namespace BlazorApp.Services
                         competitor.CompetitionCategory = category;
                     }
                     competitor.Competition = db.Competitions.FirstOrDefault(x => x.Id == competitionId);
+                    if (db.Competitors.Where(x => x.SportsmanId == competitor.SportsmanId).ToList().Count > 0) throw new Exception("Competitor already exist");
                     db.Competitors.Add(competitor);
                     db.SaveChanges();
                 }

@@ -1,0 +1,134 @@
+﻿@using BlazorApp.Models
+@using BlazorApp.Dialogs
+@using BlazorApp.Dialogs.SportsmanForms
+@using BlazorApp.Util
+
+@inject NotificationService NotificationService
+@inject TooltipService TooltipService
+@inject BlazorApp.Services.CompetitorService CompetitorService
+
+<RadzenButton Icon="add_circle_outline" class="primary-button m" Text="Добавить" Click="@AddCompetitor" />
+<RadzenButton Icon="done" class="primary-button m" Text="Активировать" Click="@Activate" />
+<RadzenButton Icon="description" class="primary-button m" Text="Загрузить из CSV" Click="@LoadFromCSV" />
+<RadzenGrid @ref="competitorGrid" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="10"
+            AllowSorting="true" Data="competitors" TItem="Competitor" AllowColumnResize="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValues>
+    <Columns>
+        <RadzenGridColumn TItem="Competitor" Width="40px" Sortable="false" Filterable="false">
+            <HeaderTemplate>
+                <RadzenCheckBox TriState="false" TValue="bool" Value="@(competitors.Any(i => multipleValues != null && (multipleValues as IEnumerable<Competitor>).Contains(i)))"
+                                Change="@(args => multipleValues = args ? competitors : null)" />
+            </HeaderTemplate>
+            <Template Context="data">
+                <RadzenCheckBox TriState="false" Value="@(multipleValues != null && (multipleValues as IEnumerable<Competitor>).Contains(data))" />
+            </Template>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="Competitor" Property="Id" Title="ID" Width="120px" />
+        <RadzenGridColumn TItem="Competitor" Property="IKO" Title="Номер" Width="120px" />
+        <RadzenGridColumn TItem="Competitor" Property="FirstName" Title="Имя" />
+        <RadzenGridColumn TItem="Competitor" Property="LastName" Title="Фамилия" />
+        <RadzenGridColumn TItem="Competitor" Property="BirthDate" Title="Дата рождения">
+            <Template Context="data">
+                @data.DateOfBirth.ToShortDateString()
+            </Template>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="Competitor" Property="Grade" Title="Пояс" Width="100px">
+            <Template Context="data">
+                @data.Grade.Name
+            </Template>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="Competitor" Property="Country" Title="Страна" />
+        <RadzenGridColumn TItem="Competitor" Property="Region" Title="Регион" />
+        <RadzenGridColumn TItem="Competitor" Property="ClubName" Title="Клуб" />
+        <RadzenGridColumn TItem="Competitor" Property="Category" Title="Категория">
+            <Template Context="data">
+                @data.CompetitionCategory.Name
+            </Template>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="Competitor" Property="Weight" Title="Вес" Width="100px" />
+        <RadzenGridColumn TItem="Competitor" Property="IsActive" Title="Активный">
+            <Template Context="data">
+                <RadzenCheckBox @bind-Value="data.IsRegistred" />
+            </Template>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="Competitor" Context="competitor" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
+            <Template Context="competitor">
+                <RadzenButton Icon="edit" Size="ButtonSize.Medium" class="primary-button">
+                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Medium" Click="()=>DeleteCompetitor(competitor.Id)">
+                </RadzenButton>
+            </Template>
+        </RadzenGridColumn>
+    </Columns>
+</RadzenGrid>
+@code {
+    [CascadingParameter]
+    public IModalService Modal { get; set; }
+    [Parameter]
+    public string CompetitionId { get; set; }
+
+    List<Competitor> competitors = new List<Competitor>();
+
+    object multipleValues;
+    RadzenGrid<Competitor> competitorGrid;
+
+    void DeleteCompetitor(int Id)
+    {
+        CompetitorService.DeleteCompetitor(Id);
+    }
+
+    protected override void OnInitialized() 
+    {
+        competitors = CompetitorService.GetCompetitors(int.Parse(CompetitionId));    
+    }
+
+    void Activate()
+    {
+        if (multipleValues != null)
+        {
+            var selectedIds = (multipleValues as IEnumerable<Competitor>).Select(x => x.Id).ToList();
+            foreach (var id in selectedIds)
+            {
+                competitors.FirstOrDefault(x => x.Id == id).IsRegistred = true;
+            }
+            competitorGrid.Reload();
+        }
+    }
+
+    async void LoadFromCSV()
+    {
+        var form = Modal.Show<UploadCsv>("Загрузить файл");
+        var result = await form.Result;
+        if (result.Data != null)
+        {
+            CompetitorService.AddRangeCompetitors(result.Data as List<Competitor>, int.Parse(CompetitionId));
+        }
+    }
+
+    async Task AddCompetitor()
+    {
+        var form = Modal.Show<AddCompetitorForm>("Добавление участника соревнования");
+        var result = await form.Result;
+        if (result.Data != null)
+        {
+            ResponseObject response = CompetitorService.CreateCompetitor(result.Data as Competitor, int.Parse(CompetitionId));
+            if (response.IsSuccess == false)
+            {
+                ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Ошибка!", Detail = "Не удалось добавить участника соревнования!", Duration = 4000 });
+            }
+            else
+            {
+                ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Успешно!", Detail = "Участник соревнования успешно добавлен!", Duration = 4000 });
+            }
+        }
+    }
+
+    void ShowTooltip(ElementReference elementReference, string message, TooltipOptions options = null) => TooltipService.Open(elementReference, message, options);
+
+
+
+    void ShowNotification(NotificationMessage message)
+    {
+        NotificationService.Notify(message);
+    }
+}
+

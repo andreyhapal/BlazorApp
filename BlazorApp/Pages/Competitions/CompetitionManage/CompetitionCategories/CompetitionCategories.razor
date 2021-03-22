@@ -1,0 +1,110 @@
+﻿@using BlazorApp.Models
+@using BlazorApp.Dialogs.CategoryForms
+@using BlazorApp.Util
+
+@inject BlazorApp.Services.CompetitorService CompetitorService
+@inject BlazorApp.Services.CompetitionService CompetitionService
+@inject NotificationService NotificationService
+@inject TooltipService TooltipService
+
+<RadzenButton Text="Добавить" class="primary-button m" Click=@AddCompetitionCategory />
+<RadzenButton Text="Разбить" class="primary-button m" Click=@DivideCategory />
+<RadzenButton Text="Объеденить" class="primary-button m" Click=@MergeCategory />
+<RadzenGrid @ref="categoryGrid" AllowFiltering="true" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="10"
+            AllowSorting="true" Data="Categories" TItem="CompetitionCategory" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@multipleValuesCategory>
+    <Columns>
+        <RadzenGridColumn TItem="CompetitionCategory" Width="40px" Sortable="false" Filterable="false">
+            <HeaderTemplate>
+                <RadzenCheckBox TriState="false" TValue="bool" Value="@(Categories.Any(i => multipleValuesCategory != null && (multipleValuesCategory as IEnumerable<CompetitionCategory>).Contains(i)))"
+                                Change="@(args => multipleValuesCategory = args ? Categories : null)" />
+            </HeaderTemplate>
+            <Template Context="data">
+                <RadzenCheckBox TriState="false" Value="@(multipleValuesCategory != null && (multipleValuesCategory as IEnumerable<CompetitionCategory>).Contains(data))" />
+            </Template>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="CompetitionCategory" Property="Id" Title="ID" />
+        <RadzenGridColumn TItem="CompetitionCategory" Property="Name" Title="Наименование" />
+        <RadzenGridColumn TItem="CompetitionCategory" Title="Количество участников">
+            <Template Context="data">
+                @GetAmountOfCompetitors(data.Id)
+            </Template>
+        </RadzenGridColumn>
+    </Columns>
+</RadzenGrid>
+
+@code {
+    [Parameter]
+    public string CompetitionId { get; set; }
+    [CascadingParameter]
+    public IModalService Modal { get; set; }
+
+    RadzenGrid<CompetitionCategory> categoryGrid = new RadzenGrid<CompetitionCategory>();
+    List<CompetitionCategory> Categories = new List<CompetitionCategory>();
+    object multipleValuesCategory;
+
+    protected override void OnInitialized()
+    {
+        Categories = CompetitionService.GetCompetitionCategories(int.Parse(CompetitionId));
+    }
+
+    int GetAmountOfCompetitors(int Id)
+    {
+        return CompetitorService.GetAmountOfCompetitors(Id);
+    }
+
+    async Task AddCompetitionCategory()
+    {
+        ModalParameters parameters = new ModalParameters();
+        parameters.Add("Id", CompetitionId);
+        var form = Modal.Show<AddCompetitionCategoryForm>("Добавить соревновательную категорию", parameters);
+        var result = await form.Result;
+        if (!result.Cancelled)
+        {
+
+            if ((result.Data as ResponseObject).IsSuccess == false)
+            {
+                ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Ошибка!", Detail = "Не удалось добавить категорию соревнования!", Duration = 4000 });
+            }
+            else
+            {
+                ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Успешно!", Detail = "Категория соревнования успешно добавлена!", Duration = 4000 });
+            }
+        }
+
+    }
+
+    void ShowNotification(NotificationMessage message)
+    {
+        NotificationService.Notify(message);
+    }
+
+    void ShowTooltip(ElementReference elementReference, string message, TooltipOptions options = null) => TooltipService.Open(elementReference, message, options);
+
+    async Task DivideCategory()
+    {
+        if (multipleValuesCategory == null) return;
+        if ((multipleValuesCategory as IEnumerable<SportCategory>).ToList().Count == 1)
+        {
+            ModalParameters parameters = new ModalParameters();
+            parameters.Add(nameof(CompetitionCategory), (multipleValuesCategory as IEnumerable<SportCategory>).ToList()[0]);
+
+            var form = Modal.Show<DivideCompetitionCategory>("Разбиение соревновательной категории", parameters);
+            var result = await form.Result;
+            if (result.Data != null)
+            {
+                Categories.AddRange((List<CompetitionCategory>)result.Data);
+                await categoryGrid.Reload();
+            }
+        }
+    }
+
+    void MergeCategory()
+    {
+        if ((multipleValuesCategory as IEnumerable<SportCategory>).ToList().Count > 1)
+        {
+            var s = (multipleValuesCategory as IEnumerable<SportCategory>).ToList();
+
+            categoryGrid.Reload();
+        }
+    }
+}

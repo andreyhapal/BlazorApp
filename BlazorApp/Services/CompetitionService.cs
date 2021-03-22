@@ -177,5 +177,13 @@ namespace BlazorApp.Services
 
             }
         }
+
+        public List<Match> GetMatches()
+        {
+            using (var db = new ApplicationContext())
+            {
+                return db.Matches.ToList();
+            }
+        }
     }
 }

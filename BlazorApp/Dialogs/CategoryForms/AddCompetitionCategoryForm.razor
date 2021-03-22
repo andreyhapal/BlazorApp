@@ -1,14 +1,37 @@
 ﻿@using BlazorApp.Data
 @using BlazorApp.Models
+@using BlazorApp.Util
 
 @inject BlazorApp.Services.CategoryService CategoryService
 
-<RadzenTemplateForm TItem="SportCategory" Data="Category" Submit="SubmitForm" InvalidSubmit="InvalidSubmit">
+<RadzenTemplateForm TItem="SportCategory" Data="Category" Submit="SubmitForm">
     <div class="container" style="justify-content:center;">
         <div class="row">
-            <RadzenDropDown Data=@Categories TextProperty="Name" ValueProperty="Id" TValue="string">
-
-            </RadzenDropDown>
+            <RadzenGrid Data=@Categories TItem="SportCategory" AllowFiltering="true" AllowSorting="true" AllowPaging="true" PageSize="3">
+                <Columns>
+                    <RadzenGridColumn TItem="SportCategory" Property="Id" Title="ID" />
+                    <RadzenGridColumn TItem="SportCategory" Property="Name" Title="Наименование" />
+                    <RadzenGridColumn TItem="SportCategory" >
+                        <Template Context="data">
+                            <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="done" Click="()=>AddNewCategory(data)"></RadzenButton>
+                        </Template>
+                    </RadzenGridColumn>
+                </Columns>
+            </RadzenGrid>
+        </div>
+        <div class="row">
+            <h4 class="add-competitor-form">Новые соревновательные категории</h4>
+            <RadzenGrid @ref="newCategoriesGrid" Data=@NewCategories AllowFiltering="true" AllowSorting="true" AllowPaging="true" PageSize="3">
+                <Columns>
+                    <RadzenGridColumn TItem="SportCategory" Property="Id" Title="ID" />
+                    <RadzenGridColumn TItem="SportCategory" Property="Name" Title="Наименование" />
+                    <RadzenGridColumn TItem="SportCategory">
+                        <Template Context="data">
+                            <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Click="()=>RemoveNewCategory(data)"></RadzenButton>
+                        </Template>
+                    </RadzenGridColumn>
+                </Columns>
+            </RadzenGrid>
         </div>
         <div class="row">
             <RadzenButton Text="Сохранить" class="primary-button m" ButtonType="ButtonType.Submit" />
@@ -18,19 +41,37 @@
 </RadzenTemplateForm>
 
 @code {
-        [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+        [CascadingParameter]
+        BlazoredModalInstance BlazoredModal { get; set; }
 
+        [Parameter]
+        public string Id { get; set; }
+
+        RadzenGrid<SportCategory> newCategoriesGrid = new RadzenGrid<SportCategory>();
         List<SportCategory> Categories = new List<SportCategory>();
+        List<SportCategory> NewCategories = new List<SportCategory>();
         SportCategory Category = new SportCategory();
-        protected override void OnInitialized()
-        {
-            Categories = CategoryService.GetCategories();
-        }
+    protected override void OnInitialized()
+    {
+        Categories = CategoryService.GetCategories();
+    }
 
-        void InvalidSubmit()
-        {
+    void AddNewCategory(SportCategory sportCategory)
+    {
+        if(!NewCategories.Contains(sportCategory)) NewCategories.Add(sportCategory);
+        newCategoriesGrid.Reload();
+    }
 
-        }
-        async Task SubmitForm() => await BlazoredModal.CloseAsync(ModalResult.Ok(Category));
-        async Task Cancel() => await BlazoredModal.CancelAsync();
+    void RemoveNewCategory(SportCategory sportCategory)
+    {
+        if (NewCategories.Contains(sportCategory)) NewCategories.Remove(sportCategory);
+        newCategoriesGrid.Reload();
+    }
+    async Task SubmitForm()
+    {
+        CategoryService.CreateRangeCompetitionCategories(NewCategories, int.Parse(Id));
+
+        await BlazoredModal.CloseAsync(ModalResult.Ok(new ResponseObject() { IsSuccess = true, ExceptionMessage="" }));
+    }
+    async Task Cancel() => await BlazoredModal.CancelAsync();
 }

@@ -47,8 +47,9 @@ namespace BlazorApp.Services
                     db.Update(category);
                     db.SaveChanges();
                 }
-                    response.IsSuccess = true;
-            }catch(Exception e)
+                response.IsSuccess = true;
+            }
+            catch (Exception e)
             {
                 response.IsSuccess = false;
                 response.ExceptionMessage = e.Message;
@@ -65,6 +66,38 @@ namespace BlazorApp.Services
             }
         }
 
+        public ResponseObject CreateRangeCompetitionCategories(List<SportCategory> sportCategories, int competitionId)
+        {
+            ResponseObject response = new ResponseObject();
+            List<CompetitionCategory> competitionCategories = new List<CompetitionCategory>();
+            try
+            {
+                using (var db = new ApplicationContext())
+                {
+                    var competition = db.Competitions.FirstOrDefault(x => x.Id == competitionId);
+                    var tatami = db.Tatamis.FirstOrDefault(x => x.CompetitionId == competitionId);
+                    var existCategories = db.CompetitionCategories.Where(x => x.CompetitionId == competitionId).ToList();
+                    foreach (var category in sportCategories)
+                    {
+                        var newCompetitionCategory = Converter.SportCategoryToCompetitionCategory(category, competition, tatami);
+                        if (existCategories.Contains(newCompetitionCategory)) continue;
+                        else competitionCategories.Add(newCompetitionCategory);
+                    }
+
+                    db.CompetitionCategories.AddRange(competitionCategories);
+                    db.SaveChanges();
+                    response.IsSuccess = true;
+                }
+            }
+            catch(Exception e)
+            {
+                response.IsSuccess = false;
+                response.ExceptionMessage = e.Message;
+            }
+            return response;
+        }
+
+
         public List<Sex> GetSexes()
         {
             using (var db = new ApplicationContext())
@@ -73,7 +106,7 @@ namespace BlazorApp.Services
             }
         }
 
-        
+
 
         public List<Grade> GetGrades()
         {
@@ -83,7 +116,7 @@ namespace BlazorApp.Services
             }
         }
 
-        
+
         public List<SportCategoryType> GetTypes()
         {
             using (var db = new ApplicationContext())

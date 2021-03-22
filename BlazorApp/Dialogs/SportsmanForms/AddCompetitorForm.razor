@@ -19,19 +19,19 @@
             <!--List of sportsmen-->
             <div class="col-6">
                 <RadzenFieldset Text="Спортсмены">
-                    <RadzenGrid Data="Sportsmen" AllowFiltering="true" FilterMode="FilterMode.Simple" AllowPaging="true" AllowSorting="true">
+                    <RadzenGrid Data=@Sportsmen TItem="Sportsman" AllowFiltering="true" FilterMode="FilterMode.Simple" AllowPaging="true" AllowSorting="true" PageSize="11">
                         <Columns>
-                            <RadzenGridColumn TItem="Sportsman" Title="Имя">
+                            <RadzenGridColumn TItem="Sportsman" Property="FirstName" Title="Имя">
                                 <Template Context="data">
                                     @data.FirstName
                                 </Template>
                             </RadzenGridColumn>
-                            <RadzenGridColumn TItem="Sportsman" Title="Фамилия">
+                            <RadzenGridColumn TItem="Sportsman" Property="LastName" Title="Фамилия">
                                 <Template Context="data">
                                     @data.LastName
                                 </Template>
                             </RadzenGridColumn>
-                            <RadzenGridColumn TItem="Sportsman" Title="Дата рождения">
+                            <RadzenGridColumn TItem="Sportsman" Property="DateOfBirth" Title="Дата рождения">
                                 <Template Context="data">
                                     @data.DateOfBirth.ToShortDateString()
                                 </Template>

@@ -1,0 +1,95 @@
+﻿@using BlazorApp.Models
+
+@inject BlazorApp.Services.CompetitionService CompetitionService
+@inject BlazorApp.Services.CompetitorService CompetitorService
+
+<RadzenButton Text="Генерировать все пули" class="primary-button m" />
+
+@foreach (var category in CompetitionCategories)
+{
+    SetCompetitors(category);
+    if (competitorsInCategory.Count == 0) continue;
+
+    <button class="button button1" style="width:100%">@category.Name </button>
+    <div id="@category.Name">
+        <table class="table table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th rowspan="2" scope="col">ID</th>
+                    <th colspan="4" scope="col" style="width:240px;">
+                        Рейтинг
+                    </th>
+                    <th rowspan="2" scope="col">Имя</th>
+                    <th rowspan="2" scope="col">Фамилия</th>
+                    <th rowspan="2" scope="col">Дата рождения</th>
+                    <th rowspan="2" scope="col">Пояс</th>
+                    <th rowspan="2" scope="col">Страна</th>
+                    <th rowspan="2" scope="col">Регион</th>
+                    <th rowspan="2" scope="col">Клуб</th>
+
+                </tr>
+                <tr>
+                    <th style="width:60px;">Нету</th>
+                    <th style="width:60px;">1</th>
+                    <th style="width:60px;">2</th>
+                    <th style="width:60px;">3</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var competitor in competitorsInCategory)
+                {
+                    <tr>
+                        <td>@competitor.Id</td>
+                        <td colspan="4">
+                            <RadzenRadioButtonList TValue="int" Style="justify-content:space-around">
+                                <Items>
+                                    <RadzenRadioButtonListItem Value="0" Style="margin-left:-8px;margin-right:7px;"></RadzenRadioButtonListItem>
+
+                                    <RadzenRadioButtonListItem Value="1" Style="margin-right:7px;"></RadzenRadioButtonListItem>
+
+                                    <RadzenRadioButtonListItem Value="2" Style="margin-right:7px;"></RadzenRadioButtonListItem>
+
+                                    <RadzenRadioButtonListItem Value="3" Style="margin-right:7px;"></RadzenRadioButtonListItem>
+                                </Items>
+                            </RadzenRadioButtonList>
+                        </td>
+                        <td>@competitor.FirstName</td>
+                        <td>@competitor.LastName</td>
+                        <td>@competitor.DateOfBirth.ToShortDateString()</td>
+                        <td>@competitor.Grade</td>
+                        <td>@competitor.Country</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div>
+
+            <RadzenCheckBox TValue="bool" Style="margin: 10px;" />
+            <RadzenLabel Text="Бой за третье место" Component="CheckBox1" Style="margin:10px;" />
+            <RadzenButton Text="Генерировать пулю" class="primary-button m" />
+            <RadzenButton Text="Удалить пулю" class="primary-button m" />
+            <RadzenButton Text="Сохранить пулю" class="primary-button m" />
+            <RadzenButton Text="Следующая" class="primary-button m f-r" />
+            <RadzenButton Text="Предыдущая" class="primary-button m f-r" />
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string CompetitionId { get; set; }
+    List<Competitor> competitorsInCategory = new List<Competitor>();
+    List<CompetitionCategory> CompetitionCategories = new List<CompetitionCategory>();
+
+    protected override void OnInitialized()
+    {
+        CompetitionCategories = CompetitionService.GetCompetitionCategories(int.Parse(CompetitionId));
+    }
+
+    void SetCompetitors(CompetitionCategory category)
+    {
+        competitorsInCategory = CompetitorService.GetCompetitorsInCategory(category);
+    }
+}

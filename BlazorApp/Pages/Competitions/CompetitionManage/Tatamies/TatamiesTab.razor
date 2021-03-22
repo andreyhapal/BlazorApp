@@ -1,0 +1,94 @@
+﻿@using BlazorApp.Models
+@using BlazorApp.Dialogs.CompetitionForms
+
+@inject TooltipService TooltipService
+@inject BlazorApp.Services.CompetitionService CompetitionService
+@inject NavigationManager NavigationManager
+
+<RadzenButton Text="Добавить татами" class="primary-button m" Click="AddTatami" />
+<div class="row row-cols-3" style="justify-content:space-around">
+    @foreach (var tatami in Tatamis)
+    {
+        <div class="col" style="justify-content:center;margin:10px;">
+            <RadzenCard Style="width:500px;height:315px;margin:auto;">
+                <div class="card-header">
+                    <h2 style="margin-bottom:0px;">Татами @tatami.Name</h2>
+
+                </div>
+                <div class="card-status">
+                    <h6 style="margin-bottom:0px;">Количество боев @Matches.Where(x => x.TatamiId == tatami.Id).ToList().Count</h6>
+                </div>
+                <div class="card-content">
+                    <table class="category-divide">
+                        <tbody>
+                            @foreach (var c in CompetitionCategories.Where(x => x.TatamiId == tatami.Id))
+                            {
+                                <tr>
+                                    <td style="border-bottom:1px solid gray;width:448px;">
+                                        @c.Name
+                                    </td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <RadzenButton class="button circle-button primary-button m" Icon="build" MouseEnter="@(args => ShowTooltip(args,"Настройки") )" Click="()=>ToTatamiSettings(tatami.Id)" />
+                    <RadzenButton class="button circle-button primary-button m" Icon="av_timer" MouseEnter="@(args => ShowTooltip(args,"Таймер") )" Click="()=>ToTatamiTimer(tatami.Id)" />
+                    <RadzenButton class="button circle-button primary-button m" Icon="computer" MouseEnter="@(args => ShowTooltip(args,"Компьютер") )" Click="()=>ToScoreBoard(tatami.Id)" />
+                    <RadzenButton class="button circle-button primary-button m" Icon="list" MouseEnter="@(args => ShowTooltip(args,"Список") )" />
+                    <RadzenButton class="button circle-button primary-button m" Icon="align_horizontal_left" MouseEnter="@(args => ShowTooltip(args,"Пули") )" />
+                    <RadzenButton class="button circle-button primary-button m" Icon="face" MouseEnter="@(args => ShowTooltip(args,"Подготовка участников") )" />
+                </div>
+            </RadzenCard>
+        </div>
+    }
+</div>
+
+
+@code {
+    [CascadingParameter]
+    public IModalService Modal { get; set; }
+    [Parameter]
+    public string CompetitionId { get; set; }
+
+    List<CompetitionCategory> CompetitionCategories = new List<CompetitionCategory>();
+    List<Match> Matches = new List<Match>();
+    List<Tatami> Tatamis = new List<Tatami>();
+
+    protected override void OnInitialized()
+    {
+        Tatamis = CompetitionService.GetTatamis(int.Parse(CompetitionId));
+        CompetitionCategories = CompetitionService.GetCompetitionCategories(int.Parse(CompetitionId));
+    }
+
+
+    async void AddTatami()
+    {
+        var form = Modal.Show<AddTatami>("Создание татами");
+        var result = await form.Result;
+        if (result.Data != null)
+        {
+            CompetitionService.CreateTatami(result.Data as Tatami, int.Parse(CompetitionId));
+        }
+    }
+
+    void ToTatamiSettings(int Id)
+    {
+        NavigationManager.NavigateTo("/manage/" + this.CompetitionId +  "/settings/" + Id);
+    }
+
+    void ToTatamiTimer(int Id)
+    {
+        NavigationManager.NavigateTo("/manage/" + this.CompetitionId + "/timer/" + Id);
+    }
+
+    void ToScoreBoard(int Id)
+    {
+        NavigationManager.NavigateTo("/manage/" + this.CompetitionId + "/scoreboard/" + Id);
+    }
+
+    void ShowTooltip(ElementReference elementReference, string message, TooltipOptions options = null) => TooltipService.Open(elementReference, message, options);
+
+}

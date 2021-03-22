@@ -1,0 +1,63 @@
+﻿@page "/manage/{Id}"
+
+@using BlazorApp.Models
+@using BlazorApp.Pages.Competitions.CompetitionManage.Competitors
+@using BlazorApp.Pages.Competitions.CompetitionManage.CompetitionCategories
+@using BlazorApp.Pages.Competitions.CompetitionManage.Draw
+@using BlazorApp.Pages.Competitions.CompetitionManage.Referees
+@using BlazorApp.Pages.Competitions.CompetitionManage.Tatamies
+
+@inject NavigationManager NavigationManager
+@inject BlazorApp.Services.CompetitionService CompetitionService
+@inject BlazorApp.Services.CategoryService CategoryService
+@inject BlazorApp.Services.CompetitorService CompetitorService
+
+<div class="main-header-div" style="display:flex;">
+    <a @onclick="backUrl">
+        <img src="next-button.png" class="back-button" />
+    </a>
+    <h1 class="main-header">Управление соревнованием @competition.Name</h1>
+</div>
+<RadzenTabs>
+    <Tabs>
+        <RadzenTabsItem Text="Участники">
+            <Competitors CompetitionId="@this.Id" />
+        </RadzenTabsItem>
+
+        <RadzenTabsItem Text="Категории">
+            <CompetitionCategories CompetitionId="@this.Id" />
+        </RadzenTabsItem>
+
+        <RadzenTabsItem Text="Жеребьевка(пули)">
+            <Draw CompetitionId="@this.Id" />
+        </RadzenTabsItem>
+
+        <RadzenTabsItem Text="Татами">
+            <TatamiesTab CompetitionId="@this.Id" />
+        </RadzenTabsItem>
+
+        <RadzenTabsItem Text="Судьи">
+            <RefereeTab />
+        </RadzenTabsItem>
+    </Tabs>
+</RadzenTabs>
+
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; }
+
+    Competition competition = new Competition();
+
+    void backUrl()
+    {
+        NavigationManager.NavigateTo("/competitions");
+    }
+
+    protected override void OnInitialized()
+    {
+        competition = CompetitionService.GetCompetitionById(int.Parse(Id));
+    }
+}
+

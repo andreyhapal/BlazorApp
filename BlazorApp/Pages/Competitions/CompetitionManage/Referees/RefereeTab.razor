@@ -1,0 +1,40 @@
+﻿@using BlazorApp.Models
+
+@inject BlazorApp.Services.CompetitionService CompetitionService
+
+<RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Simple" AllowPaging="true" PageSize="10"
+            AllowSorting="true" Data="Referees" TItem="Referee" AllowColumnResize="true">
+    <Columns>
+        <RadzenGridColumn TItem="Referee" Property="Id" Title="Id" />
+        <RadzenGridColumn TItem="Referee" Property="FirstName" Title="Имя" />
+        <RadzenGridColumn TItem="Referee" Property="LastName" Title="Фамилия" />
+        <RadzenGridColumn TItem="Referee" Property="BirthDate" Title="Дата рождения">
+            <Template Context="data">
+                @data.DateOfBirth.ToShortDateString()
+            </Template>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="Referee" Title="Рейтинг" />
+        <RadzenGridColumn TItem="Referee" Title="Соревнования">
+            <Template Context="data">
+                @GetRefereeCompetitions(data.Id)
+            </Template>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="Referee" />
+
+    </Columns>
+</RadzenGrid>
+
+@code {   
+
+    List<Referee> Referees = new List<Referee>();
+
+    protected override void OnInitialized()
+    {
+        Referees =  CompetitionService.GetReferees();
+    }
+
+    string GetRefereeCompetitions(int RefereeId)
+    {
+        return CompetitionService.GetRefereeCompetitions(RefereeId);
+    }
+}

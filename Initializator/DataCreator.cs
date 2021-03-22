@@ -1,7 +1,11 @@
 ﻿using BlazorApp.Data;
+using BlazorApp.Logic;
+using BlazorApp.Logic.DistributionOfMatches;
+using BlazorApp.Logic.Tournaments;
 using BlazorApp.Models;
 using Initializator.resource;
 using Microsoft.EntityFrameworkCore;
+using SamuraiLogic.Tournaments;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +15,10 @@ namespace Initializator
 {
     class DataCreator
     {
-
         public void InitDbDefault()
         {
             using (var db = new ApplicationContext())
             {
-
                 //Создание базовых категорий
                 var ages = CreateDefaultAgeGroups();
                 var weights = CreateDefaultWeightGroups();
@@ -52,6 +54,25 @@ namespace Initializator
                 db.SaveChanges();
             }
         }
+
+        public void InitCompetitionCategories()
+        {
+            using(var db = new ApplicationContext())
+            {
+                var CompetitionCategories = db.CompetitionCategories.Include(x=>x.CompetitionGrid).ToList();
+                foreach(var c in CompetitionCategories)
+                {
+                    if (c.CompetitionGrid != null)
+                    {
+                        var grid = db.CompetitionGrids.FirstOrDefault(x => x.Id == c.CompetitionGrid.Id);
+                        c.Tatami = db.Matches.Include(x => x.Tatami).FirstOrDefault(x => x.CompetitionGridId == grid.Id).Tatami;
+                    }
+                }
+                db.CompetitionCategories.UpdateRange(CompetitionCategories);
+                db.SaveChanges();
+            }
+        }
+
         private List<SportCategory> CreateSportCategories(List<AgeGroup> ageGroups, List<WeightGroup> weightGroups, List<SportCategoryType> types, List<Sex> sexes)
         {
             var sportCategories = new List<SportCategory>();
@@ -393,7 +414,14 @@ namespace Initializator
 
                 competition.Competitors = competitors;
 
-                
+                foreach (var category in competition.Categories.Where(x => x.Competitors.Count >= 2))
+                {
+                    var gridNodes = new MatchCreator(new OlympicTournametSystem()).CreateGrid(category.Competitors, TournamentParameters.Default);
+                    var matches = gridNodes.Select(x => x.Match).Where(x => x != null).ToList();
+                    matches.ForEach(m => m.Tatami = tatamis.FirstOrDefault());
+                    category.CompetitionGrid = new CompetitionGrid() { Matches = matches.ToList(), MatchesConunt = (short)matches.Count, IsFinished = false, Nodes = gridNodes };
+                }
+
 
                 db.Competitions.Add(competition);
                 db.SaveChanges();
@@ -402,9 +430,42 @@ namespace Initializator
             }
         }
 
-        
 
-        
+
+        public void ShuffleMatchesBetweenTatamis(int competitionId = 0)
+        {
+            var shuffler = new ShuffleCategoriesForTatami();
+
+            using (var db = new ApplicationContext())
+            {
+                var matches = db.Matches.Include(k => k.CompetitionGrid).Where(x => x.CompetitionGrid.CompetitionCategory.CompetitionId == competitionId).ToList();
+                var tatamis = db.Tatamis.Where(x => x.CompetitionId == competitionId).ToList();
+                if (matches.Any() && tatamis.Any())
+                {
+                    matches = shuffler.Mix(tatamis, matches);
+                    db.UpdateRange(matches);
+                    db.SaveChanges();
+                    DistributionUtil.PrintResult(matches, tatamis);
+                }
+            }
+        }
+
+        public void MatchNumbering(int competitionId)
+        {
+            using (var db = new ApplicationContext())
+            {
+                var nodes = db.CompetitionGridNodes.Include(x => x.CompetitionGrid).Include(x => x.CompetitionGrid.CompetitionCategory).Include(x => x.Match).ThenInclude(x => x.Tatami)
+                    .Where(x => x.CompetitionGrid.CompetitionCategory.CompetitionId == competitionId && x.Match != null)
+                    .ToList();
+
+                var numbering = new NumberingOfMatches();
+                nodes = numbering.SetMatchesGridNumber(nodes);
+                nodes = numbering.SetMatchesGlobalNumber(nodes);
+
+                db.UpdateRange(nodes);
+                db.SaveChanges();
+            }
+        }
 
 
 
