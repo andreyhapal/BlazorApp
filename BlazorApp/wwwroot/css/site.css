@@ -385,3 +385,15 @@ td {
 .add-category-form1 {
     height: 200px;
 }
+
+.center-block{
+    display:block;
+    justify-content:center;
+    text-align:center;
+}
+
+.centering {
+    margin:auto;
+    width:100%;
+    padding:10px;
+}

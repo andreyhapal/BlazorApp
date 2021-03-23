@@ -4,62 +4,62 @@
 @inject BlazorApp.Services.CategoryService CategoryService
 
 <div class="container" style="justify-content:center;">
-    <div class="row" style="text-align:center">
-        <h2 style="margin:auto;padding-bottom:20px;margin-top:-25px;">Название категории: @Category.Name</h2>
-    </div>
-    <div class="row">
-        <div class="col center-content">
-            <RadzenListBox Data="@ages" @bind-Value="SelectedAges" Multiple="true" TValue="object" />
-        </div>
-        <div class="col-6">
-            <div class="row">
-                <div class="col center-content" style="display:flex;justify-content:space-between;padding:15px;">
-                    <RadzenLabel Text="Открытая граница"></RadzenLabel>
-                    <RadzenSwitch @bind-Value="@LeftBorder"></RadzenSwitch>
+    <RadzenFieldset Text="@Name">
+        <div class="row">
+            <div class="col-3">
+                <RadzenLabel class="center-block" Text="Возраст"></RadzenLabel>
+                <RadzenListBox class="centering" Data="@ages" @bind-Value="SelectedAges" Multiple="true" TValue="object" Style="height:250px" />
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col" style="display:flex">
+                        <RadzenLabel class="center-block" Text="Открытая граница" Style="padding-right:10px;padding-bottom:15px;"></RadzenLabel>
+                        <RadzenSwitch class="center-block"></RadzenSwitch>
+                    </div>
+                    <div class="col" style="display:flex">
+                        <RadzenLabel class="center-block" Text="Открытая граница" Style="padding-right:10px;padding-bottom:15px;"></RadzenLabel>
+                        <RadzenSwitch class="center-block"></RadzenSwitch>
+                    </div>
                 </div>
-                <div class="col center-content" style="display:flex;justify-content:space-between;padding:15px;">
-                    <RadzenLabel Text="Открытая граница"></RadzenLabel>
-                    <RadzenSwitch @bind-Value="@RightBorder"></RadzenSwitch>
+                <div class="row">
+                    <div class="col">
+                        <RadzenLabel class="center-block" Text="Вес ОТ"></RadzenLabel>
+                        <RadzenNumeric class="center-block" @bind-Value="WeightGroup.From" Min="CompetitionCategory.WeightFrom" ></RadzenNumeric>
+                    </div>
+                    <div class="col">
+                        <RadzenLabel class="center-block" Text="Вес ДО"></RadzenLabel>
+                        <RadzenNumeric class="center-block" @bind-Value="WeightGroup.To" Min="CompetitionCategory.WeightFrom" ></RadzenNumeric>
+                    </div>
+                </div>
+                <div class="row">
+                    <RadzenButton Text="Создать новую категорию" class="primary-button m" Style="display:flex;margin:15px auto;" Click="SaveCategory" />
                 </div>
             </div>
-            <div class="row">
-                @*<div class="col center-content">
-                    <RadzenNumeric @bind-Value="@Category.WeightFrom" TValue="int" Disabled="@LeftBorder" Style="width:100%;" Placeholder="Возраст ОТ"></RadzenNumeric>
-                </div>
-                <div class="col center-content">
-                    <RadzenNumeric @bind-Value="@Category.WeightTo" TValue="int" Disabled="@RightBorder" Style="width:100%;" Placeholder="Возраст ДО"></RadzenNumeric>
-                </div>*@
+            <div class="col-3">
+                <RadzenLabel class="center-block" Text="Пояс"></RadzenLabel>
+                <RadzenListBox class="centering" Data="@grades" @bind-Value="SelectedGrades" Multiple="true" TextProperty="Name" TValue="object" Style="height:250px" />
             </div>
         </div>
-        <div class="col center-content" style="align-items:center;display:flex;justify-content:center">
-            <RadzenListBox Data="@grades" @bind-Value="SelectedGrades" Multiple="true" TValue="object" />
-        </div>
-    </div>
-    <hr class="m-3" />
-    <div class="row">
-        <RadzenButton Text="Сохранить категорию" class="primary-button m" Style="margin-left:30px;" Click="SaveCategory" />
-    </div>
-    <hr class="m-3" />
-    <div class="row">
-        @if (DividedCategories.Count > 0)
-        {
-            <table class="category-divide" style="margin-left:30px;">
-                <tbody>
+    </RadzenFieldset>
+    @if (DividedCategories.Count > 0)
+    {
+        <RadzenFieldset Text="Новые категории">
+            <div class="row">
+                <RadzenGrid @ref="@categoryGrid" Data="@DividedCategories" AllowSorting="true" TItem="SportCategory">
+                    <Columns>
+                        <RadzenGridColumn TItem="SportCategory" Property="Name" Title="Название">
 
-                    @foreach (var category in DividedCategories)
-                    {
-                        <tr>
-                            <td style="margin:10px;width:500px;">@category.Name</td>
-                            <td style="margin:10px;">
-                                <RadzenButton Text="Удалить" ButtonStyle="ButtonStyle.Danger" Click="()=>Remove(category)" />
-                            </td>
-                        </tr>
-                    }
-
-                </tbody>
-            </table>
-        }
-    </div>
+                        </RadzenGridColumn>
+                        <RadzenGridColumn TItem="SportCategory">
+                            <Template Context="category">
+                                <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="() => Remove(category)"></RadzenButton>
+                            </Template>
+                        </RadzenGridColumn>
+                    </Columns>
+                </RadzenGrid>
+            </div>
+        </RadzenFieldset>
+    }
     <hr class="m-3" />
     <div class="row">
         <RadzenButton Text="Сохранить" class="primary-button m" Style="margin-left:30px;" Click="SubmitForm" />
@@ -69,46 +69,81 @@
 
 
 @code {
+
     [Parameter]
-    public SportCategory Category { get; set; }
+    public CompetitionCategory CompetitionCategory { get; set; }
+    SportCategory SportCategory = new SportCategory();
+    AgeGroup AgeGroup = new AgeGroup();
+    WeightGroup WeightGroup = new WeightGroup();
 
     [CascadingParameter]
     BlazoredModalInstance BlazoredModal { get; set; }
+
+    RadzenGrid<SportCategory> categoryGrid = new RadzenGrid<SportCategory>();
 
     bool LeftBorder, RightBorder;
 
     object SelectedAges;
     object SelectedGrades;
 
+    SportCategory Category = new SportCategory();
     List<SportCategory> DividedCategories = new List<SportCategory>();
     List<SportCategory> Categories = new List<SportCategory>();
     List<int> ages = new List<int>();
     List<Grade> grades = new List<Grade>();
+
+    string Name = "";
+
     protected override void OnInitialized()
     {
-        for (int i = Category.AgeGroup.From; i <= Category.AgeGroup.To; i++)
+        SportCategory = CategoryService.GetSportCategoryById(CompetitionCategory.SportCategoryId);
+        if (SportCategory.AgeGroup.To != 0)
         {
-            ages.Add(i);
+            for (int i = SportCategory.AgeGroup.From; i <= SportCategory.AgeGroup.To; i++)
+            {
+                ages.Add(i);
+            }
+        }
+        else
+        {
+            for (int i = SportCategory.AgeGroup.From; i <= 100; i++)
+            {
+                ages.Add(i);
+            }
         }
         grades = CategoryService.GetGrades();
+        Name = "Название категории: " + CompetitionCategory.Name;
     }
 
     void SaveCategory()
     {
+        string name = "";
+        var grades = (SelectedGrades as IEnumerable<Grade>).ToList();
+        foreach (var grade in grades)
+        {
+            name += grade.Name + " ";
+        }
+
         var s = (SelectedAges as IEnumerable<int>).ToList();
         s.Sort();
-        SportCategory category = new SportCategory();
-        //category.AgeFrom = s[0];
-        //category.AgeTo = s[1];
-        //category.Sex = Category.Sex;
-        //category.WeightFrom = Category.WeightFrom;
-        //category.WeightTo = Category.WeightTo;
-        //category.Name = category.AgeFrom + "-" + category.AgeTo + " " + category.Sex + " " + category.WeightFrom + "-" + category.WeightTo;
+        AgeGroup.From = s[0];
+        AgeGroup.To = s[1];
+        Category.AgeGroup = AgeGroup;
+        Category.AgeGroup.AgeName = Category.AgeGroup.From + "-" + Category.AgeGroup.To + " лет";
+        Category.WeightGroup = WeightGroup;
+        Category.WeightGroup.Name = Category.WeightGroup.From + "-" + Category.WeightGroup.To + " кг";
+        Category.Grades = grades;
+        Category.Sex = SportCategory.Sex;
+        Category.Type = SportCategory.Type;
+        Category.Name = SportCategory.Type.Name + " " + SportCategory.Sex.Name + " " + Category.AgeGroup.From + "-" + Category.AgeGroup.To + " лет " + Category.WeightGroup.From + "-" + Category.WeightGroup.To + " кг " + name;
 
-        DividedCategories.Add(category);
+        DividedCategories.Add(Category);
 
+        Category = new SportCategory();
+        WeightGroup = new WeightGroup();
+        AgeGroup = new AgeGroup();
+        categoryGrid.Reload();
         StateHasChanged();
-
     }
 
     void Remove(SportCategory category)

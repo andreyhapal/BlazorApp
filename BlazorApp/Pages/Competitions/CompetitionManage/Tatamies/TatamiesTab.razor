@@ -61,6 +61,7 @@
     {
         Tatamis = CompetitionService.GetTatamis(int.Parse(CompetitionId));
         CompetitionCategories = CompetitionService.GetCompetitionCategories(int.Parse(CompetitionId));
+        Matches = CompetitionService.GetMatches();
     }
 
 

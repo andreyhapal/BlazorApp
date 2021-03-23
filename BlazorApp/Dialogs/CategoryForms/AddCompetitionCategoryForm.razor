@@ -3,6 +3,7 @@
 @using BlazorApp.Util
 
 @inject BlazorApp.Services.CategoryService CategoryService
+@inject BlazorApp.Services.CompetitionService CompetitionService
 
 <RadzenTemplateForm TItem="SportCategory" Data="Category" Submit="SubmitForm">
     <div class="container" style="justify-content:center;">
@@ -69,7 +70,7 @@
     }
     async Task SubmitForm()
     {
-        CategoryService.CreateRangeCompetitionCategories(NewCategories, int.Parse(Id));
+        CompetitionService.CreateCompetitionCategoriesRange(NewCategories, int.Parse(Id));
 
         await BlazoredModal.CloseAsync(ModalResult.Ok(new ResponseObject() { IsSuccess = true, ExceptionMessage="" }));
     }

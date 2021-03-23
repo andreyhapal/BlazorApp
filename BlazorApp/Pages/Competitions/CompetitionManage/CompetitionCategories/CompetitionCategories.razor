@@ -4,6 +4,7 @@
 
 @inject BlazorApp.Services.CompetitorService CompetitorService
 @inject BlazorApp.Services.CompetitionService CompetitionService
+@inject BlazorApp.Services.CategoryService CategoryService
 @inject NotificationService NotificationService
 @inject TooltipService TooltipService
 
@@ -83,16 +84,18 @@
     async Task DivideCategory()
     {
         if (multipleValuesCategory == null) return;
-        if ((multipleValuesCategory as IEnumerable<SportCategory>).ToList().Count == 1)
+        else if ((multipleValuesCategory as IEnumerable<CompetitionCategory>).ToList().Count == 1)
         {
             ModalParameters parameters = new ModalParameters();
-            parameters.Add(nameof(CompetitionCategory), (multipleValuesCategory as IEnumerable<SportCategory>).ToList()[0]);
+            parameters.Add(nameof(CompetitionCategory), (multipleValuesCategory as IEnumerable<CompetitionCategory>).ToList()[0]);
 
             var form = Modal.Show<DivideCompetitionCategory>("Разбиение соревновательной категории", parameters);
             var result = await form.Result;
             if (result.Data != null)
             {
-                Categories.AddRange((List<CompetitionCategory>)result.Data);
+                //Categories.Remove((multipleValuesCategory as IEnumerable<CompetitionCategory>).ToList()[0]);
+
+                CompetitionService.CreateCompetitionCategoriesRange((result.Data as IEnumerable<SportCategory>).ToList(), int.Parse(CompetitionId));
                 await categoryGrid.Reload();
             }
         }
@@ -100,11 +103,51 @@
 
     void MergeCategory()
     {
-        if ((multipleValuesCategory as IEnumerable<SportCategory>).ToList().Count > 1)
+        if ((multipleValuesCategory as IEnumerable<CompetitionCategory>).ToList().Count > 1)
         {
-            var s = (multipleValuesCategory as IEnumerable<SportCategory>).ToList();
+            var s = (multipleValuesCategory as IEnumerable<CompetitionCategory>).ToList();
+            SportCategory newSportCategory = new SportCategory();
+            List<SportCategory> sportCategories = new List<SportCategory>();
+            foreach (var category in s)
+            {
+                sportCategories.Add(CategoryService.GetSportCategoryById(category.SportCategoryId));
+            }
 
-            categoryGrid.Reload();
+            newSportCategory.AgeGroup = new Data.AgeGroup()
+            {
+                From = sportCategories.Select(x => x.AgeGroup.From).Min(),
+                To = sportCategories.Select(x => x.AgeGroup.To).Max(),
+                AgeName = sportCategories.Select(x => x.AgeGroup.From).Min() + "-" + sportCategories.Select(x => x.AgeGroup.To).Max() + " лет"
+            };
+
+            newSportCategory.WeightGroup = new Data.WeightGroup()
+            {
+                From = sportCategories.Select(x => x.WeightGroup.From).Min(),
+                To = sportCategories.Select(x => x.WeightGroup.To).Max(),
+                Name =" От " + sportCategories.Select(x => x.WeightGroup.From).Min() + " До " + sportCategories.Select(x => x.WeightGroup.To).Max()
+            };
+
+
+            if (sportCategories.Select(x => x.Sex.Name).Distinct().ToList().Count == 1
+                && sportCategories.Select(x => x.Type.Name).Distinct().ToList().Count == 1)
+            {
+                newSportCategory.Sex = sportCategories[0].Sex;
+                newSportCategory.Type = sportCategories[0].Type;
+                var result1 = CompetitionService.CreateCompetitionCategoriesRange(new List<SportCategory>() { newSportCategory },int.Parse(CompetitionId));
+                var result2 = CompetitionService.RemoveCompetitionCategoriesRange(s.Select(x => x.Id).ToList());
+
+                if(result1.IsSuccess && result2.IsSuccess)
+                {
+                    ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Успешно!", Detail = "Категории соревнования успешно объединены!", Duration = 4000 });
+                }
+            }
+            else
+            {
+                ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Ошибка!", Detail = "Не удалось объединить категории соревнования!", Duration = 4000 });
+            }
+
         }
+
+
     }
 }

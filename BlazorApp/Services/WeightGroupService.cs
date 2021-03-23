@@ -71,5 +71,15 @@ namespace BlazorApp.Services
                 }
             }
         }
+
+        public bool ExistWeightGroup(WeightGroup weightGroup)
+        {
+            using (var db = new ApplicationContext())
+            {
+                var result = db.WeightGroups.FirstOrDefault(x => x.From == weightGroup.From && x.To == weightGroup.To);
+                if (result != null) return true;
+                else return false;
+            }
+        }
     }
 }

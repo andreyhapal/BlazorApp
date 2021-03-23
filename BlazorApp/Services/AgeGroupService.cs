@@ -68,5 +68,15 @@ namespace BlazorApp.Services
                 }
             }
         }
+
+        public bool ExistAgeGroup(AgeGroup ageGroup)
+        {
+            using (var db = new ApplicationContext())
+            {
+                var result = db.AgeGroups.FirstOrDefault(x => x.From == ageGroup.From && x.To == ageGroup.To);
+                if (result != null) return true;
+                else return false;
+            }
+        }
     }
 }

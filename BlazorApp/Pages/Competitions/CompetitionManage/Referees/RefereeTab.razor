@@ -19,18 +19,22 @@
                 @GetRefereeCompetitions(data.Id)
             </Template>
         </RadzenGridColumn>
-        <RadzenGridColumn TItem="Referee" />
+        <RadzenGridColumn TItem="Referee">
+            <Template Context="data">
+                <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger"></RadzenButton>
+            </Template>
+        </RadzenGridColumn>
 
     </Columns>
 </RadzenGrid>
 
-@code {   
+@code {
 
     List<Referee> Referees = new List<Referee>();
 
     protected override void OnInitialized()
     {
-        Referees =  CompetitionService.GetReferees();
+        Referees = CompetitionService.GetReferees();
     }
 
     string GetRefereeCompetitions(int RefereeId)

@@ -19,7 +19,6 @@ namespace BlazorApp.Models
 
         public List<Grade> Grades { get; set; } = new List<Grade>();
 
-        public int AgeGroupId { get; set; }
         public AgeGroup AgeGroup { get; set; }
 
         public WeightGroup WeightGroup { get; set; }
